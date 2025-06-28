@@ -654,7 +654,7 @@ def build(bld: BuildContext):
                 target="project.yml",
                 is_copy=True,
             )
-            if Utils.is_win32:
+            if Utils.is_win32 or True:
                 # check comment in function '_cleanup_hcg_sources'
                 remove = [
                     "source/HL_sys_main.c",

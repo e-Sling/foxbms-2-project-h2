@@ -48,4 +48,6 @@ def get_platform():
         return "linux"
     if sys.platform.lower() == "win32":
         return "win32"
-    sys.exit("Running on an unsupported platform.")
+    if sys.platform.lower() == "darwin":
+        return "darwin"
+    sys.exit(f"Running on an unsupported platform.")

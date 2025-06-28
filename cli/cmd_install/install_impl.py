@@ -55,7 +55,10 @@ instructions for the foxBMS toolchain."""
 
 REQUIRED_SOFTWARE = {
     "doxygen": {"executable": "doxygen", "path": False},
-    "drawio": {"executable": {"win32": "draw.io", "linux": "drawio"}, "path": False},
+    "drawio": {
+        "executable": {"win32": "draw.io", "linux": "drawio", "darwin": "drawio"},
+        "path": False,
+    },
     "gcc": {"executable": "gcc", "path": False},
     "graphviz": {"executable": "dot", "path": False},
     "python": {"executable": "python", "path": False},
@@ -89,7 +92,7 @@ def all_software_available() -> int:
     for k, v in check_for_all_softwares().items():
         logging.debug("%s: %s", k, v)
         if not v["path"]:
-            availability = v.get("availability", ["linux", "win32"])
+            availability = v.get("availability", ["linux", "win32", "darwin"])
             if get_platform() not in availability:
                 name = v["executable"]
                 recho(

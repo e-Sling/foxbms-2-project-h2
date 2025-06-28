@@ -40,10 +40,12 @@ FOXBMS_2_CCS_VERSION_STRICT: "v20.2.7.LTS"
 INCLUDE_PATHS:
   win32:
   linux:
+  darwin:
 
 LIBRARY_PATHS:
   win32:
   linux:
+  darwin:
 
 LIBRARIES:
   ST: # libraries following the pattern "lib<name>.a"

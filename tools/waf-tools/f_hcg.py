@@ -95,8 +95,12 @@ class NodeStructure:  # pylint: disable=too-few-public-methods
                     if value_hal.tag == "PATH":
                         if value_hal.text is not None:
                             if value_hal.text.endswith(".h"):
+                                # change \ to /
+                                value_hal.text = value_hal.text.replace("\\", "/")
                                 self.headers.append(value_hal.text)
                             elif value_hal.text.endswith((".c", ".asm")):
+                                # change \ to /
+                                value_hal.text = value_hal.text.replace("\\", "/")
                                 self.sources.append(value_hal.text)
         self.headers = sorted(list(set(self.headers)))
         self.sources = sorted(list(set(self.sources)))
@@ -272,14 +276,63 @@ class hcg_compiler(Task.Task):  # pylint: disable=invalid-name
         for src, tgt in zip(self.inputs[:2], self.outputs[:2]):
             shutil.copy2(src.abspath(), tgt.abspath())
 
-        cmd = Utils.subst_vars(
-            "${HALCOGEN} ${HALCOGEN_SRC_INPUT} " + self.outputs[0].abspath(),
-            self.generator.env,
-        ).split()
-        try:
-            self.generator.bld.exec_command(cmd)
-        except Errors.WafError:
-            self.generator.bld.fatal("Could not generate HAL sources.")
+        if self.generator.env.HALCOGEN == "not_available":
+            # try copying the files from the src directory to the build
+            # directory, as HALCoGen is not available. the files are in the source and include directories
+            src_dir = self.inputs[0].parent.find_dir("source")
+            inc_dir = self.inputs[0].parent.find_dir("include")
+            print(src_dir, self.inputs[0].parent.abspath())
+            if not src_dir or not inc_dir:
+                self.generator.bld.fatal(
+                    "Could not find source or include directory for HALCoGen."
+                )
+
+            # get directory
+            base_output_dir = self.outputs[0].parent.abspath()
+
+            out_src_dir = os.path.join(base_output_dir, "source")
+            out_inc_dir = os.path.join(base_output_dir, "include")
+
+            # Ensure output directories exist
+            os.makedirs(out_src_dir, exist_ok=True)
+            os.makedirs(out_inc_dir, exist_ok=True)
+
+            print(src_dir, self.generator.path.get_src())
+
+            # Copy all .c and .asm files from source dir to output source dir
+            for src_file in src_dir.ant_glob("*.c") + src_dir.ant_glob("*.asm"):
+                shutil.copy2(
+                    src_file.abspath(), os.path.join(out_src_dir, src_file.name)
+                )
+
+            # Copy all .h files from include dir to output include dir
+            for hdr_file in inc_dir.ant_glob("*.h"):
+                shutil.copy2(
+                    hdr_file.abspath(), os.path.join(out_inc_dir, hdr_file.name)
+                )
+
+            # Copy app.log file
+            app_log_file = os.path.join(str(self.generator.path.get_src()), "app.log")
+            if not os.path.exists(app_log_file):
+                # generate a log file if it does not exist
+                with open(app_log_file, "w", encoding="utf-8") as f:
+                    f.write("Why is this necessary?\n")
+            if app_log_file:
+                shutil.copy2(
+                    app_log_file,
+                    os.path.join(base_output_dir, "app.log"),
+                )
+
+        else:
+
+            cmd = Utils.subst_vars(
+                "${HALCOGEN} ${HALCOGEN_SRC_INPUT} " + self.outputs[0].abspath(),
+                self.generator.env,
+            ).split()
+            try:
+                self.generator.bld.exec_command(cmd)
+            except Errors.WafError:
+                self.generator.bld.fatal("Could not generate HAL sources.")
 
         # get clock info from generated source 'FreeRTOSConfig.h'
         if self.uses_freertos:  # pylint: disable=no-member
@@ -385,6 +438,7 @@ def configure(ctx):
     """
     ctx.start_msg("Checking for TI Code Generator (HALCoGen)")
     ctx.find_program("HALCOGEN", var="HALCOGEN", mandatory=False)
+    ctx.env.HALCOGEN = "not_available"
     if ctx.env.HALCOGEN:
         incpath_halcogen = os.path.join(
             pathlib.Path(ctx.env.HALCOGEN[0]).parent.parent.parent,

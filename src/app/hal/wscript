@@ -51,7 +51,7 @@ def build(bld):
     source = None
     remove = None
     startup_hash = None
-    if Utils.is_win32 or bld.env.HALCOGEN:
+    if Utils.is_win32 or bld.env.HALCOGEN or True:
         startup_hash = bld.path.find_node("app-startup.hash")
         remove = [
             "source/HL_sys_main.c",

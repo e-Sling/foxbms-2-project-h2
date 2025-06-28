@@ -79,7 +79,7 @@ HALCOGEN_DIL_SRC_BL = PROJECT_ROOT / "conf/hcg/bootloader.dil"
 HALCOGEN_DIL_TGT_APP = UNIT_TEST_BUILD_DIR_APP / "app.dil"
 HALCOGEN_DIL_TGT_BL = UNIT_TEST_BUILD_DIR_BL / "bootloader.dil"
 
-if get_platform() == "linux":
+if get_platform() == "linux" or get_platform() == "darwin":
     CEEDLING_PROJECT_FILE_SRC_APP = Path(
         str(_CEEDLING_PROJECT_FILE_SRC_APP).replace("<platform>", "posix")
     )
@@ -293,7 +293,44 @@ def _run_halcogen(
     if not halcogen:
         recho("Could not find program 'HALCogen'.")
         recho("Assuming HALCoGen sources are available...", fg="yellow")
+        # Manually copy HALCoGen files from src
+
+        src_root = PROJECT_ROOT / "conf" / "hcg"
+        src_source_dir = src_root / "source"
+        src_include_dir = src_root / "include"
+        out_source_dir = base_dir / "source"
+        out_include_dir = base_dir / "include"
+
+        if not src_source_dir.exists() or not src_include_dir.exists():
+            raise SystemExit("Could not find source or include directory for HALCoGen.")
+
+        out_source_dir.mkdir(parents=True, exist_ok=True)
+        out_include_dir.mkdir(parents=True, exist_ok=True)
+
+        if out_source_dir == src_source_dir:
+            return
+
+        for file in src_source_dir.glob("*.c"):
+            shutil.copy2(file, out_source_dir / file.name)
+        for file in src_source_dir.glob("*.asm"):
+            shutil.copy2(file, out_source_dir / file.name)
+        for file in src_include_dir.glob("*.h"):
+            shutil.copy2(file, out_include_dir / file.name)
+
+        # app_log_file = src_root / "app.log"
+        # if app_log_file.exists():
+        #     shutil.copy2(app_log_file, base_dir / "app.log")
+
+        # Still calculate the hash and write it to the pickle file
+        current_hcg_files_hash = get_multiple_files_hash_str(
+            list(out_source_dir.glob("*.c")) + list(out_include_dir.glob("*.h"))
+        )
+
+        with open(hash_pickle, "wb") as f:
+            pickle.dump(current_hcg_files_hash, f)
+
         return
+
     cmd = [halcogen, "-i", str(input_hcg)]
     cwd = base_dir
     ret = run_process(cmd, cwd=cwd, stderr=None, stdout=None)

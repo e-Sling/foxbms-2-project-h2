@@ -138,6 +138,8 @@ def load_cc_options(ctx):  # pylint: disable=too-many-locals,too-many-branches
     ccs_versions = []
     if Utils.is_win32:
         prefix = "C:"
+    elif Utils.is_darwin:
+        prefix = "/Applications"
     else:
         prefix = "/opt"
     for i in list(Path(f"{prefix}/ti/").glob("ccs*")):

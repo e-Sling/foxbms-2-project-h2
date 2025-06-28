@@ -1,0 +1,5 @@
+/opt/foxbms/Ceedling/1.0.1/bin/
+/Applications/ti/ccs1281/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/bin
+/Applications/ti/ccs1281/ccs/tools/compiler/ti-cgt-arm_20.2.7.LTS/lib
+/Applications/ti/ccs1281/ccs/utils/bin
+/Applications/ti/ccs1281/ccs/utils/tiobj2bin
