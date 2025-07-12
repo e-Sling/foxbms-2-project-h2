@@ -94,7 +94,7 @@ float_t testInsulationResistance = 1250.0f;
 
 static const CAN_SIGNAL_TYPE_s cantx_testInsulationResistance_kOhm = {63u, 8u, 200.0f, 0.0f, 0.0f, 51000.0f};
 
-const CAN_NODE_s can_node1 = {
+const CAN_NODE_s can_node = {
     .canNodeRegister = canREG1,
 };
 

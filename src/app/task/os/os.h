@@ -455,7 +455,7 @@ extern OS_TIMER_s OS_GetOsTimer(void);
 
 /*========== Externalized Static Functions Prototypes (Unit Test) ===========*/
 #ifdef UNITY_UNIT_TEST
-extern OS_TIMER_s *TEST_OS_GetOsTimer();
+extern OS_TIMER_s *TEST_OS_GetOsTimer(void);
 #endif
 
 #endif /* FOXBMS__OS_H_ */

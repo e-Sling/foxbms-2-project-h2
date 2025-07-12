@@ -167,7 +167,7 @@ extern void ALGO_MonitorExecutionTime(void) {
 
 /*========== Externalized Static Function Implementations (Unit Test) =======*/
 #ifdef UNITY_UNIT_TEST
-extern void TEST_ALGO_ResetInitializationRequest() {
+extern void TEST_ALGO_ResetInitializationRequest(void) {
     algo_initializationRequested = false;
 }
 #endif

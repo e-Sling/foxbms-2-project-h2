@@ -88,7 +88,7 @@ TEST_INCLUDE_PATH("../../src/app/task/config")
 /* dummy data array filled with zero */
 const uint8_t testCanDataZeroArray[CAN_MAX_DLC] = {0};
 
-const CAN_NODE_s can_node1 = {
+const CAN_NODE_s can_node = {
     .canNodeRegister = canREG1,
 };
 

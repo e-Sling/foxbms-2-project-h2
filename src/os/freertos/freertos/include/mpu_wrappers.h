@@ -263,7 +263,12 @@
 
 
 /* Ensure API functions go in the privileged execution section. */
-    #define PRIVILEGED_FUNCTION     __attribute__( ( section( ".kernelTEXT" ) ) )  /* keep TI naming */
+#if defined(__GNUC__) && !defined(__APPLE__)
+    #define PRIVILEGED_FUNCTION __attribute__((section(".kernelTEXT")))
+#else
+    // Disable section attribute on unsupported platforms like macOS (Clang/Mach-O)
+    #define PRIVILEGED_FUNCTION
+#endif
     #define PRIVILEGED_DATA         __attribute__( ( section( ".kernelBSS" ) ) )   /* keep TI naming */
     #define FREERTOS_SYSTEM_CALL    __attribute__( ( section( ".syscallTEXT" ) ) ) /* Place the FreeRTOS System Calls FIRST in the unprivileged region. */
 

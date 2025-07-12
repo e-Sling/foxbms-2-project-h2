@@ -232,7 +232,7 @@ static void CAN_CheckCanTimingOfCurrentSensor(void);
  *           here and they are configured to received all CAN messages with an
  *           extended identifier.
  *
- *           This configuration is only done for CAN nodes canReg1 and canReg2!
+ *           This configuration is only done for CAN node canREG4!
  */
 static void CAN_ConfigureRxMailboxesForExtendedIdentifiers(void);
 
@@ -297,14 +297,14 @@ static void CAN_ConfigureRxMailboxesForExtendedIdentifiers(void) {
      *     - Disable status interrupts
      *     - Enter initialization mode
      */
-    canREG1->CTL = (uint32)0x00000000U | (uint32)0x00000000U | (uint32)((uint32)0x0000000AU << 10U) |
+    canREG4->CTL = (uint32)0x00000000U | (uint32)0x00000000U | (uint32)((uint32)0x0000000AU << 10U) |
                    (uint32)0x00020043U;
 
     /** - Clear all pending error flags and reset current status */
-    canREG1->ES |= 0xFFFFFFFFU;
+    canREG4->ES |= 0xFFFFFFFFU;
 
     /** - Setup auto bus on timer period */
-    canREG1->ABOTR = (uint32)0U;
+    canREG4->ABOTR = (uint32)0U;
 
     /** - Initialize message 42
      *     - Wait until IF1 is ready for use
@@ -316,15 +316,15 @@ static void CAN_ConfigureRxMailboxesForExtendedIdentifiers(void) {
      */
     /* SAFETYMCUSW 28 D MR:NA <APPROVED> "Potentially infinite loop found -
      * Hardware Status check for execution sequence" */
-    while ((canREG1->IF1STAT & 0x80U) == 0x80U) {
+    while ((canREG4->IF1STAT & 0x80U) == 0x80U) {
     } /* Wait */
 
-    canREG1->IF1MSK = 0xC0000000U | (uint32)((uint32)((uint32)0x00000000U & (uint32)0x000007FFU) << (uint32)18U);
-    canREG1->IF1ARB = (uint32)0x80000000U | (uint32)0x00000000U | (uint32)0x00000000U |
+    canREG4->IF1MSK = 0xC0000000U | (uint32)((uint32)((uint32)0x00000000U & (uint32)0x000007FFU) << (uint32)18U);
+    canREG4->IF1ARB = (uint32)0x80000000U | (uint32)0x00000000U | (uint32)0x00000000U |
                       (uint32)((uint32)((uint32)0U & (uint32)0x000007FFU) << (uint32)18U);
-    canREG1->IF1MCTL = 0x00001000U | (uint32)0x00000400U | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)8U;
-    canREG1->IF1CMD  = (uint8)0xF8U;
-    canREG1->IF1NO   = 42U;
+    canREG4->IF1MCTL = 0x00001000U | (uint32)0x00000400U | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)8U;
+    canREG4->IF1CMD  = (uint8)0xF8U;
+    canREG4->IF1NO   = 42U;
 
     /** - Initialize message 61
      *     - Wait until IF1 is ready for use
@@ -336,15 +336,15 @@ static void CAN_ConfigureRxMailboxesForExtendedIdentifiers(void) {
      */
     /* SAFETYMCUSW 28 D MR:NA <APPROVED> "Potentially infinite loop found -
      * Hardware Status check for execution sequence" */
-    while ((canREG1->IF1STAT & 0x80U) == 0x80U) {
+    while ((canREG4->IF1STAT & 0x80U) == 0x80U) {
     } /* Wait */
 
-    canREG1->IF1MSK = 0xC0000000U | (uint32)((uint32)((uint32)0x00000000U & (uint32)0x1FFFFFFFU) << (uint32)0U);
-    canREG1->IF1ARB = (uint32)0x80000000U | (uint32)0x40000000U | (uint32)0x00000000U |
+    canREG4->IF1MSK = 0xC0000000U | (uint32)((uint32)((uint32)0x00000000U & (uint32)0x1FFFFFFFU) << (uint32)0U);
+    canREG4->IF1ARB = (uint32)0x80000000U | (uint32)0x40000000U | (uint32)0x00000000U |
                       (uint32)((uint32)((uint32)0U & (uint32)0x1FFFFFFFU) << (uint32)0U);
-    canREG1->IF1MCTL = 0x00001000U | (uint32)0x00000400U | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)8U;
-    canREG1->IF1CMD  = (uint8)0xF8U;
-    canREG1->IF1NO   = 61U;
+    canREG4->IF1MCTL = 0x00001000U | (uint32)0x00000400U | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)8U;
+    canREG4->IF1CMD  = (uint8)0xF8U;
+    canREG4->IF1NO   = 61U;
 
     /** - Initialize message 62
      *     - Wait until IF2 is ready for use
@@ -356,15 +356,15 @@ static void CAN_ConfigureRxMailboxesForExtendedIdentifiers(void) {
      */
     /* SAFETYMCUSW 28 D MR:NA <APPROVED> "Potentially infinite loop found -
      * Hardware Status check for execution sequence" */
-    while ((canREG1->IF2STAT & 0x80U) == 0x80U) {
+    while ((canREG4->IF2STAT & 0x80U) == 0x80U) {
     } /* Wait */
 
-    canREG1->IF2MSK = 0xC0000000U | (uint32)((uint32)((uint32)0x00000000U & (uint32)0x1FFFFFFFU) << (uint32)0U);
-    canREG1->IF2ARB = (uint32)0x80000000U | (uint32)0x40000000U | (uint32)0x00000000U |
+    canREG4->IF2MSK = 0xC0000000U | (uint32)((uint32)((uint32)0x00000000U & (uint32)0x1FFFFFFFU) << (uint32)0U);
+    canREG4->IF2ARB = (uint32)0x80000000U | (uint32)0x40000000U | (uint32)0x00000000U |
                       (uint32)((uint32)((uint32)0U & (uint32)0x1FFFFFFFU) << (uint32)0U);
-    canREG1->IF2MCTL = 0x00001000U | (uint32)0x00000400U | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)8U;
-    canREG1->IF2CMD  = (uint8)0xF8U;
-    canREG1->IF2NO   = 62U;
+    canREG4->IF2MCTL = 0x00001000U | (uint32)0x00000400U | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)8U;
+    canREG4->IF2CMD  = (uint8)0xF8U;
+    canREG4->IF2NO   = 62U;
 
     /** - Initialize message 63
      *     - Wait until IF1 is ready for use
@@ -376,15 +376,15 @@ static void CAN_ConfigureRxMailboxesForExtendedIdentifiers(void) {
      */
     /* SAFETYMCUSW 28 D MR:NA <APPROVED> "Potentially infinite loop found -
      * Hardware Status check for execution sequence" */
-    while ((canREG1->IF1STAT & 0x80U) == 0x80U) {
+    while ((canREG4->IF1STAT & 0x80U) == 0x80U) {
     } /* Wait */
 
-    canREG1->IF1MSK = 0xC0000000U | (uint32)((uint32)((uint32)0x00000000U & (uint32)0x1FFFFFFFU) << (uint32)0U);
-    canREG1->IF1ARB = (uint32)0x80000000U | (uint32)0x40000000U | (uint32)0x00000000U |
+    canREG4->IF1MSK = 0xC0000000U | (uint32)((uint32)((uint32)0x00000000U & (uint32)0x1FFFFFFFU) << (uint32)0U);
+    canREG4->IF1ARB = (uint32)0x80000000U | (uint32)0x40000000U | (uint32)0x00000000U |
                       (uint32)((uint32)((uint32)0U & (uint32)0x1FFFFFFFU) << (uint32)0U);
-    canREG1->IF1MCTL = 0x00001000U | (uint32)0x00000400U | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)8U;
-    canREG1->IF1CMD  = (uint8)0xF8U;
-    canREG1->IF1NO   = 63U;
+    canREG4->IF1MCTL = 0x00001000U | (uint32)0x00000400U | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)8U;
+    canREG4->IF1CMD  = (uint8)0xF8U;
+    canREG4->IF1NO   = 63U;
 
     /** - Initialize message 64
      *     - Wait until IF2 is ready for use
@@ -396,15 +396,15 @@ static void CAN_ConfigureRxMailboxesForExtendedIdentifiers(void) {
      */
     /* SAFETYMCUSW 28 D MR:NA <APPROVED> "Potentially infinite loop found -
      * Hardware Status check for execution sequence" */
-    while ((canREG1->IF2STAT & 0x80U) == 0x80U) {
+    while ((canREG4->IF2STAT & 0x80U) == 0x80U) {
     } /* Wait */
 
-    canREG1->IF2MSK = 0xC0000000U | (uint32)((uint32)((uint32)0x00000000U & (uint32)0x1FFFFFFFU) << (uint32)0U);
-    canREG1->IF2ARB = (uint32)0x80000000U | (uint32)0x40000000U | (uint32)0x00000000U |
+    canREG4->IF2MSK = 0xC0000000U | (uint32)((uint32)((uint32)0x00000000U & (uint32)0x1FFFFFFFU) << (uint32)0U);
+    canREG4->IF2ARB = (uint32)0x80000000U | (uint32)0x40000000U | (uint32)0x00000000U |
                       (uint32)((uint32)((uint32)0U & (uint32)0x1FFFFFFFU) << (uint32)0U);
-    canREG1->IF2MCTL = 0x00001000U | (uint32)0x00000400U | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)8U;
-    canREG1->IF2CMD  = (uint8)0xF8U;
-    canREG1->IF2NO   = 64U;
+    canREG4->IF2MCTL = 0x00001000U | (uint32)0x00000400U | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)8U;
+    canREG4->IF2CMD  = (uint8)0xF8U;
+    canREG4->IF2NO   = 64U;
 
     /** - Setup IF1 for data transmission
      *     - Wait until IF1 is ready for use
@@ -412,9 +412,9 @@ static void CAN_ConfigureRxMailboxesForExtendedIdentifiers(void) {
      */
     /* SAFETYMCUSW 28 D MR:NA <APPROVED> "Potentially infinite loop found -
      * Hardware Status check for execution sequence" */
-    while ((canREG1->IF1STAT & 0x80U) == 0x80U) {
+    while ((canREG4->IF1STAT & 0x80U) == 0x80U) {
     } /* Wait */
-    canREG1->IF1CMD = 0x87U;
+    canREG4->IF1CMD = 0x87U;
 
     /** - Setup IF2 for reading data
      *     - Wait until IF1 is ready for use
@@ -422,139 +422,12 @@ static void CAN_ConfigureRxMailboxesForExtendedIdentifiers(void) {
      */
     /* SAFETYMCUSW 28 D MR:NA <APPROVED> "Potentially infinite loop found -
      * Hardware Status check for execution sequence" */
-    while ((canREG1->IF2STAT & 0x80U) == 0x80U) {
+    while ((canREG4->IF2STAT & 0x80U) == 0x80U) {
     } /* Wait */
-    canREG1->IF2CMD = 0x17U;
+    canREG4->IF2CMD = 0x17U;
 
     /** - Leave configuration and initialization mode  */
-    canREG1->CTL &= ~(uint32)(0x00000041U);
-
-    /** Reconfigure CAN2 mailboxes 61 - 64 */
-
-    /** - Setup control register
-     *     - Disable automatic wakeup on bus activity
-     *     - Local power down mode disabled
-     *     - Disable DMA request lines
-     *     - Enable global Interrupt Line 0 and 1
-     *     - Disable debug mode
-     *     - Release from software reset
-     *     - Enable/Disable parity or ECC
-     *     - Enable/Disable auto bus on timer
-     *     - Setup message completion before entering debug state
-     *     - Setup normal operation mode
-     *     - Request write access to the configuration registers
-     *     - Setup automatic retransmission of messages
-     *     - Disable error interrupts
-     *     - Disable status interrupts
-     *     - Enter initialization mode
-     */
-    canREG2->CTL = (uint32)0x00000000U | (uint32)0x00000000U | (uint32)((uint32)0x0000000AU << 10U) | 0x00020043U;
-
-    /** - Clear all pending error flags and reset current status */
-    canREG2->ES |= 0xFFFFFFFFU;
-
-    /** - Initialize message 61
-     *     - Wait until IF1 is ready for use
-     *     - Set message mask
-     *     - Set message control word
-     *     - Set message arbitration
-     *     - Set IF1 control byte
-     *     - Set IF1 message number
-     */
-    /* SAFETYMCUSW 28 D MR:NA <APPROVED> "Potentially infinite loop found -
-     * Hardware Status check for execution sequence" */
-    while ((canREG2->IF1STAT & 0x80U) == 0x80U) {
-    } /* Wait */
-
-    canREG2->IF1MSK = 0xC0000000U | (uint32)((uint32)((uint32)0x00000000U & (uint32)0x1FFFFFFFU) << (uint32)0U);
-    canREG2->IF1ARB = (uint32)0x80000000U | (uint32)0x40000000U | (uint32)0x00000000U |
-                      (uint32)((uint32)((uint32)0U & (uint32)0x1FFFFFFFU) << (uint32)0U);
-    canREG2->IF1MCTL = 0x00001000U | (uint32)0x00000400U | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)8U;
-    canREG2->IF1CMD  = (uint8)0xF8U;
-    canREG2->IF1NO   = 61U;
-
-    /** - Initialize message 62
-     *     - Wait until IF2 is ready for use
-     *     - Set message mask
-     *     - Set message control word
-     *     - Set message arbitration
-     *     - Set IF2 control byte
-     *     - Set IF2 message number
-     */
-    /* SAFETYMCUSW 28 D MR:NA <APPROVED> "Potentially infinite loop found -
-     * Hardware Status check for execution sequence" */
-    while ((canREG2->IF2STAT & 0x80U) == 0x80U) {
-    } /* Wait */
-
-    canREG2->IF2MSK = 0xC0000000U | (uint32)((uint32)((uint32)0x00000000U & (uint32)0x1FFFFFFFU) << (uint32)0U);
-    canREG2->IF2ARB = (uint32)0x80000000U | (uint32)0x40000000U | (uint32)0x00000000U |
-                      (uint32)((uint32)((uint32)0U & (uint32)0x1FFFFFFFU) << (uint32)0U);
-    canREG2->IF2MCTL = 0x00001000U | (uint32)0x00000400U | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)8U;
-    canREG2->IF2CMD  = (uint8)0xF8U;
-    canREG2->IF2NO   = 62U;
-
-    /** - Initialize message 63
-     *     - Wait until IF1 is ready for use
-     *     - Set message mask
-     *     - Set message control word
-     *     - Set message arbitration
-     *     - Set IF1 control byte
-     *     - Set IF1 message number
-     */
-    /* SAFETYMCUSW 28 D MR:NA <APPROVED> "Potentially infinite loop found -
-     * Hardware Status check for execution sequence" */
-    while ((canREG2->IF1STAT & 0x80U) == 0x80U) {
-    } /* Wait */
-
-    canREG2->IF1MSK = 0xC0000000U | (uint32)((uint32)((uint32)0x00000000U & (uint32)0x1FFFFFFFU) << (uint32)0U);
-    canREG2->IF1ARB = (uint32)0x80000000U | (uint32)0x40000000U | (uint32)0x00000000U |
-                      (uint32)((uint32)((uint32)0U & (uint32)0x1FFFFFFFU) << (uint32)0U);
-    canREG2->IF1MCTL = 0x00001000U | (uint32)0x00000400U | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)8U;
-    canREG2->IF1CMD  = (uint8)0xF8U;
-    canREG2->IF1NO   = 63U;
-
-    /** - Initialize message 64
-     *     - Wait until IF2 is ready for use
-     *     - Set message mask
-     *     - Set message control word
-     *     - Set message arbitration
-     *     - Set IF2 control byte
-     *     - Set IF2 message number
-     */
-    /* SAFETYMCUSW 28 D MR:NA <APPROVED> "Potentially infinite loop found -
-     * Hardware Status check for execution sequence" */
-    while ((canREG2->IF2STAT & 0x80U) == 0x80U) {
-    } /* Wait */
-
-    canREG2->IF2MSK = 0xC0000000U | (uint32)((uint32)((uint32)0x00000000U & (uint32)0x1FFFFFFFU) << (uint32)0U);
-    canREG2->IF2ARB = (uint32)0x80000000U | (uint32)0x40000000U | (uint32)0x00000000U |
-                      (uint32)((uint32)((uint32)0U & (uint32)0x1FFFFFFFU) << (uint32)0U);
-    canREG2->IF2MCTL = 0x00001000U | (uint32)0x00000400U | (uint32)0x00000000U | (uint32)0x00000000U | (uint32)8U;
-    canREG2->IF2CMD  = (uint8)0xF8U;
-    canREG2->IF2NO   = 64U;
-
-    /** - Setup IF1 for data transmission
-     *     - Wait until IF1 is ready for use
-     *     - Set IF1 control byte
-     */
-    /* SAFETYMCUSW 28 D MR:NA <APPROVED> "Potentially infinite loop found -
-     * Hardware Status check for execution sequence" */
-    while ((canREG2->IF1STAT & 0x80U) == 0x80U) {
-    } /* Wait */
-    canREG2->IF1CMD = 0x87U;
-
-    /** - Setup IF2 for reading data
-     *     - Wait until IF1 is ready for use
-     *     - Set IF1 control byte
-     */
-    /* SAFETYMCUSW 28 D MR:NA <APPROVED> "Potentially infinite loop found -
-     * Hardware Status check for execution sequence" */
-    while ((canREG2->IF2STAT & 0x80U) == 0x80U) {
-    } /* Wait */
-    canREG2->IF2CMD = 0x17U;
-
-    /** - Leave configuration and initialization mode  */
-    canREG2->CTL &= ~(uint32)(0x00000041U);
+    canREG4->CTL &= ~(uint32)(0x00000041U);
 
     /* AXIVION Enable Style Generic-NoMagicNumbers: */
     /* AXIVION Enable Style MisraC2012-2.2: */
@@ -563,17 +436,28 @@ static void CAN_ConfigureRxMailboxesForExtendedIdentifiers(void) {
 }
 
 static void CAN_InitializeTransceiver(void) {
-    /** Initialize transceiver for CAN1 */
-    IO_SetPinDirectionToOutput(&CAN_CAN1_IO_REG_DIR, CAN_CAN1_ENABLE_PIN);
-    IO_SetPinDirectionToOutput(&CAN_CAN1_IO_REG_DIR, CAN_CAN1_STANDBY_PIN);
-    IO_PinSet(&CAN_CAN1_IO_REG_DOUT, CAN_CAN1_ENABLE_PIN);
-    IO_PinSet(&CAN_CAN1_IO_REG_DOUT, CAN_CAN1_STANDBY_PIN);
+    /** Initialize transceiver for CAN4 */
+    IO_SetPinDirectionToOutput(&CAN_CAN4_IO_REG_DIR, CAN_CAN4_ENABLE_PIN);
+    IO_SetPinDirectionToOutput(&CAN_CAN4_IO_REG_DIR, CAN_CAN4_STANDBY_PIN);
 
-    /** Initialize transceiver for CAN2 */
-    PEX_SetPinDirectionOutput(PEX_PORT_EXPANDER2, CAN_CAN2_ENABLE_PIN);
-    PEX_SetPinDirectionOutput(PEX_PORT_EXPANDER2, CAN_CAN2_STANDBY_PIN);
-    PEX_SetPin(PEX_PORT_EXPANDER2, CAN_CAN2_ENABLE_PIN);
-    PEX_SetPin(PEX_PORT_EXPANDER2, CAN_CAN2_STANDBY_PIN);
+    IO_PinReset(&CAN_CAN4_IO_REG_DOUT, CAN_CAN4_ENABLE_PIN);
+    IO_PinReset(&CAN_CAN4_IO_REG_DOUT, CAN_CAN4_STANDBY_PIN);
+
+    /* first set EN and STB pins to 0 */
+    IO_PinReset(&CAN_CAN4_IO_REG_DOUT, CAN_CAN4_ENABLE_PIN);
+    IO_PinReset(&CAN_CAN4_IO_REG_DOUT, CAN_CAN4_STANDBY_PIN);
+    /* wait after pin toggle */
+    MCU_Delay_us(CAN_PIN_TOGGLE_DELAY_US);
+
+    /* set EN pin to 1 */
+    IO_PinSet(&CAN_CAN4_IO_REG_DOUT, CAN_CAN4_ENABLE_PIN);
+    /* wait after pin toggle */
+    MCU_Delay_us(CAN_PIN_TOGGLE_DELAY_US);
+
+    /* set STB pin to 1 */
+    IO_PinSet(&CAN_CAN4_IO_REG_DOUT, CAN_CAN4_STANDBY_PIN);
+    /* wait after pin toggle */
+    MCU_Delay_us(CAN_PIN_TOGGLE_DELAY_US);
 }
 
 static void CAN_ValidateConfiguredTxMessagePeriod(void) {
@@ -617,10 +501,10 @@ static CAN_NODE_s *CAN_GetNodeConfigurationStructFromRegisterAddress(canBASE_t *
     FAS_ASSERT(pNodeRegister != NULL_PTR);
     CAN_NODE_s *node = NULL_PTR;
     /* Find correct CAN node configuration struct */
-    if (pNodeRegister == can_node1.canNodeRegister) {
-        node = (CAN_NODE_s *)&can_node1;
-    } else if (pNodeRegister == can_node2Isolated.canNodeRegister) {
-        node = (CAN_NODE_s *)&can_node2Isolated;
+    if (pNodeRegister == can_node.canNodeRegister) {
+        node = (CAN_NODE_s *)&can_node;
+    // } else if (pNodeRegister == can_node2Isolated.canNodeRegister) {
+    //     node = (CAN_NODE_s *)&can_node2Isolated;
     } else {
         /* Invalid address. This should not have happened */
         FAS_ASSERT(FAS_TRAP);
@@ -924,7 +808,7 @@ extern STD_RETURN_TYPE_e CAN_DataSend(CAN_NODE_s *pNode, uint32_t id, CAN_IDENTI
     /* AXIVION Routine Generic-MissingParameterAssert: id: parameter accepts whole range */
     FAS_ASSERT((idType == CAN_STANDARD_IDENTIFIER_11_BIT) || (idType == CAN_EXTENDED_IDENTIFIER_29_BIT));
     FAS_ASSERT(pData != NULL_PTR);
-    FAS_ASSERT((pNode == CAN_NODE_1) || (pNode == CAN_NODE_2));
+    FAS_ASSERT((pNode == CAN_NODE));
 
     STD_RETURN_TYPE_e result = STD_NOT_OK;
 

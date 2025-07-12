@@ -130,7 +130,7 @@ TEST_INCLUDE_PATH("../../src/version")
         .period = CANRX_NOT_PERIODIC                  \
     }
 
-const CAN_NODE_s can_node1 = {
+const CAN_NODE_s can_node = {
     .canNodeRegister = canREG1,
 };
 

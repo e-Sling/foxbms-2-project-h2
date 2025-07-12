@@ -87,7 +87,7 @@ TEST_INCLUDE_PATH("../../src/app/engine/sys_mon")
 TEST_INCLUDE_PATH("../../src/app/task/config")
 
 /*========== Definitions and Implementations for Unit Test ==================*/
-const CAN_NODE_s can_node1 = {
+const CAN_NODE_s can_node = {
     .canNodeRegister = canREG1,
 };
 

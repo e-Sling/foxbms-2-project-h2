@@ -91,7 +91,7 @@ uint8_t testCanDataZeroArray[8u] = {0u};
 
 uint8_t testCanDataFilled[8u] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
-const CAN_NODE_s can_node1 = {
+const CAN_NODE_s can_node = {
     .canNodeRegister = canREG1,
 };
 
@@ -161,15 +161,15 @@ void testCANTX_TransmitBmsVersionInfo(void) {
     TEST_ASSERT_EQUAL(testMessageData[8u], testResult);
 
     /* ======= RT2/2: Test implementation */
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdiscarded-qualifiers"
+// #pragma GCC diagnostic push
+// #pragma GCC diagnostic ignored "-Wdiscarded-qualifiers"
     uint16_t *tmpDistanceFromLastRelease = &ver_versionInformation.distanceFromLastRelease;
     *tmpDistanceFromLastRelease          = 42u;
     bool *tmpIsDirty                     = &ver_versionInformation.isDirty;
     *tmpIsDirty                          = false;
     bool *tmpUnderVersionControl         = &ver_versionInformation.underVersionControl;
     *tmpUnderVersionControl              = false;
-#pragma GCC diagnostic pop
+// #pragma GCC diagnostic pop
 
     MATH_MinimumOfTwoUint16_t_ExpectAndReturn(42u, 31u, 31u);
     CAN_TxSetMessageDataWithSignalData_Expect(&testMessageData[0u], 7u, 8u, 0x00, CANTX_DEBUG_RESPONSE_ENDIANNESS);

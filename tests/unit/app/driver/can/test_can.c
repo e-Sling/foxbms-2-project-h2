@@ -142,7 +142,7 @@ TEST_INCLUDE_PATH("../../src/version")
         .period = CANRX_NOT_PERIODIC                  \
     }
 
-const CAN_NODE_s can_node1 = {
+const CAN_NODE_s can_node = {
     .canNodeRegister = canREG1,
 };
 
@@ -381,7 +381,7 @@ void testCAN_PeriodicTransmitQueueFull(void) {
 
     /* assume all message boxes are full */
     for (uint8_t messageBox = 1u; messageBox <= CAN_NR_OF_TX_MESSAGE_BOX; messageBox++) {
-        canIsTxMessagePending_ExpectAndReturn(can_node1.canNodeRegister, messageBox, 1u);
+        canIsTxMessagePending_ExpectAndReturn(can_node.canNodeRegister, messageBox, 1u);
     }
 
     /* expect a message to be sent to queue */

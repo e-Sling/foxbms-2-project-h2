@@ -66,12 +66,8 @@
 /*========== Static Constant and Variable Definitions =======================*/
 
 /*========== Extern Constant and Variable Definitions =======================*/
-const CAN_NODE_s can_node1 = {
-    .canNodeRegister = canREG1,
-};
-
-const CAN_NODE_s can_node2Isolated = {
-    .canNodeRegister = canREG2,
+const CAN_NODE_s can_node = {
+    .canNodeRegister = canREG4,
 };
 
 /** local copies of database tables */

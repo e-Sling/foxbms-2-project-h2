@@ -86,7 +86,7 @@ TEST_INCLUDE_PATH("../../src/app/task/config")
 #define TEST_UNSUPPORTED_MULTIPLEXER                 (0x302u)
 #define TEST_UNSUPPORTED_MULTIPLEXER_IDENTIFIER_TYPE (CAN_STANDARD_IDENTIFIER_11_BIT)
 
-const CAN_NODE_s can_node1 = {
+const CAN_NODE_s can_node = {
     .canNodeRegister = canREG1,
 };
 

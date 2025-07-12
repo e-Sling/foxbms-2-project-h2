@@ -81,23 +81,23 @@ static uint8_t cantx_stringStateEstimationMux      = 0u;
 
 /** registry of CAN TX messages */
 const CAN_TX_MESSAGE_TYPE_s can_txMessages[] = {
-    {CAN_NODE_1, CANTX_BMS_STATE_MESSAGE, &CANTX_BmsState, NULL_PTR},
-    {CAN_NODE_1, CANTX_BMS_STATE_DETAILS_MESSAGE, &CANTX_BmsStateDetails, NULL_PTR},
-    {CAN_NODE_1, CANTX_CELL_VOLTAGES_MESSAGE, &CANTX_CellVoltages, &cantx_cellVoltagesMux},
-    {CAN_NODE_1, CANTX_CELL_TEMPERATURES_MESSAGE, &CANTX_CellTemperatures, &cantx_cellTemperaturesMux},
-    {CAN_NODE_1, CANTX_PACK_LIMITS_MESSAGE, &CANTX_PackLimits, NULL_PTR},
-    {CAN_NODE_1, CANTX_PACK_MINIMUM_MAXIMUM_VALUES_MESSAGE, &CANTX_PackMinimumMaximumValues, NULL_PTR},
-    {CAN_NODE_1, CANTX_PACK_STATE_ESTIMATION_MESSAGE, &CANTX_PackStateEstimation, NULL_PTR},
-    {CAN_NODE_1, CANTX_PACK_VALUES_P0_MESSAGE, &CANTX_PackValuesP0, NULL_PTR},
-    {CAN_NODE_1, CANTX_PACK_VALUES_P1_MESSAGE, &CANTX_PackValuesP1, NULL_PTR},
-    {CAN_NODE_1, CANTX_STRING_STATE_MESSAGE, &CANTX_StringState, &cantx_stringStateMux},
-    {CAN_NODE_1,
+    {CAN_NODE, CANTX_BMS_STATE_MESSAGE, &CANTX_BmsState, NULL_PTR},
+    {CAN_NODE, CANTX_BMS_STATE_DETAILS_MESSAGE, &CANTX_BmsStateDetails, NULL_PTR},
+    {CAN_NODE, CANTX_CELL_VOLTAGES_MESSAGE, &CANTX_CellVoltages, &cantx_cellVoltagesMux},
+    {CAN_NODE, CANTX_CELL_TEMPERATURES_MESSAGE, &CANTX_CellTemperatures, &cantx_cellTemperaturesMux},
+    {CAN_NODE, CANTX_PACK_LIMITS_MESSAGE, &CANTX_PackLimits, NULL_PTR},
+    {CAN_NODE, CANTX_PACK_MINIMUM_MAXIMUM_VALUES_MESSAGE, &CANTX_PackMinimumMaximumValues, NULL_PTR},
+    {CAN_NODE, CANTX_PACK_STATE_ESTIMATION_MESSAGE, &CANTX_PackStateEstimation, NULL_PTR},
+    {CAN_NODE, CANTX_PACK_VALUES_P0_MESSAGE, &CANTX_PackValuesP0, NULL_PTR},
+    {CAN_NODE, CANTX_PACK_VALUES_P1_MESSAGE, &CANTX_PackValuesP1, NULL_PTR},
+    {CAN_NODE, CANTX_STRING_STATE_MESSAGE, &CANTX_StringState, &cantx_stringStateMux},
+    {CAN_NODE,
      CANTX_STRING_MINIMUM_MAXIMUM_VALUES_MESSAGE,
      &CANTX_StringMinimumMaximumValues,
      &cantx_stringMinimumMaximumValuesMux},
-    {CAN_NODE_1, CANTX_STRING_STATE_ESTIMATION_MESSAGE, &CANTX_StringStateEstimation, &cantx_stringStateEstimationMux},
-    {CAN_NODE_1, CANTX_STRING_VALUES_P0_MESSAGE, &CANTX_StringValuesP0, &cantx_stringValuesP0Mux},
-    {CAN_NODE_1, CANTX_STRING_VALUES_P1_MESSAGE, &CANTX_StringValuesP1, &cantx_stringValuesP1Mux}};
+    {CAN_NODE, CANTX_STRING_STATE_ESTIMATION_MESSAGE, &CANTX_StringStateEstimation, &cantx_stringStateEstimationMux},
+    {CAN_NODE, CANTX_STRING_VALUES_P0_MESSAGE, &CANTX_StringValuesP0, &cantx_stringValuesP0Mux},
+    {CAN_NODE, CANTX_STRING_VALUES_P1_MESSAGE, &CANTX_StringValuesP1, &cantx_stringValuesP1Mux}};
 
 /** length of CAN message arrays */
 const uint8_t can_txMessagesLength = sizeof(can_txMessages) / sizeof(can_txMessages[0]);

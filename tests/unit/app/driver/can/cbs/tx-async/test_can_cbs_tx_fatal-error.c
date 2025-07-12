@@ -87,7 +87,7 @@ TEST_INCLUDE_PATH("../../src/app/task/config")
 #define CANTX_FATAL_ERROR_START_BIT (0u)
 #define CANTX_FATAL_ERROR_LENGTH    (8u)
 
-const CAN_NODE_s can_node1 = {
+const CAN_NODE_s can_node = {
     .canNodeRegister = canREG1,
 };
 

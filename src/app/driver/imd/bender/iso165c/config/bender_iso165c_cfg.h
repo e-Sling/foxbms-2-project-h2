@@ -74,7 +74,7 @@
 
 /*========== Macros and Definitions =========================================*/
 /** CAN Node the IMD device is connected to */
-#define I165C_CAN_NODE (CAN_NODE_1)
+#define I165C_CAN_NODE (CAN_NODE)
 
 /** Switch if bender iso165C or iso165C-1 is used
  *  true:  iso165C

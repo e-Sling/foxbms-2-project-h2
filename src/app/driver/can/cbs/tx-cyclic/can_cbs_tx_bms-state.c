@@ -442,7 +442,7 @@ extern STD_RETURN_TYPE_e CANTX_TransmitBmsState(void) {
 
     CANTX_BmsState(message, canData, NULL_PTR, &can_kShim);
 
-    return CAN_DataSend(CAN_NODE_1, message.id, message.idType, canData);
+    return CAN_DataSend(CAN_NODE, message.id, message.idType, canData);
 }
 
 /*========== Externalized Static Function Implementations (Unit Test) =======*/

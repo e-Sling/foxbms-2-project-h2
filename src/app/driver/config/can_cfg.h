@@ -75,28 +75,25 @@ typedef struct {
 } CAN_NODE_s;
 
 /** CAN node defines @{*/
-#define CAN_NODE_1 ((CAN_NODE_s *)&can_node1)
-#define CAN_NODE_2 ((CAN_NODE_s *)&can_node2Isolated)
+#define CAN_NODE ((CAN_NODE_s *)&can_node)
 
-#define CAN_NODE_DEBUG_MESSAGE        (CAN_NODE_1)
-#define CAN_NODE_IMD                  (CAN_NODE_1)
-#define CAN_NODE_FATAL_ERROR_MESSAGE  (CAN_NODE_1)
-#define CAN_NODE_CURRENT_SENSOR       (CAN_NODE_1)
-#define CAN_NODE_RX_CELL_VOLTAGES     (CAN_NODE_1)
-#define CAN_NODE_RX_CELL_TEMPERATURES (CAN_NODE_1)
+#define CAN_NODE_DEBUG_MESSAGE        (CAN_NODE)
+#define CAN_NODE_IMD                  (CAN_NODE)
+#define CAN_NODE_FATAL_ERROR_MESSAGE  (CAN_NODE)
+#define CAN_NODE_CURRENT_SENSOR       (CAN_NODE)
+#define CAN_NODE_RX_CELL_VOLTAGES     (CAN_NODE)
+#define CAN_NODE_RX_CELL_TEMPERATURES (CAN_NODE)
 /**@}*/
 
 /**
  * Configuration of CAN transceiver pins to the respective port expander pins.
  * @{
  */
-/** IO register to which the CAN1 is connected */
-#define CAN_CAN1_IO_REG_DIR  (hetREG2->DIR)
-#define CAN_CAN1_IO_REG_DOUT (hetREG2->DOUT)
-#define CAN_CAN1_ENABLE_PIN  (18u)
-#define CAN_CAN1_STANDBY_PIN (23u)
-#define CAN_CAN2_ENABLE_PIN  (PEX_PORT_0_PIN_2)
-#define CAN_CAN2_STANDBY_PIN (PEX_PORT_0_PIN_3)
+/** IO register to which the CAN4 is connected */
+#define CAN_CAN4_IO_REG_DIR  (hetREG1->DIR)
+#define CAN_CAN4_IO_REG_DOUT (hetREG1->DOUT)
+#define CAN_CAN4_ENABLE_PIN  (18u)
+#define CAN_CAN4_STANDBY_PIN (20u)
 /**@}*/
 
 /** Maximum ID if 11 bits are used */
@@ -116,6 +113,9 @@ typedef struct {
 #define CAN_NUM_OF_TEMPERATURES_IN_CAN_CELL_TEMPERATURES_MSG (6u)
 /** An offset of zero for can signal preparation */
 #define CAN_SIGNAL_OFFSET_0 (0.0f)
+
+/** delay in &micro;s used in #CAN_InitializeTransceiver for pin-toggling */
+#define CAN_PIN_TOGGLE_DELAY_US (5u)
 
 /* **************************************************************************************
  *  CAN BUFFER OPTIONS
@@ -277,9 +277,8 @@ typedef struct {
 /** variable for storing and passing on the local database table handles */
 extern const CAN_SHIM_s can_kShim;
 
-/** CAN node configurations for CAN1 and CAN2 (isolated) @{*/
-extern const CAN_NODE_s can_node1;
-extern const CAN_NODE_s can_node2Isolated;
+/** CAN node configurations for CAN4 @{*/
+extern const CAN_NODE_s can_node;
 /**@}*/
 
 /** CAN RX and TX message configuration structs @{*/

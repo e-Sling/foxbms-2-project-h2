@@ -95,7 +95,7 @@ OS_QUEUE ftsk_imdCanDataQueue       = NULL_PTR;
 OS_QUEUE ftsk_canRxQueue            = NULL_PTR;
 volatile bool ftsk_allQueuesCreated = false;
 
-const CAN_NODE_s can_node1 = {
+const CAN_NODE_s can_node = {
     .canNodeRegister = canREG1,
 };
 

@@ -103,7 +103,7 @@ extern uint32_t CANTX_BmsState(
 /* example-can-tx-cyclic-messages-configuration-start */
 const CAN_TX_MESSAGE_TYPE_s can_txMessages[] = {
     /* other messages */
-    {CAN_NODE_1, CANTX_BMS_STATE_MESSAGE, &CANTX_BmsState, NULL_PTR}, /*!< BMS state */
+    {CAN_NODE, CANTX_BMS_STATE_MESSAGE, &CANTX_BmsState, NULL_PTR}, /*!< BMS state */
 };
 /* example-can-tx-cyclic-messages-configuration-end */
 
