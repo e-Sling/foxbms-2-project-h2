@@ -75,6 +75,20 @@
 /*========== Macros and Definitions =========================================*/
 
 /**
+ * LTC 6820 GPIO configuration
+ * @{
+ */
+#define LTC_LTC6820CONTROL_GIODIR  (hetREG1->DIR)
+#define LTC_LTC6820CONTROL_GIOPORT (hetREG1->DOUT)
+
+#define LTC_LTC6820_FORWARD_ENABLE_PIN      (22U)
+#define LTC_LTC6820_FORWARD_SPI1_MASTER_PIN (24U)
+
+#define LTC_LTC6820_REVERSE_ENABLE_PIN (23U)
+#define LTC_LTC6820_REVERSE_MASTER_PIN (25U)
+/**@}*/
+
+/**
  * TI port expander register addresses
  * @{
  */
@@ -1399,8 +1413,7 @@ void LTC_Trigger(LTC_STATE_s *ltc_state) {
 
                         ltc_state->check_spi_flag = STD_NOT_OK;
                         /* user multiplexer type -> connected to GPIO2! */
-                        if ((ltc_state->muxmeas_seqptr[ltc_state->currentString]->muxID == 1) ||
-                            (ltc_state->muxmeas_seqptr[ltc_state->currentString]->muxID == 2)) {
+                        if ((ltc_state->muxmeas_seqptr[ltc_state->currentString]->muxID == 2)) {
                             retVal = LTC_StartGpioMeasurement(
                                 ltc_state->spiSeqPtr, ltc_state->adcMode, LTC_ADCMEAS_SINGLECHANNEL_GPIO2);
                         } else {
@@ -2990,7 +3003,7 @@ static void LTC_SaveMuxMeasurement(
     /* Channel 0xFF means that the multiplexer is deactivated, therefore no measurement will be made and saved*/
     if (muxseqptr->muxCh != 0xFF) {
         /* user multiplexer type -> connected to GPIO2! */
-        if ((muxseqptr->muxID == 1) || (muxseqptr->muxID == 2)) {
+        if ((muxseqptr->muxID == 2)) {
             for (uint16_t i = 0; i < LTC_N_LTC; i++) {
                 if (muxseqptr->muxID == 1) {
                     ch_idx = 0 + muxseqptr->muxCh; /* channel index 0..7 */
@@ -3000,6 +3013,7 @@ static void LTC_SaveMuxMeasurement(
 
                 if (ch_idx < (2u * 8u)) {
                     val_ui = *((uint16_t *)(&pRxBuff[6u + (1u * i * 8u)])); /* raw values, all mux on all LTCs */
+
                     /* ltc_user_mux.value[i*8*2+ch_idx] = (uint16_t)(((float_t)(val_ui))*100e-6f*1000.0f); */ /* Unit ->
                                                                                                                  in V ->
                                                                                                                  in mV
@@ -3009,13 +3023,18 @@ static void LTC_SaveMuxMeasurement(
         } else {
             /* temperature multiplexer type -> connected to GPIO1! */
             for (uint16_t i = 0; i < LTC_N_LTC; i++) {
-                buffer_MSB = pRxBuff[4u + (i * 8u) + 1u];
-                buffer_LSB = pRxBuff[4u + (i * 8u)];
+                if (muxseqptr->muxID == 1) {
+                    buffer_MSB = pRxBuff[4u + (i * 8u) + 1u];  //read registervalues gathered by GPIO1
+                    buffer_LSB = pRxBuff[4u + (i * 8u)];
+                } else {
+                    buffer_MSB = pRxBuff[4u + (i * 8u) + 3u];  //read registervalues gathered by GPIO2
+                    buffer_LSB = pRxBuff[4u + (i * 8u) + 2u];
+                }
                 val_ui     = buffer_LSB | (buffer_MSB << 8);
                 /* val_ui = *((uint16_t *)(&pRxBuff[4+i*8])); */
                 /* GPIO voltage in 100uV -> * 0.1 ----  conversion to mV */
                 temperature_ddegC = LTC_ConvertMuxVoltagesToTemperatures(val_ui / 10u); /* unit: deci &deg;C */
-                sensor_idx        = ltc_muxSensorTemperature_cfg[muxseqptr->muxCh];
+                sensor_idx = muxseqptr->muxCh + LTC_N_MUX_CHANNELS_PER_MUX * muxseqptr->muxID;
                 /* wrong configuration! */
                 if (sensor_idx >= BS_NR_OF_TEMP_SENSORS_PER_MODULE) {
                     FAS_ASSERT(FAS_TRAP);
@@ -4756,23 +4775,21 @@ static void LTC_SetFirstMeasurementCycleFinished(LTC_STATE_s *ltc_state) {
 }
 
 extern void LTC_InitializeMonitoringPin(void) {
-    /* Set 3rd PE pins to enable daisy chains */
-    PEX_SetPinDirectionOutput(PEX_PORT_EXPANDER3, PEX_PORT_1_PIN_0);
-    PEX_SetPinDirectionOutput(PEX_PORT_EXPANDER3, PEX_PORT_1_PIN_1);
-    PEX_SetPinDirectionOutput(PEX_PORT_EXPANDER3, PEX_PORT_1_PIN_2);
-    PEX_SetPinDirectionOutput(PEX_PORT_EXPANDER3, PEX_PORT_1_PIN_3);
-    PEX_SetPinDirectionOutput(PEX_PORT_EXPANDER3, PEX_PORT_1_PIN_4);
-    PEX_SetPinDirectionOutput(PEX_PORT_EXPANDER3, PEX_PORT_1_PIN_5);
-    PEX_SetPinDirectionOutput(PEX_PORT_EXPANDER3, PEX_PORT_1_PIN_6);
-    PEX_SetPinDirectionOutput(PEX_PORT_EXPANDER3, PEX_PORT_1_PIN_7);
-    PEX_SetPin(PEX_PORT_EXPANDER3, PEX_PORT_1_PIN_0);
-    PEX_SetPin(PEX_PORT_EXPANDER3, PEX_PORT_1_PIN_1);
-    PEX_SetPin(PEX_PORT_EXPANDER3, PEX_PORT_1_PIN_2);
-    PEX_SetPin(PEX_PORT_EXPANDER3, PEX_PORT_1_PIN_3);
-    PEX_SetPin(PEX_PORT_EXPANDER3, PEX_PORT_1_PIN_4);
-    PEX_SetPin(PEX_PORT_EXPANDER3, PEX_PORT_1_PIN_5);
-    PEX_SetPin(PEX_PORT_EXPANDER3, PEX_PORT_1_PIN_6);
-    PEX_SetPin(PEX_PORT_EXPANDER3, PEX_PORT_1_PIN_7);
+    /* set HET Pins to output */
+    GEN_SET_BIT(LTC_LTC6820CONTROL_GIODIR, LTC_LTC6820_FORWARD_ENABLE_PIN);
+    GEN_SET_BIT(LTC_LTC6820CONTROL_GIODIR, LTC_LTC6820_FORWARD_SPI1_MASTER_PIN);
+    GEN_SET_BIT(LTC_LTC6820CONTROL_GIODIR, LTC_LTC6820_REVERSE_ENABLE_PIN);
+    GEN_SET_BIT(LTC_LTC6820CONTROL_GIODIR, LTC_LTC6820_REVERSE_MASTER_PIN);
+
+    /* set LTC6820 forward enable to 1 */
+    IO_PinSet((uint32_t *)&LTC_LTC6820CONTROL_GIOPORT, LTC_LTC6820_FORWARD_ENABLE_PIN);
+    /* set LTC6820 forward master to 1 */
+    IO_PinSet((uint32_t *)&LTC_LTC6820CONTROL_GIOPORT, LTC_LTC6820_FORWARD_SPI1_MASTER_PIN);
+
+    /* set LTC6820 reverse enable to 0 */
+    IO_PinReset((uint32_t *)&LTC_LTC6820CONTROL_GIOPORT, LTC_LTC6820_REVERSE_ENABLE_PIN);
+    /* set LTC6820 reverse master to 0 */
+    IO_PinReset((uint32_t *)&LTC_LTC6820CONTROL_GIOPORT, LTC_LTC6820_REVERSE_MASTER_PIN);
 }
 
 /*========== Externalized Static Function Implementations (Unit Test) =======*/

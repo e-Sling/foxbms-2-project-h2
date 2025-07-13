@@ -138,7 +138,7 @@ typedef struct {
 
 #if defined(FOXBMS_AFE_DRIVER_LTC) && (FOXBMS_AFE_DRIVER_LTC == 1)
 /** LTC chip select pin */
-#define SPI_LTC_CHIP_SELECT_PIN (1u)
+#define SPI_LTC_CHIP_SELECT_PIN (2u)
 #endif
 
 #if defined(FOXBMS_AFE_DRIVER_MAXIM) && (FOXBMS_AFE_DRIVER_MAXIM == 1)

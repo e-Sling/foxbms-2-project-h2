@@ -113,7 +113,7 @@ typedef enum {
  *          <a href="../../../../introduction/naming-conventions.html" target="_blank">Naming Conventions</a>.
  * @ptype   uint
  */
-#define BS_NR_OF_MODULES_PER_STRING (1u)
+#define BS_NR_OF_MODULES_PER_STRING (15u)
 
 /**
  * @brief   number of cells per module
@@ -123,7 +123,7 @@ typedef enum {
  *          <a href="../../../../introduction/naming-conventions.html" target="_blank">Naming Conventions</a>.
  * @ptype   uint
  */
-#define BS_NR_OF_CELL_BLOCKS_PER_MODULE (18u)
+#define BS_NR_OF_CELL_BLOCKS_PER_MODULE (12u)
 
 /**
  * @brief   number of parallel connected battery cells in a cell block
@@ -131,13 +131,13 @@ typedef enum {
  *          <a href="../../../../introduction/naming-conventions.html" target="_blank">Naming Conventions</a>.
  * @ptype   uint
  */
-#define BS_NR_OF_PARALLEL_CELLS_PER_CELL_BLOCK (1u)
+#define BS_NR_OF_PARALLEL_CELLS_PER_CELL_BLOCK (2u)
 
 /**
  * @brief   number of temperature sensors per battery module
  * @ptype   int
  */
-#define BS_NR_OF_TEMP_SENSORS_PER_MODULE (8u)
+#define BS_NR_OF_TEMP_SENSORS_PER_MODULE (12u)
 
 #if BS_NR_OF_TEMP_SENSORS_PER_MODULE > SLV_NR_OF_GPIOS_PER_MODULE
 #error "Number of temperature inputs cannot be higher than number of GPIOs"
@@ -207,7 +207,7 @@ typedef enum {
  * @details  When maximum safety limit (MSL) is violated, error state is
  *          requested and contactors will open.
  */
-#define BS_MAXIMUM_STRING_CURRENT_mA (2400u)
+#define BS_MAXIMUM_STRING_CURRENT_mA (80000u)
 
 /**
  * @brief   Maximum pack current limit in mA that is used in the SOA module
@@ -215,14 +215,14 @@ typedef enum {
  * @details When maximum safety limit (MSL) is violated, error state is
  *          requested and contactors will open.
  */
-#define BS_MAXIMUM_PACK_CURRENT_mA (2400u * BS_NR_OF_STRINGS)
+#define BS_MAXIMUM_PACK_CURRENT_mA (80000u * BS_NR_OF_STRINGS)
 
 /**
  * @brief   Define if interlock feedback should be discarded or not
  * @details True: interlock feedback will be discarded
  *          False: interlock feedback will evaluated
  */
-#define BS_IGNORE_INTERLOCK_FEEDBACK (false)
+#define BS_IGNORE_INTERLOCK_FEEDBACK (true)
 
 /**
  * @brief   Defines whether CAN timing shall be evaluated or not
@@ -238,7 +238,7 @@ typedef enum {
  *          - If set to false, foxBMS checks when balancing must be done and
  *            activates it accordingly.
  */
-#define BS_BALANCING_DEFAULT_INACTIVE (true)
+#define BS_BALANCING_DEFAULT_INACTIVE (false)
 
 /**
  * @brief   number of high voltage inputs measured by current sensors (like

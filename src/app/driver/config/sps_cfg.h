@@ -82,7 +82,7 @@
 #define SPS_NR_CONTACTOR_PER_IC (4u)
 
 /** Number of SPS IC that are populated on the hardware (in daisy-chain) */
-#define SPS_NR_OF_IC (2u)
+#define SPS_NR_OF_IC (1u)
 
 /** Defines for the individual SPS channels @{ */
 #define SPS_CHANNEL_0 ((SPS_CHANNEL_INDEX)0)

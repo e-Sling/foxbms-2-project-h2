@@ -112,13 +112,13 @@
 #define LTC_DISCARD_MUX_CHECK (false)
 
 /** Number of multiplexer used per LTC-IC */
-#define LTC_N_MUX_PER_LTC (3u)
+#define LTC_N_MUX_PER_LTC (2u)
 
 /** Number of channels per multiplexer */
-#define LTC_N_MUX_CHANNELS_PER_MUX (8u)
+#define LTC_N_MUX_CHANNELS_PER_MUX (6u)
 
 /** Number of multiplexer measurements per LTC cycle */
-#define LTC_NUMBER_OF_MUX_MEASUREMENTS_PER_CYCLE (8u)
+#define LTC_NUMBER_OF_MUX_MEASUREMENTS_PER_CYCLE (6u)
 
 /** Number of multiplexed channels per LTC-IC */
 #define LTC_N_MUX_CHANNELS_PER_LTC (LTC_N_MUX_PER_LTC * LTC_N_MUX_CHANNELS_PER_MUX)
@@ -171,14 +171,14 @@
 /**@}*/
 
 /** start definition of LTC timings; Twake (see LTC data sheet) */
-#define LTC_TWAKE_US (300)
+#define LTC_TWAKE_US (200)
 /** start definition of LTC timings; Tready (see LTC data sheet) */
 #define LTC_TREADY_US (10)
 /** start definition of LTC timings; Tidle (see LTC data sheet) */
 #define LTC_TIDLE_US (6700)
 
 /** LTC SPI wakeup time */
-#define LTC_SPI_WAKEUP_WAIT_TIME_US (30u)
+#define LTC_SPI_WAKEUP_WAIT_TIME_US (60u)
 
 /** LTC state machine short time definition in ms */
 #define LTC_STATEMACH_SHORTTIME (1)

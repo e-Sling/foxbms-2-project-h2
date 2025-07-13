@@ -94,19 +94,17 @@ LTC_MUX_CH_CFG_s ltc_mux_seq_main_ch1[] = {
         .muxID = 0,
         .muxCh = 5,
     },
-    {
+    /*{
         .muxID = 0,
         .muxCh = 6,
     },
     {
         .muxID = 0,
         .muxCh = 7,
-    },
-    /*     ,
-      multiplexer 2 and 3 measurement
+    }, */
     {
         .muxID    = 0,
-        .muxCh    = 0xFF,    disable enabled mux
+        .muxCh    = 0xFF,    // disable enabled mux
     },
     {
         .muxID    = 1,
@@ -131,7 +129,7 @@ LTC_MUX_CH_CFG_s ltc_mux_seq_main_ch1[] = {
     {
         .muxID    = 1,
         .muxCh    = 5,
-    },
+    } /*,
     {
         .muxID    = 1,
         .muxCh    = 6,
@@ -184,22 +182,22 @@ LTC_MUX_SEQUENCE_s ltc_mux_seq = {
     .nr_of_steps = (sizeof(ltc_mux_seq_main_ch1) / sizeof(LTC_MUX_CH_CFG_s))};
 
 const uint8_t ltc_muxSensorTemperature_cfg[BS_NR_OF_TEMP_SENSORS_PER_MODULE] = {
-    1 - 1, /*!< index 0 = mux 0, ch 0 */
-    2 - 1, /*!< index 1 = mux 0, ch 1 */
-    3 - 1, /*!< index 2 = mux 0, ch 2 */
-    4 - 1, /*!< index 3 = mux 0, ch 3 */
-    5 - 1, /*!< index 4 = mux 0, ch 4 */
-    6 - 1, /*!< index 5 = mux 0, ch 5 */
-    7 - 1, /*!< index 6 = mux 0, ch 6 */
-    8 - 1, /*!< index 7 = mux 0, ch 7 */
-           /* 9-1 ,      !< index 8 = mux 1, ch 0 */
-           /* 10-1 ,     !< index 9 = mux 1, ch 1 */
-           /* 11-1 ,     !< index 10 = mux 1, ch 2 */
-           /* 12-1 ,     !< index 11 = mux 1, ch 3 */
-           /* 13-1 ,     !< index 12 = mux 1, ch 4 */
-           /* 14-1 ,     !< index 13 = mux 1, ch 5 */
-           /* 15-1 ,     !< index 14 = mux 1, ch 6 */
-           /* 16-1       !< index 15 = mux 1, ch 7 */
+    1 - 1,  /*!< index 0 = mux 0, ch 0 */
+    2 - 1,  /*!< index 1 = mux 0, ch 1 */
+    3 - 1,  /*!< index 2 = mux 0, ch 2 */
+    4 - 1,  /*!< index 3 = mux 0, ch 3 */
+    5 - 1,  /*!< index 4 = mux 0, ch 4 */
+    6 - 1,  /*!< index 5 = mux 0, ch 5 */
+    // 7 - 1, /*!< index 6 = mux 0, ch 6 */
+    // 8 - 1, /*!< index 7 = mux 0, ch 7 */
+    9 - 1,  /*!< index 8 = mux 1, ch 0 */
+    10 - 1, /*!< index 9 = mux 1, ch 1 */
+    11 - 1, /*!< index 10 = mux 1, ch 2 */
+    12 - 1, /*!< index 11 = mux 1, ch 3 */
+    13 - 1, /*!< index 12 = mux 1, ch 4 */
+    14 - 1, /*!< index 13 = mux 1, ch 5 */
+    // 15 - 1, /*!< index 14 = mux 1, ch 6 */
+    // 16 - 1  /*!< index 15 = mux 1, ch 7 */
 };
 
 const uint8_t ltc_voltage_input_used[LTC_6813_MAX_SUPPORTED_CELLS] = {
@@ -215,12 +213,12 @@ const uint8_t ltc_voltage_input_used[LTC_6813_MAX_SUPPORTED_CELLS] = {
     1,
     1,
     1,
-    1,
-    1,
-    1,
-    1,
-    1,
-    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
 };
 
 /*========== Static Function Prototypes =====================================*/
