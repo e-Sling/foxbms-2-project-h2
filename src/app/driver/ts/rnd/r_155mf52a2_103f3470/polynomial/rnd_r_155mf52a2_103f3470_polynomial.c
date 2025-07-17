@@ -40,72 +40,38 @@
  */
 
 /**
- * @file    bal_cfg.h
+ * @file    rnd_r_155mf52a2_103f3470_polynomial.c
  * @author  foxBMS Team
- * @date    2020-02-24 (date of creation)
- * @updated 2025-03-31 (date of last update)
+ * @date    2020-12-14 (date of creation)
+ * @updated 2020-12-14 (date of last update)
  * @version v1.9.0
- * @ingroup DRIVERS_CONFIGURATION
- * @prefix  BAL
+ * @ingroup DRIVERS
+ * @prefix  TS
  *
- * @brief   Header for the configuration for the driver for balancing
+ * @brief   Resistive divider used for measuring temperature
  * @details TODO
  */
 
-#ifndef FOXBMS__BAL_CFG_H_
-#define FOXBMS__BAL_CFG_H_
-
 /*========== Includes =======================================================*/
-
-#include <stdint.h>
+#include "rnd_r_155mf52a2_103f3470.h"
+#include "tsi.h"
 
 /*========== Macros and Definitions =========================================*/
 
-/** BAL state machine short time definition in 100*ms */
-#define BAL_STATEMACH_SHORTTIME_100ms (1u)
+/*========== Static Constant and Variable Definitions =======================*/
 
-/** BAL state machine long time definition in 100*ms */
+/*========== Extern Constant and Variable Definitions =======================*/
 
-#define BAL_STATEMACH_LONGTIME_100ms (50u)
+/*========== Static Function Prototypes =====================================*/
 
-/** BAL state machine balancing time in 100*ms */
-#define BAL_STATEMACH_BALANCING_TIME_100ms (10u)
+/*========== Static Function Implementations ================================*/
 
-/** default value for the BAL voltage threshold */
-#define BAL_DEFAULT_THRESHOLD_mV (200)
+/*========== Extern Function Implementations ================================*/
 
-/** maximum value that BAL voltage threshold may take */
-#define BAL_MAXIMUM_THRESHOLD_mV (5000)
+extern int16_t TSI_GetTemperature(uint16_t adcVoltage_mV) {
+    return R_155MF52A2_103F3470_GetTempFromPolynomial(adcVoltage_mV);
+}
 
-/** minimum value that BAL voltage threshold may take */
-#define BAL_MINIMUM_THRESHOLD_mV (0)
-
-/** BAL hysteresis for voltage threshold when balancing was finished in mV */
-#define BAL_HYSTERESIS_mV (200)
-
-/** BAL lower voltage limit in mV */
-#define BAL_LOWER_VOLTAGE_LIMIT_mV (3000)
-
-/** BAL upper temperature limit in deci &deg;C */
-#define BAL_UPPER_TEMPERATURE_LIMIT_ddegC (700)
-
-/*========== Extern Constant and Variable Declarations ======================*/
-
-/*========== Extern Function Prototypes =====================================*/
-/**
- * @brief   set balancing threshold
- * @param[in]   threshold_mV    threshold in mV
- */
-extern void BAL_SetBalancingThreshold(int32_t threshold_mV);
-
-/**
- * @brief   get balancing threshold
- * @return  balancing threshold in mV
- */
-extern int32_t BAL_GetBalancingThreshold_mV(void);
-
-/*========== Externalized Static Functions Prototypes (Unit Test) ===========*/
+/*========== Externalized Static Function Implementations (Unit Test) =======*/
 #ifdef UNITY_UNIT_TEST
 #endif
-
-#endif /* FOXBMS__BAL_CFG_H_ */

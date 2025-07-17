@@ -129,6 +129,7 @@ def build(bld):
         os.path.join("ts", "vishay", "ntcle317e4103sba", "vishay_ntcle317e4103sba.c"),
         os.path.join("ts", "vishay", "ntcle413e2103f102l", "vishay_ntcle413e2103f102l.c"),
         os.path.join("ts", "beta.c"),
+        os.path.join("ts", "rnd", "r_155mf52a2_103f3470", "rnd_r_155mf52a2_103f3470.c"),
     ]
     # pylint: enable=line-too-long
     # fmt: on
@@ -174,6 +175,7 @@ def build(bld):
         os.path.join("ts", "vishay", "ntcalug01a103g"),
         os.path.join("ts", "vishay", "ntcle317e4103sba"),
         os.path.join("ts", "vishay", "ntcle413e2103f102l"),
+        os.path.join("ts", "rnd", "r_155mf52a2_103f3470"),
         os.path.join("..", "application", "bal"),
         os.path.join("..", "application", "bms"),
         os.path.join("..", "application", "config"),

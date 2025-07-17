@@ -10,8 +10,8 @@
     },
     "balancing-strategy": "voltage",
     "insulation-monitoring-device": {
-      "manufacturer": "none",
-      "model": ""
+      "manufacturer": "bender",
+      "model": "ir155"
     }
   },
   "rtos": {
@@ -23,9 +23,9 @@
       "manufacturer": "ltc"
     },
     "temperature-sensor": {
-      "manufacturer": "epcos",
+      "manufacturer": "rnd",
       "method": "polynomial",
-      "model": "b57251v5103j060"
+      "model": "r_155mf52a2_103f3470"
     }
   }
 }

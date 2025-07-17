@@ -76,9 +76,9 @@
  * @unit    deci &deg;C
  */
 /**@{*/
-#define BC_TEMPERATURE_MAX_DISCHARGE_MSL_ddegC (550)
-#define BC_TEMPERATURE_MAX_DISCHARGE_RSL_ddegC (500)
-#define BC_TEMPERATURE_MAX_DISCHARGE_MOL_ddegC (450)
+#define BC_TEMPERATURE_MAX_DISCHARGE_MSL_ddegC (600)
+#define BC_TEMPERATURE_MAX_DISCHARGE_RSL_ddegC (550)
+#define BC_TEMPERATURE_MAX_DISCHARGE_MOL_ddegC (500)
 /**@}*/
 
 /**
@@ -136,9 +136,9 @@
  * @unit    mV
  */
 /**@{*/
-#define BC_VOLTAGE_MAX_MSL_mV (2800)
-#define BC_VOLTAGE_MAX_RSL_mV (2750)
-#define BC_VOLTAGE_MAX_MOL_mV (2720)
+#define BC_VOLTAGE_MAX_MSL_mV (4200)
+#define BC_VOLTAGE_MAX_RSL_mV (4150)
+#define BC_VOLTAGE_MAX_MOL_mV (4100)
 /**@}*/
 
 /**
@@ -146,7 +146,7 @@
  * @ptype   int
  * @unit    mV
  */
-#define BC_VOLTAGE_NOMINAL_mV (2500)
+#define BC_VOLTAGE_NOMINAL_mV (3600)
 
 /**
  * @brief   Minimum cell voltage limit.
@@ -158,9 +158,9 @@
  * @unit    mV
  */
 /**@{*/
-#define BC_VOLTAGE_MIN_MSL_mV (1500)
-#define BC_VOLTAGE_MIN_RSL_mV (1550)
-#define BC_VOLTAGE_MIN_MOL_mV (1580)
+#define BC_VOLTAGE_MIN_MSL_mV (2500)
+#define BC_VOLTAGE_MIN_RSL_mV (2550)
+#define BC_VOLTAGE_MIN_MOL_mV (2600)
 /**@}*/
 
 /**
@@ -184,9 +184,9 @@
  * @unit    mA
  */
 /**@{*/
-#define BC_CURRENT_MAX_DISCHARGE_MSL_mA (180000u)
-#define BC_CURRENT_MAX_DISCHARGE_RSL_mA (175000u)
-#define BC_CURRENT_MAX_DISCHARGE_MOL_mA (170000u)
+#define BC_CURRENT_MAX_DISCHARGE_MSL_mA (60000u)
+#define BC_CURRENT_MAX_DISCHARGE_RSL_mA (55000u)
+#define BC_CURRENT_MAX_DISCHARGE_MOL_mA (50000u)
 /**@}*/
 
 /**
@@ -199,9 +199,9 @@
  * @unit    mA
  */
 /**@{*/
-#define BC_CURRENT_MAX_CHARGE_MSL_mA (180000u)
-#define BC_CURRENT_MAX_CHARGE_RSL_mA (175000u)
-#define BC_CURRENT_MAX_CHARGE_MOL_mA (170000u)
+#define BC_CURRENT_MAX_CHARGE_MSL_mA (25000u)
+#define BC_CURRENT_MAX_CHARGE_RSL_mA (20000u)
+#define BC_CURRENT_MAX_CHARGE_MOL_mA (15000u)
 /**@}*/
 
 /**
@@ -209,14 +209,14 @@
  * @ptype   int
  * @unit    mAh
  */
-#define BC_CAPACITY_mAh (3500u)
+#define BC_CAPACITY_mAh (5000u)
 
 /**
  * @brief   Cell energy
  * @ptype   float
  * @unit    Wh
  */
-#define BC_ENERGY_Wh (10.0f)
+#define BC_ENERGY_Wh (18.0f)
 
 #if BC_VOLTAGE_MIN_MSL_mV < BC_VOLTAGE_DEEP_DISCHARGE_mV
 #error "Configuration error! - Maximum safety limit for under voltage can't be lower than deep-discharge limit"

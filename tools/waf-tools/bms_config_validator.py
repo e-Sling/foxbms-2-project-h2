@@ -99,6 +99,9 @@ CONF_OPTIONS = {
                 "ntcalug01a103g": ["polynomial", "lookup-table"],
                 "ntcle317e4103sba": ["polynomial", "lookup-table"],
             },
+            "rnd": {
+                "r_155mf52a2_103f3470": ["polynomial", "lookup-table"],
+            },
         },
     },
 }

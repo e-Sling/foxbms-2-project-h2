@@ -40,72 +40,87 @@
  */
 
 /**
- * @file    bal_cfg.h
+ * @file    rnd_r_155mf52a2_103f3470.h
  * @author  foxBMS Team
- * @date    2020-02-24 (date of creation)
- * @updated 2025-03-31 (date of last update)
+ * @date    2020-12-14 (date of creation)
+ * @updated 2020-02-23 (date of last update)
  * @version v1.9.0
- * @ingroup DRIVERS_CONFIGURATION
- * @prefix  BAL
+ * @ingroup DRIVERS
+ * @prefix  TS
  *
- * @brief   Header for the configuration for the driver for balancing
- * @details TODO
+ * @brief   Resistive divider used for measuring temperature
+ * @details Schematics:
+ *
+ *          V_supply
+ *            --.--
+ *              |
+ *            +-.-+
+ *            |   |
+ *            |   |  R_1
+ *            |   |
+ *            +-.-+
+ *              |
+ *              .--- V_adc
+ *              |
+ *            +-.-+
+ *            |   |
+ *            |   |  R_2
+ *            |   |
+ *            +-.-+
+ *              |
+ *            --.--
+ *             GND
  */
 
-#ifndef FOXBMS__BAL_CFG_H_
-#define FOXBMS__BAL_CFG_H_
+#ifndef FOXBMS__RND_R_155MF52A2_103F3470_H_
+#define FOXBMS__RND_R_155MF52A2_103F3470_H_
 
 /*========== Includes =======================================================*/
-
-#include <stdint.h>
+#include "general.h"
 
 /*========== Macros and Definitions =========================================*/
+/**
+ * Position of the NTC in the voltage resistor
+ * TRUE: NTC is positioned above the voltage tap for the ADC voltage.
+ * This equals resistor R1 in the above circuit diagram
+ *
+ * FALSE: NTC is positioned below the voltage tap for the ADC voltage.
+ * This equals resistor R2 in the above circuit diagram
+ */
+#define R_155MF52A2_103F3470_POSITION_IN_RESISTOR_DIVIDER_IS_R1 (FALSE)
 
-/** BAL state machine short time definition in 100*ms */
-#define BAL_STATEMACH_SHORTTIME_100ms (1u)
+/**
+ * Resistor divider supply voltage in volt
+ */
+#define R_155MF52A2_103F3470_RESISTOR_DIVIDER_SUPPLY_VOLTAGE_V (3.0f)
 
-/** BAL state machine long time definition in 100*ms */
-
-#define BAL_STATEMACH_LONGTIME_100ms (50u)
-
-/** BAL state machine balancing time in 100*ms */
-#define BAL_STATEMACH_BALANCING_TIME_100ms (10u)
-
-/** default value for the BAL voltage threshold */
-#define BAL_DEFAULT_THRESHOLD_mV (200)
-
-/** maximum value that BAL voltage threshold may take */
-#define BAL_MAXIMUM_THRESHOLD_mV (5000)
-
-/** minimum value that BAL voltage threshold may take */
-#define BAL_MINIMUM_THRESHOLD_mV (0)
-
-/** BAL hysteresis for voltage threshold when balancing was finished in mV */
-#define BAL_HYSTERESIS_mV (200)
-
-/** BAL lower voltage limit in mV */
-#define BAL_LOWER_VOLTAGE_LIMIT_mV (3000)
-
-/** BAL upper temperature limit in deci &deg;C */
-#define BAL_UPPER_TEMPERATURE_LIMIT_ddegC (700)
+/**
+ * Resistance value of the other resistor (not the NTC) in the resistor
+ * divider in kOhm.
+ */
+#define R_155MF52A2_103F3470_RESISTOR_DIVIDER_RESISTANCE_R1_R2_Ohm (10000.0f)
 
 /*========== Extern Constant and Variable Declarations ======================*/
+/**
+ * @brief   returns temperature based on measured ADC voltage.
+ * @param   adcVoltage_mV   voltage in mV
+ * @return  corresponding temperature in &deg;C or FLT_MAX/FLT_MIN if NTC is
+ *          shorted or got disconnected. The caller of this functions needs to
+ *          check for these return values to prevent invalid data.
+ */
+extern int16_t R_155MF52A2_103F3470_GetTempFromLUT(uint16_t adcVoltage_mV);
+
+/**
+ * @brief   returns temperature based on measured ADC voltage
+ * @param   adcVoltage_mV voltage in mV
+ * @return  corresponding temperature in &deg;C
+ */
+extern int16_t R_155MF52A2_103F3470_GetTempFromPolynomial(uint16_t adcVoltage_mV);
 
 /*========== Extern Function Prototypes =====================================*/
-/**
- * @brief   set balancing threshold
- * @param[in]   threshold_mV    threshold in mV
- */
-extern void BAL_SetBalancingThreshold(int32_t threshold_mV);
-
-/**
- * @brief   get balancing threshold
- * @return  balancing threshold in mV
- */
-extern int32_t BAL_GetBalancingThreshold_mV(void);
 
 /*========== Externalized Static Functions Prototypes (Unit Test) ===========*/
 #ifdef UNITY_UNIT_TEST
 #endif
 
-#endif /* FOXBMS__BAL_CFG_H_ */
+#endif /* FOXBMS__RND_R_155MF52A2_103F3470_H_ */
