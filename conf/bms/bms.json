@@ -8,10 +8,10 @@
         "soh": "none"
       }
     },
-    "balancing-strategy": "voltage",
+    "balancing-strategy": "none",
     "insulation-monitoring-device": {
-      "manufacturer": "bender",
-      "model": "ir155"
+      "manufacturer": "none",
+      "model": ""
     }
   },
   "rtos": {

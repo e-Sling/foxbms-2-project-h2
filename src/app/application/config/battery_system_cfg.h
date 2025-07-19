@@ -159,7 +159,7 @@ typedef enum {
  *            sensor. If sensor stops responding during runtime, an error is
  *            raised.
  */
-#define BS_CURRENT_SENSOR_PRESENT (true)
+#define BS_CURRENT_SENSOR_PRESENT (false)  //L: set to false for testing
 
 #if BS_CURRENT_SENSOR_PRESENT == true
 /**
@@ -297,7 +297,7 @@ typedef enum {
  *          -----+---| FUSE |-----+------------/   -----------------
  *                   +------+
  */
-#define BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH (true)
+#define BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH (false)
 
 /**
  * @brief   TODO

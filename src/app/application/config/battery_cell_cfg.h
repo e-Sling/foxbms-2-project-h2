@@ -72,12 +72,15 @@
  *          requested and contactors will open. When recommended safety limit
  *          (RSL) or maximum operating limit (MOL) is violated, the respective
  *          flag will be set.
+ *
+ *  @note   MSL from P50B datasheet, RSL and MOL from BBM limits
+ *
  * @ptype   int
  * @unit    deci &deg;C
  */
 /**@{*/
-#define BC_TEMPERATURE_MAX_DISCHARGE_MSL_ddegC (600)
-#define BC_TEMPERATURE_MAX_DISCHARGE_RSL_ddegC (550)
+#define BC_TEMPERATURE_MAX_DISCHARGE_MSL_ddegC (800)
+#define BC_TEMPERATURE_MAX_DISCHARGE_RSL_ddegC (600)
 #define BC_TEMPERATURE_MAX_DISCHARGE_MOL_ddegC (500)
 /**@}*/
 
@@ -102,13 +105,16 @@
  *          requested and contactors will open. When recommended safety limit
  *          (RSL) or maximum operating limit (MOL) is violated, the respective
  *          flag will be set.
+ *
+ *  @note   MSL from P50B datasheet, RSL and MOL from BBM limits
+ *
  * @ptype   int
  * @unit    deci &deg;C
  */
 /**@{*/
-#define BC_TEMPERATURE_MAX_CHARGE_MSL_ddegC (450)
-#define BC_TEMPERATURE_MAX_CHARGE_RSL_ddegC (400)
-#define BC_TEMPERATURE_MAX_CHARGE_MOL_ddegC (350)
+#define BC_TEMPERATURE_MAX_CHARGE_MSL_ddegC (700)
+#define BC_TEMPERATURE_MAX_CHARGE_RSL_ddegC (600)
+#define BC_TEMPERATURE_MAX_CHARGE_MOL_ddegC (500)
 /**@}*/
 
 /**
@@ -132,6 +138,9 @@
  *          requested and contactors will open. When recommended safety limit
  *          (RSL) or maximum operating limit (MOL) is violated, the respective
  *          flag will be set.
+ *
+ *  @note   MSL from P50B datasheet
+ *
  * @ptype   int
  * @unit    mV
  */
@@ -154,6 +163,9 @@
  *          requested and contactors will open. When recommended safety limit
  *          (RSL) or maximum operating limit (MOL) is violated, the respective
  *          flag will be set.
+ *
+ *  @note   MSL from P50B datasheet
+ *
  * @ptype   int
  * @unit    mV
  */
@@ -180,6 +192,9 @@
  *          requested and contactors will open. When recommended safety limit
  *          (RSL) or maximum operating limit (MOL) is violated, the respective
  *          flag will be set.
+ *
+ *  @note   MSL from P50B datasheet
+ *
  * @ptype   int
  * @unit    mA
  */
@@ -195,6 +210,9 @@
  *          requested and contactors will open. When recommended safety limit
  *          (RSL) or maximum operating limit (MOL) is violated, the respective
  *          flag will be set.
+ *
+ *  @note   MSL from P50B datasheet
+ *
  * @ptype   int
  * @unit    mA
  */
