@@ -65,17 +65,17 @@
 
 /*========== Macros and Definitions =========================================*/
 /** CAN message parameters for can cell voltage  */
-#define CANRX_CAN_CELL_VOLTAGE_MUX_START_BIT           (7u)
+#define CANRX_CAN_CELL_VOLTAGE_MUX_START_BIT           (0u)
 #define CANRX_CAN_CELL_VOLTAGE_MUX_LENGTH              (8u)
-#define CANRX_CAN_CELL_VOLTAGE0_INVALID_FLAG_START_BIT (12u)
-#define CANRX_CAN_CELL_VOLTAGE1_INVALID_FLAG_START_BIT (13u)
-#define CANRX_CAN_CELL_VOLTAGE2_INVALID_FLAG_START_BIT (14u)
-#define CANRX_CAN_CELL_VOLTAGE3_INVALID_FLAG_START_BIT (15u)
+#define CANRX_CAN_CELL_VOLTAGE0_INVALID_FLAG_START_BIT (8u)
+#define CANRX_CAN_CELL_VOLTAGE1_INVALID_FLAG_START_BIT (9u)
+#define CANRX_CAN_CELL_VOLTAGE2_INVALID_FLAG_START_BIT (10u)
+#define CANRX_CAN_CELL_VOLTAGE3_INVALID_FLAG_START_BIT (11u)
 #define CANRX_CAN_CELL_VOLTAGE_INVALID_FLAG_LENGTH     (1u)
-#define CANRX_CAN_CELL_VOLTAGE0_START_BIT              (11u)
-#define CANRX_CAN_CELL_VOLTAGE1_START_BIT              (30u)
-#define CANRX_CAN_CELL_VOLTAGE2_START_BIT              (33u)
-#define CANRX_CAN_CELL_VOLTAGE3_START_BIT              (52u)
+#define CANRX_CAN_CELL_VOLTAGE0_START_BIT              (12u)
+#define CANRX_CAN_CELL_VOLTAGE1_START_BIT              (25u)
+#define CANRX_CAN_CELL_VOLTAGE2_START_BIT              (38u)
+#define CANRX_CAN_CELL_VOLTAGE3_START_BIT              (51u)
 #define CANRX_CAN_CELL_VOLTAGE_LENGTH                  (13u)
 
 #define CANRX_MINIMUM_VALUE_MUX          (0.0f)
@@ -88,14 +88,6 @@
 /*========== Static Constant and Variable Definitions =======================*/
 /** the number of voltages per message-frame */
 #define CANTX_NUMBER_OF_MUX_VOLTAGES_PER_MESSAGE (4u)
-
-#if ((BS_NR_OF_CELL_BLOCKS % CANTX_NUMBER_OF_MUX_VOLTAGES_PER_MESSAGE) == 0)
-#define CANTX_NUMBER_OF_CAN_MESSAGES_FOR_CELL_VOLTAGES \
-    ((uint8_t)(BS_NR_OF_CELL_BLOCKS / CANTX_NUMBER_OF_MUX_VOLTAGES_PER_MESSAGE))
-#else
-#define CANTX_NUMBER_OF_CAN_MESSAGES_FOR_CELL_VOLTAGES \
-    ((uint8_t)(BS_NR_OF_CELL_BLOCKS / CANTX_NUMBER_OF_MUX_VOLTAGES_PER_MESSAGE) + 1u)
-#endif
 
 /**
  * CAN signals used in this message
@@ -202,7 +194,7 @@ static void CANTX_VoltageSetData(
     FAS_ASSERT(pMessage != NULL_PTR);
     /* AXIVION Routine Generic-MissingParameterAssert: cellVoltageSignal: parameter accepts whole range */
     /* AXIVION Routine Generic-MissingParameterAssert: cellVoltageInvalidFlagSignal: parameter accepts whole range */
-    FAS_ASSERT(endianness == CAN_BIG_ENDIAN);
+    FAS_ASSERT(endianness == CANTX_CELL_VOLTAGES_ENDIANNESS);
     FAS_ASSERT(kpkCanShim != NULL_PTR);
     /* Get string, module and cell number */
     const uint8_t stringNumber    = DATA_GetStringNumberFromVoltageIndex(cellId);
@@ -243,14 +235,14 @@ extern uint32_t CANTX_CellVoltages(
     FAS_ASSERT(message.id == CANTX_CELL_VOLTAGES_ID);
     FAS_ASSERT(message.idType == CANTX_CELL_VOLTAGES_ID_TYPE);
     FAS_ASSERT(message.dlc == CAN_FOXBMS_MESSAGES_DEFAULT_DLC);
-    FAS_ASSERT(message.endianness == CAN_BIG_ENDIAN);
+    FAS_ASSERT(message.endianness == CANTX_CELL_VOLTAGES_ENDIANNESS);
     FAS_ASSERT(pCanData != NULL_PTR);
     FAS_ASSERT(pMuxId != NULL_PTR);
     FAS_ASSERT(kpkCanShim != NULL_PTR);
     uint64_t messageData = 0u;
 
     /* Reset mux if maximum was reached */
-    if (*pMuxId >= CANTX_NUMBER_OF_CAN_MESSAGES_FOR_CELL_VOLTAGES) {
+    if (*pMuxId >= BS_NR_OF_CELL_BLOCKS) {
         *pMuxId = 0u;
         /* First signal to transmit cell voltages: get database values */
         DATA_READ_DATA(kpkCanShim->pTableCellVoltage);
@@ -266,7 +258,7 @@ extern uint32_t CANTX_CellVoltages(
 
     /* Set other signals in CAN frame */
     /* Calculate the global cell ID based on the multiplexer value for the first cell */
-    uint16_t cellId = (*pMuxId * CANTX_NUMBER_OF_MUX_VOLTAGES_PER_MESSAGE);
+    uint16_t cellId = *pMuxId;
     CANTX_VoltageSetData(
         cellId, &messageData, cantx_cellVoltage0_mV, cantx_cellVoltage0InvalidFlag, message.endianness, kpkCanShim);
     cellId++; /* Increment global cell ID */
@@ -296,7 +288,7 @@ extern uint32_t CANTX_CellVoltages(
     }
 
     /* Increment multiplexer for next cell */
-    (*pMuxId)++;
+    (*pMuxId) += CANTX_NUMBER_OF_MUX_VOLTAGES_PER_MESSAGE;
 
     /* All signal data copied in CAN frame, now copy data in the buffer that will be use to send the frame */
     CAN_TxSetCanDataWithMessageData(messageData, pCanData, message.endianness);

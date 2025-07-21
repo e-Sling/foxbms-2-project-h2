@@ -68,19 +68,15 @@
 /**
  * Configuration of the signals
  */
-#define CANTX_SIGNAL_MAXIMUM_CELL_VOLTAGE_START_BIT       (7u)
-#define CANTX_SIGNAL_MAXIMUM_CELL_VOLTAGE_LENGTH          (14u)
-#define CANTX_SIGNAL_MINIMUM_CELL_VOLTAGE_START_BIT       (9u)
-#define CANTX_SIGNAL_MINIMUM_CELL_VOLTAGE_LENGTH          (14u)
-#define CANTX_SIGNAL_COOLING_INLET_TEMPERATURE_START_BIT  (39u)
-#define CANTX_SIGNAL_COOLING_INLET_TEMPERATURE_LENGTH     (8u)
-#define CANTX_SIGNAL_COOLING_OUTLET_TEMPERATURE_START_BIT (47u)
-#define CANTX_SIGNAL_COOLING_OUTLET_TEMPERATURE_LENGTH    (8u)
+#define CANTX_SIGNAL_MAXIMUM_CELL_VOLTAGE_START_BIT (0u)
+#define CANTX_SIGNAL_MAXIMUM_CELL_VOLTAGE_LENGTH    (16u)
+#define CANTX_SIGNAL_MINIMUM_CELL_VOLTAGE_START_BIT (16u)
+#define CANTX_SIGNAL_MINIMUM_CELL_VOLTAGE_LENGTH    (16u)
 
 /** @{
  * defines of the maximum cell temperature signal
 */
-#define CANTX_SIGNAL_MAXIMUM_CELL_TEMPERATURE_START_BIT     (55u)
+#define CANTX_SIGNAL_MAXIMUM_CELL_TEMPERATURE_START_BIT     (32u)
 #define CANTX_SIGNAL_MAXIMUM_CELL_TEMPERATURE_LENGTH        (8u)
 #define CANTX_MINIMUM_VALUE_MAXIMUM_CELL_TEMPERATURE_SIGNAL (-1280.0f)
 #define CANTX_MAXIMUM_VALUE_MAXIMUM_CELL_TEMPERATURE_SIGNAL (1270.0f)
@@ -101,7 +97,7 @@ static const CAN_SIGNAL_TYPE_s cantx_signalMaximumCellTemperature = {
 /** @{
  * defines of the minimum cell temperature signal
 */
-#define CANTX_SIGNAL_MINIMUM_CELL_TEMPERATURE_START_BIT     (63u)
+#define CANTX_SIGNAL_MINIMUM_CELL_TEMPERATURE_START_BIT     (40u)
 #define CANTX_SIGNAL_MINIMUM_CELL_TEMPERATURE_LENGTH        (8u)
 #define CANTX_MINIMUM_VALUE_MINIMUM_CELL_TEMPERATURE_SIGNAL (-1280.0f)
 #define CANTX_MAXIMUM_VALUE_MINIMUM_CELL_TEMPERATURE_SIGNAL (1270.0f)
@@ -301,7 +297,7 @@ static void CANTX_BuildPackMinimumMaximumValuesMessage(const CAN_SHIM_s *const k
         CANTX_SIGNAL_MAXIMUM_CELL_VOLTAGE_START_BIT,
         CANTX_SIGNAL_MAXIMUM_CELL_VOLTAGE_LENGTH,
         signalData,
-        CAN_BIG_ENDIAN);
+        CANTX_PACK_MINIMUM_MAXIMUM_VALUES_ENDIANNESS);
     /* minimum cell voltage */
     signalData = (int64_t)CANTX_GetPackMinimumVoltage(kpkCanShim);
     CAN_TxSetMessageDataWithSignalData(
@@ -309,7 +305,7 @@ static void CANTX_BuildPackMinimumMaximumValuesMessage(const CAN_SHIM_s *const k
         CANTX_SIGNAL_MINIMUM_CELL_VOLTAGE_START_BIT,
         CANTX_SIGNAL_MINIMUM_CELL_VOLTAGE_LENGTH,
         signalData,
-        CAN_BIG_ENDIAN);
+        CANTX_PACK_MINIMUM_MAXIMUM_VALUES_ENDIANNESS);
 
     /* TODO: cooling inlet temperature*/
     /* TODO: cooling outlet temperature */
@@ -321,7 +317,7 @@ static void CANTX_BuildPackMinimumMaximumValuesMessage(const CAN_SHIM_s *const k
         cantx_signalMaximumCellTemperature.bitStart,
         cantx_signalMaximumCellTemperature.bitLength,
         signalData,
-        CAN_BIG_ENDIAN);
+        CANTX_PACK_MINIMUM_MAXIMUM_VALUES_ENDIANNESS);
 
     /* minimum temperature*/
     signalData = CANTX_CalculatePackMinimumTemperature(kpkCanShim);
@@ -330,7 +326,7 @@ static void CANTX_BuildPackMinimumMaximumValuesMessage(const CAN_SHIM_s *const k
         cantx_signalMinimumCellTemperature.bitStart,
         cantx_signalMinimumCellTemperature.bitLength,
         signalData,
-        CAN_BIG_ENDIAN);
+        CANTX_PACK_MINIMUM_MAXIMUM_VALUES_ENDIANNESS);
 }
 
 /*========== Extern Function Implementations ================================*/

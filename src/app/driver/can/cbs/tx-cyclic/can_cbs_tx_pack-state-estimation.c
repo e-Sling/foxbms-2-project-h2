@@ -68,17 +68,17 @@
 /*========== Macros and Definitions =========================================*/
 #define CANTX_100_PERCENT_FLOAT (100.0f)
 
-#define CANTX_SIGNAL_MINIMUM_SOC_START_BIT (7u)
+#define CANTX_SIGNAL_MINIMUM_SOC_START_BIT (0u)
 #define CANTX_SIGNAL_MINIMUM_SOC_LENGTH    (10u)
-#define CANTX_SIGNAL_MAXIMUM_SOC_START_BIT (13u)
+#define CANTX_SIGNAL_MAXIMUM_SOC_START_BIT (10u)
 #define CANTX_SIGNAL_MAXIMUM_SOC_LENGTH    (10u)
-#define CANTX_SIGNAL_MINIMUM_SOE_START_BIT (19u)
+#define CANTX_SIGNAL_MINIMUM_SOE_START_BIT (20u)
 #define CANTX_SIGNAL_MINIMUM_SOE_LENGTH    (10u)
-#define CANTX_SIGNAL_MAXIMUM_SOE_START_BIT (25u)
+#define CANTX_SIGNAL_MAXIMUM_SOE_START_BIT (30u)
 #define CANTX_SIGNAL_MAXIMUM_SOE_LENGTH    (10u)
-#define CANTX_SIGNAL_SOH_START_BIT         (47u)
+#define CANTX_SIGNAL_SOH_START_BIT         (40u)
 #define CANTX_SIGNAL_SOH_LENGTH            (8u)
-#define CANTX_SIGNAL_ENERGY_START_BIT      (55u)
+#define CANTX_SIGNAL_ENERGY_START_BIT      (48u)
 #define CANTX_SIGNAL_ENERGY_LENGTH         (16u)
 
 #define CANTX_MINIMUM_VALUE_PERCENT_SIGNALS (0.0f)
@@ -390,27 +390,51 @@ static void CANTX_BuildPackStateEstimationMessage(const CAN_SHIM_s *const kpkCan
     /* minimum SOC */
     uint64_t data = CANTX_CalculateMinimumPackSoc(kpkCanShim);
     CAN_TxSetMessageDataWithSignalData(
-        pMessageData, cantx_signalMinimumSoc.bitStart, cantx_signalMinimumSoc.bitLength, data, CAN_BIG_ENDIAN);
+        pMessageData,
+        cantx_signalMinimumSoc.bitStart,
+        cantx_signalMinimumSoc.bitLength,
+        data,
+        CANTX_PACK_STATE_ESTIMATION_ENDIANNESS);
     /* maximum SOC */
     data = CANTX_CalculateMaximumPackSoc(kpkCanShim);
     CAN_TxSetMessageDataWithSignalData(
-        pMessageData, cantx_signalMaximumSoc.bitStart, cantx_signalMaximumSoc.bitLength, data, CAN_BIG_ENDIAN);
+        pMessageData,
+        cantx_signalMaximumSoc.bitStart,
+        cantx_signalMaximumSoc.bitLength,
+        data,
+        CANTX_PACK_STATE_ESTIMATION_ENDIANNESS);
     /* minimum SOE*/
     data = CANTX_CalculateMinimumPackSoe(kpkCanShim);
     CAN_TxSetMessageDataWithSignalData(
-        pMessageData, cantx_signalMinimumSoe.bitStart, cantx_signalMinimumSoe.bitLength, data, CAN_BIG_ENDIAN);
+        pMessageData,
+        cantx_signalMinimumSoe.bitStart,
+        cantx_signalMinimumSoe.bitLength,
+        data,
+        CANTX_PACK_STATE_ESTIMATION_ENDIANNESS);
     /* maximum SOE */
     data = CANTX_CalculateMaximumPackSoe(kpkCanShim);
     CAN_TxSetMessageDataWithSignalData(
-        pMessageData, cantx_signalMaximumSoe.bitStart, cantx_signalMaximumSoe.bitLength, data, CAN_BIG_ENDIAN);
+        pMessageData,
+        cantx_signalMaximumSoe.bitStart,
+        cantx_signalMaximumSoe.bitLength,
+        data,
+        CANTX_PACK_STATE_ESTIMATION_ENDIANNESS);
     /* SOH */
     data = CANTX_CalculatePackSoh();
     CAN_TxSetMessageDataWithSignalData(
-        pMessageData, cantx_signalSoh.bitStart, cantx_signalSoh.bitLength, data, CAN_BIG_ENDIAN);
+        pMessageData,
+        cantx_signalSoh.bitStart,
+        cantx_signalSoh.bitLength,
+        data,
+        CANTX_PACK_STATE_ESTIMATION_ENDIANNESS);
     /* Pack energy */
     data = CANTX_CalculatePackEnergy(kpkCanShim);
     CAN_TxSetMessageDataWithSignalData(
-        pMessageData, cantx_signalEnergy.bitStart, cantx_signalEnergy.bitLength, data, CAN_BIG_ENDIAN);
+        pMessageData,
+        cantx_signalEnergy.bitStart,
+        cantx_signalEnergy.bitLength,
+        data,
+        CANTX_PACK_STATE_ESTIMATION_ENDIANNESS);
 }
 
 /*========== Extern Function Implementations ================================*/

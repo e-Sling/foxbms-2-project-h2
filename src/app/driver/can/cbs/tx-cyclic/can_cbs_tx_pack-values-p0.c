@@ -67,8 +67,8 @@
 /** @{
  * defines of the battery voltage signal
 */
-#define CANTX_PACK_P0_BATTERY_VOLTAGE_START_BIT    (7u)
-#define CANTX_PACK_P0_BATTERY_VOLTAGE_LENGTH       (15u)
+#define CANTX_PACK_P0_BATTERY_VOLTAGE_START_BIT    (0u)
+#define CANTX_PACK_P0_BATTERY_VOLTAGE_LENGTH       (16u)
 #define CANTX_MINIMUM_VALUE_BATTERY_VOLTAGE_SIGNAL (-1638400.0f)
 #define CANTX_MAXIMUM_VALUE_BATTERY_VOLTAGE_SIGNAL (1638300.0f)
 /** @} */
@@ -88,8 +88,8 @@ static const CAN_SIGNAL_TYPE_s cantx_signalBatteryVoltage = {
 /** @{
  * defines of the bus voltage signal
 */
-#define CANTX_PACK_P0_BUS_VOLTAGE_START_BIT    (8u)
-#define CANTX_PACK_P0_BUS_VOLTAGE_LENGTH       (15u)
+#define CANTX_PACK_P0_BUS_VOLTAGE_START_BIT    (16u)
+#define CANTX_PACK_P0_BUS_VOLTAGE_LENGTH       (16u)
 #define CANTX_MINIMUM_VALUE_BUS_VOLTAGE_SIGNAL (-1638400.0f)
 #define CANTX_MAXIMUM_VALUE_BUS_VOLTAGE_SIGNAL (1638300.0f)
 /** @} */
@@ -109,8 +109,8 @@ static const CAN_SIGNAL_TYPE_s cantx_signalBusVoltage = {
 /** @{
  * defines of the power signal
 */
-#define CANTX_PACK_P0_POWER_START_BIT    (25u)
-#define CANTX_PACK_P0_POWER_LENGTH       (17u)
+#define CANTX_PACK_P0_POWER_START_BIT    (32u)
+#define CANTX_PACK_P0_POWER_LENGTH       (16u)
 #define CANTX_MINIMUM_VALUE_POWER_SIGNAL (-655360.0f)
 #define CANTX_MAXIMUM_VALUE_POWER_SIGNAL (655350.0f)
 /** @} */
@@ -130,8 +130,8 @@ static const CAN_SIGNAL_TYPE_s cantx_signalPower = {
 /** @{
  * defines of the current signal
 */
-#define CANTX_PACK_P0_CURRENT_START_BIT    (40u)
-#define CANTX_PACK_P0_CURRENT_LENGTH       (17u)
+#define CANTX_PACK_P0_CURRENT_START_BIT    (48u)
+#define CANTX_PACK_P0_CURRENT_LENGTH       (16u)
 #define CANTX_MINIMUM_VALUE_CURRENT_SIGNAL (-655360.0f)
 #define CANTX_MAXIMUM_VALUE_CURRENT_SIGNAL (655350.0f)
 /** @} */
@@ -236,22 +236,26 @@ static void CANTX_BuildP0Message(const CAN_SHIM_s *const kpkCanShim, uint64_t *p
     /* Battery voltage */
     uint64_t data = CANTX_CalculateBatteryVoltage(kpkCanShim);
     CAN_TxSetMessageDataWithSignalData(
-        pMessageData, cantx_signalBatteryVoltage.bitStart, cantx_signalBatteryVoltage.bitLength, data, CAN_BIG_ENDIAN);
+        pMessageData,
+        cantx_signalBatteryVoltage.bitStart,
+        cantx_signalBatteryVoltage.bitLength,
+        data,
+        CAN_LITTLE_ENDIAN);
 
     /* Bus voltage */
     data = CANTX_CalculateBusVoltage(kpkCanShim);
     CAN_TxSetMessageDataWithSignalData(
-        pMessageData, cantx_signalBusVoltage.bitStart, cantx_signalBusVoltage.bitLength, data, CAN_BIG_ENDIAN);
+        pMessageData, cantx_signalBusVoltage.bitStart, cantx_signalBusVoltage.bitLength, data, CAN_LITTLE_ENDIAN);
 
     /* System Power */
     data = CANTX_CalculatePower(kpkCanShim);
     CAN_TxSetMessageDataWithSignalData(
-        pMessageData, cantx_signalPower.bitStart, cantx_signalPower.bitLength, data, CAN_BIG_ENDIAN);
+        pMessageData, cantx_signalPower.bitStart, cantx_signalPower.bitLength, data, CAN_LITTLE_ENDIAN);
 
     /* System current */
     data = CANTX_CalculateCurrent(kpkCanShim);
     CAN_TxSetMessageDataWithSignalData(
-        pMessageData, cantx_signalCurrent.bitStart, cantx_signalCurrent.bitLength, data, CAN_BIG_ENDIAN);
+        pMessageData, cantx_signalCurrent.bitStart, cantx_signalCurrent.bitLength, data, CAN_LITTLE_ENDIAN);
 }
 
 /*========== Extern Function Implementations ================================*/
@@ -266,7 +270,7 @@ extern uint32_t CANTX_PackValuesP0(
     FAS_ASSERT(message.id == CANTX_PACK_VALUES_P0_ID);
     FAS_ASSERT(message.idType == CANTX_PACK_VALUES_P0_ID_TYPE);
     FAS_ASSERT(message.dlc == CAN_FOXBMS_MESSAGES_DEFAULT_DLC);
-    FAS_ASSERT(message.endianness == CAN_BIG_ENDIAN);
+    FAS_ASSERT(message.endianness == CANTX_PACK_VALUES_P0_ENDIANNESS);
     FAS_ASSERT(pCanData != NULL_PTR);
     FAS_ASSERT(kpkCanShim != NULL_PTR);
     uint64_t messageData = 0u;

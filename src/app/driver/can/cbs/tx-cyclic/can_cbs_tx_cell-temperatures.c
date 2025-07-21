@@ -65,7 +65,7 @@
 
 /*========== Macros and Definitions =========================================*/
 /** CAN message parameters for can cell temperature  */
-#define CANTX_CAN_CELL_TEMPERATURE_MUX_START_BIT           (7u)
+#define CANTX_CAN_CELL_TEMPERATURE_MUX_START_BIT           (0u)
 #define CANTX_CAN_CELL_TEMPERATURE_MUX_LENGTH              (8u)
 #define CANTX_CAN_CELL_TEMPERATURE0_INVALID_FLAG_START_BIT (8u)
 #define CANTX_CAN_CELL_TEMPERATURE1_INVALID_FLAG_START_BIT (9u)
@@ -74,12 +74,12 @@
 #define CANTX_CAN_CELL_TEMPERATURE4_INVALID_FLAG_START_BIT (12u)
 #define CANTX_CAN_CELL_TEMPERATURE5_INVALID_FLAG_START_BIT (13u)
 #define CANTX_CAN_CELL_TEMPERATURE_INVALID_FLAG_LENGTH     (1u)
-#define CANTX_CAN_CELL_TEMPERATURE0_START_BIT              (23u)
-#define CANTX_CAN_CELL_TEMPERATURE1_START_BIT              (31u)
-#define CANTX_CAN_CELL_TEMPERATURE2_START_BIT              (39u)
-#define CANTX_CAN_CELL_TEMPERATURE3_START_BIT              (47u)
-#define CANTX_CAN_CELL_TEMPERATURE4_START_BIT              (55u)
-#define CANTX_CAN_CELL_TEMPERATURE5_START_BIT              (63u)
+#define CANTX_CAN_CELL_TEMPERATURE0_START_BIT              (14u)
+#define CANTX_CAN_CELL_TEMPERATURE1_START_BIT              (22u)
+#define CANTX_CAN_CELL_TEMPERATURE2_START_BIT              (30u)
+#define CANTX_CAN_CELL_TEMPERATURE3_START_BIT              (38u)
+#define CANTX_CAN_CELL_TEMPERATURE4_START_BIT              (46u)
+#define CANTX_CAN_CELL_TEMPERATURE5_START_BIT              (54u)
 #define CANTX_CAN_CELL_TEMPERATURE_LENGTH                  (8u)
 
 #define CANTX_MINIMUM_VALUE_MUX          (0.0f)
@@ -92,14 +92,6 @@
 /*========== Static Constant and Variable Definitions =======================*/
 /** the number of temperatures per message-frame */
 #define CANTX_NUMBER_OF_MUX_TEMPERATURES_PER_MESSAGE (6u)
-
-#if ((BS_NR_OF_TEMP_SENSORS % CANTX_NUMBER_OF_MUX_TEMPERATURES_PER_MESSAGE) == 0)
-#define CANTX_NUMBER_OF_CAN_MESSAGES_FOR_CELL_TEMPERATURES \
-    ((uint8_t)(BS_NR_OF_TEMP_SENSORS / CANTX_NUMBER_OF_MUX_TEMPERATURES_PER_MESSAGE))
-#else
-#define CANTX_NUMBER_OF_CAN_MESSAGES_FOR_CELL_TEMPERATURES \
-    ((uint8_t)(BS_NR_OF_TEMP_SENSORS / CANTX_NUMBER_OF_MUX_TEMPERATURES_PER_MESSAGE) + 1u)
-#endif
 
 /**
  * CAN signals used in this message
@@ -314,7 +306,7 @@ extern uint32_t CANTX_CellTemperatures(
     uint64_t messageData = 0u;
 
     /* Reset mux if maximum was reached */
-    if (*pMuxId >= CANTX_NUMBER_OF_CAN_MESSAGES_FOR_CELL_TEMPERATURES) {
+    if (*pMuxId >= BS_NR_OF_CELL_BLOCKS) {
         *pMuxId = 0u;
         /* first signal to transmit cell temperatures: get database values */
         DATA_READ_DATA(kpkCanShim->pTableCellTemperature);
@@ -330,7 +322,7 @@ extern uint32_t CANTX_CellTemperatures(
 
     /* Set other signals in CAN frame */
     /* Calculate the global temperature sensor ID based on the multiplexer value for the first temperature sensor */
-    uint16_t temperatureSensorId = (*pMuxId * CANTX_NUMBER_OF_MUX_TEMPERATURES_PER_MESSAGE);
+    uint16_t temperatureSensorId = *pMuxId;
     CANTX_TemperatureSetData(
         temperatureSensorId,
         &messageData,
@@ -391,7 +383,7 @@ extern uint32_t CANTX_CellTemperatures(
     }
 
     /* Increment multiplexer for next cell */
-    (*pMuxId)++;
+    (*pMuxId) += CANTX_NUMBER_OF_MUX_TEMPERATURES_PER_MESSAGE;
 
     /* All signal data copied in CAN frame, now copy data in the buffer that will be use to send the frame */
     CAN_TxSetCanDataWithMessageData(messageData, pCanData, message.endianness);

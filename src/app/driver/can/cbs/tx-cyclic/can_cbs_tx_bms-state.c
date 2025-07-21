@@ -135,13 +135,13 @@
 /** @{
  * configuration of the insulation resistance signal
 */
-static const CAN_SIGNAL_TYPE_s cantx_signalInsulationResistance = {
+/* static const CAN_SIGNAL_TYPE_s cantx_signalInsulationResistance = {
     CANTX_SIGNAL_BMS_INSULATION_RESISTANCE_START_BIT,
     CANTX_SIGNAL_BMS_INSULATION_RESISTANCE_LENGTH,
     CANTX_FACTOR_INSULATION_RESISTANCE,
     CAN_SIGNAL_OFFSET_0,
     CANTX_MINIMUM_VALUE_INSULATION_RESISTANCE,
-    CANTX_MAXIMUM_VALUE_INSULATION_RESISTANCE};
+    CANTX_MAXIMUM_VALUE_INSULATION_RESISTANCE}; */
 /** @} */
 
 /*========== Static Constant and Variable Definitions =======================*/
@@ -264,7 +264,7 @@ static void CANTX_BuildBmsStateMessage(uint64_t *pMessageData, const CAN_SHIM_s 
         CANTX_BMS_STATE_ENDIANNESS);
 
     /* Insulation resistance */
-    float_t signalData = (float_t)kpkCanShim->pTableInsulation->insulationResistance_kOhm;
+    /* float_t signalData = (float_t)kpkCanShim->pTableInsulation->insulationResistance_kOhm;
     CAN_TxPrepareSignalData(&signalData, cantx_signalInsulationResistance);
     data = (uint64_t)signalData;
     CAN_TxSetMessageDataWithSignalData(
@@ -272,7 +272,7 @@ static void CANTX_BuildBmsStateMessage(uint64_t *pMessageData, const CAN_SHIM_s 
         cantx_signalInsulationResistance.bitStart,
         cantx_signalInsulationResistance.bitLength,
         data,
-        CANTX_BMS_STATE_ENDIANNESS);
+        CANTX_BMS_STATE_ENDIANNESS); */
 
     /* Charging complete: TODO */
 
