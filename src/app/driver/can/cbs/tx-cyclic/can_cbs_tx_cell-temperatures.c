@@ -71,16 +71,12 @@
 #define CANTX_CAN_CELL_TEMPERATURE1_INVALID_FLAG_START_BIT (9u)
 #define CANTX_CAN_CELL_TEMPERATURE2_INVALID_FLAG_START_BIT (10u)
 #define CANTX_CAN_CELL_TEMPERATURE3_INVALID_FLAG_START_BIT (11u)
-#define CANTX_CAN_CELL_TEMPERATURE4_INVALID_FLAG_START_BIT (12u)
-#define CANTX_CAN_CELL_TEMPERATURE5_INVALID_FLAG_START_BIT (13u)
 #define CANTX_CAN_CELL_TEMPERATURE_INVALID_FLAG_LENGTH     (1u)
-#define CANTX_CAN_CELL_TEMPERATURE0_START_BIT              (14u)
-#define CANTX_CAN_CELL_TEMPERATURE1_START_BIT              (22u)
-#define CANTX_CAN_CELL_TEMPERATURE2_START_BIT              (30u)
-#define CANTX_CAN_CELL_TEMPERATURE3_START_BIT              (38u)
-#define CANTX_CAN_CELL_TEMPERATURE4_START_BIT              (46u)
-#define CANTX_CAN_CELL_TEMPERATURE5_START_BIT              (54u)
-#define CANTX_CAN_CELL_TEMPERATURE_LENGTH                  (8u)
+#define CANTX_CAN_CELL_TEMPERATURE0_START_BIT              (12u)
+#define CANTX_CAN_CELL_TEMPERATURE1_START_BIT              (25u)
+#define CANTX_CAN_CELL_TEMPERATURE2_START_BIT              (38u)
+#define CANTX_CAN_CELL_TEMPERATURE3_START_BIT              (51u)
+#define CANTX_CAN_CELL_TEMPERATURE_LENGTH                  (13u)
 
 #define CANTX_MINIMUM_VALUE_MUX          (0.0f)
 #define CANTX_MAXIMUM_VALUE_MUX          (255.0f)
@@ -91,7 +87,7 @@
 
 /*========== Static Constant and Variable Definitions =======================*/
 /** the number of temperatures per message-frame */
-#define CANTX_NUMBER_OF_MUX_TEMPERATURES_PER_MESSAGE (6u)
+#define CANTX_NUMBER_OF_MUX_TEMPERATURES_PER_MESSAGE (4u)
 
 /**
  * CAN signals used in this message
@@ -133,59 +129,31 @@ static const CAN_SIGNAL_TYPE_s cantx_cell3TemperatureInvalidFlag = {
     CAN_SIGNAL_OFFSET_0,
     CANTX_MINIMUM_VALUE_INVALID_FLAG,
     CANTX_MAXIMUM_VALUE_INVALID_FLAG};
-static const CAN_SIGNAL_TYPE_s cantx_cell4TemperatureInvalidFlag = {
-    CANTX_CAN_CELL_TEMPERATURE4_INVALID_FLAG_START_BIT,
-    CANTX_CAN_CELL_TEMPERATURE_INVALID_FLAG_LENGTH,
-    UNIT_CONVERSION_FACTOR_1_FLOAT,
-    CAN_SIGNAL_OFFSET_0,
-    CANTX_MINIMUM_VALUE_INVALID_FLAG,
-    CANTX_MAXIMUM_VALUE_INVALID_FLAG};
-static const CAN_SIGNAL_TYPE_s cantx_cell5TemperatureInvalidFlag = {
-    CANTX_CAN_CELL_TEMPERATURE5_INVALID_FLAG_START_BIT,
-    CANTX_CAN_CELL_TEMPERATURE_INVALID_FLAG_LENGTH,
-    UNIT_CONVERSION_FACTOR_1_FLOAT,
-    CAN_SIGNAL_OFFSET_0,
-    CANTX_MINIMUM_VALUE_INVALID_FLAG,
-    CANTX_MAXIMUM_VALUE_INVALID_FLAG};
 static const CAN_SIGNAL_TYPE_s cantx_cell0Temperature_degC = {
     CANTX_CAN_CELL_TEMPERATURE0_START_BIT,
     CANTX_CAN_CELL_TEMPERATURE_LENGTH,
-    UNIT_CONVERSION_FACTOR_10_FLOAT,
+    UNIT_CONVERSION_FACTOR_1_FLOAT,
     CAN_SIGNAL_OFFSET_0,
     CANTX_MINIMUM_VALUE_TEMPERATURE,
     CANTX_MAXIMUM_VALUE_TEMPERATURE};
 static const CAN_SIGNAL_TYPE_s cantx_cell1Temperature_degC = {
     CANTX_CAN_CELL_TEMPERATURE1_START_BIT,
     CANTX_CAN_CELL_TEMPERATURE_LENGTH,
-    UNIT_CONVERSION_FACTOR_10_FLOAT,
+    UNIT_CONVERSION_FACTOR_1_FLOAT,
     CAN_SIGNAL_OFFSET_0,
     CANTX_MINIMUM_VALUE_TEMPERATURE,
     CANTX_MAXIMUM_VALUE_TEMPERATURE};
 static const CAN_SIGNAL_TYPE_s cantx_cell2Temperature_degC = {
     CANTX_CAN_CELL_TEMPERATURE2_START_BIT,
     CANTX_CAN_CELL_TEMPERATURE_LENGTH,
-    UNIT_CONVERSION_FACTOR_10_FLOAT,
+    UNIT_CONVERSION_FACTOR_1_FLOAT,
     CAN_SIGNAL_OFFSET_0,
     CANTX_MINIMUM_VALUE_TEMPERATURE,
     CANTX_MAXIMUM_VALUE_TEMPERATURE};
 static const CAN_SIGNAL_TYPE_s cantx_cell3Temperature_degC = {
     CANTX_CAN_CELL_TEMPERATURE3_START_BIT,
     CANTX_CAN_CELL_TEMPERATURE_LENGTH,
-    UNIT_CONVERSION_FACTOR_10_FLOAT,
-    CAN_SIGNAL_OFFSET_0,
-    CANTX_MINIMUM_VALUE_TEMPERATURE,
-    CANTX_MAXIMUM_VALUE_TEMPERATURE};
-static const CAN_SIGNAL_TYPE_s cantx_cell4Temperature_degC = {
-    CANTX_CAN_CELL_TEMPERATURE4_START_BIT,
-    CANTX_CAN_CELL_TEMPERATURE_LENGTH,
-    UNIT_CONVERSION_FACTOR_10_FLOAT,
-    CAN_SIGNAL_OFFSET_0,
-    CANTX_MINIMUM_VALUE_TEMPERATURE,
-    CANTX_MAXIMUM_VALUE_TEMPERATURE};
-static const CAN_SIGNAL_TYPE_s cantx_cell5Temperature_degC = {
-    CANTX_CAN_CELL_TEMPERATURE5_START_BIT,
-    CANTX_CAN_CELL_TEMPERATURE_LENGTH,
-    UNIT_CONVERSION_FACTOR_10_FLOAT,
+    UNIT_CONVERSION_FACTOR_1_FLOAT,
     CAN_SIGNAL_OFFSET_0,
     CANTX_MINIMUM_VALUE_TEMPERATURE,
     CANTX_MAXIMUM_VALUE_TEMPERATURE};
@@ -227,22 +195,18 @@ static void CANTX_TemperatureSetData(
     /* sensor index must not be greater than the number of sensors */
     FAS_ASSERT(temperatureSensorId < BS_NR_OF_TEMP_SENSORS);
     FAS_ASSERT(pMessage != NULL_PTR);
-    FAS_ASSERT(cellTemperatureSignal.bitLength == 8u);
+    FAS_ASSERT(cellTemperatureSignal.bitLength == CANTX_CAN_CELL_TEMPERATURE_LENGTH);
     FAS_ASSERT(
         (cellTemperatureSignal.bitStart == cantx_cell0Temperature_degC.bitStart) ||
         (cellTemperatureSignal.bitStart == cantx_cell1Temperature_degC.bitStart) ||
         (cellTemperatureSignal.bitStart == cantx_cell2Temperature_degC.bitStart) ||
-        (cellTemperatureSignal.bitStart == cantx_cell3Temperature_degC.bitStart) ||
-        (cellTemperatureSignal.bitStart == cantx_cell4Temperature_degC.bitStart) ||
-        (cellTemperatureSignal.bitStart == cantx_cell5Temperature_degC.bitStart));
+        (cellTemperatureSignal.bitStart == cantx_cell3Temperature_degC.bitStart));
     FAS_ASSERT(cellTemperatureInvalidFlagSignal.bitLength == 1u);
     FAS_ASSERT(
         (cellTemperatureInvalidFlagSignal.bitStart == cantx_cell0TemperatureInvalidFlag.bitStart) ||
         (cellTemperatureInvalidFlagSignal.bitStart == cantx_cell1TemperatureInvalidFlag.bitStart) ||
         (cellTemperatureInvalidFlagSignal.bitStart == cantx_cell2TemperatureInvalidFlag.bitStart) ||
-        (cellTemperatureInvalidFlagSignal.bitStart == cantx_cell3TemperatureInvalidFlag.bitStart) ||
-        (cellTemperatureInvalidFlagSignal.bitStart == cantx_cell4TemperatureInvalidFlag.bitStart) ||
-        (cellTemperatureInvalidFlagSignal.bitStart == cantx_cell5TemperatureInvalidFlag.bitStart));
+        (cellTemperatureInvalidFlagSignal.bitStart == cantx_cell3TemperatureInvalidFlag.bitStart));
     FAS_ASSERT(endianness == CANTX_CELL_TEMPERATURES_ENDIANNESS);
     FAS_ASSERT(kpkCanShim != NULL_PTR);
 
@@ -359,25 +323,6 @@ extern uint32_t CANTX_CellTemperatures(
                     message.endianness,
                     kpkCanShim);
                 temperatureSensorId++; /* Increment global temperature sensor ID */
-                if (temperatureSensorId < BS_NR_OF_TEMP_SENSORS) {
-                    CANTX_TemperatureSetData(
-                        temperatureSensorId,
-                        &messageData,
-                        cantx_cell4Temperature_degC,
-                        cantx_cell4TemperatureInvalidFlag,
-                        message.endianness,
-                        kpkCanShim);
-                    temperatureSensorId++; /* Increment global temperature sensor ID */
-                    if (temperatureSensorId < BS_NR_OF_TEMP_SENSORS) {
-                        CANTX_TemperatureSetData(
-                            temperatureSensorId,
-                            &messageData,
-                            cantx_cell5Temperature_degC,
-                            cantx_cell5TemperatureInvalidFlag,
-                            message.endianness,
-                            kpkCanShim);
-                    }
-                }
             }
         }
     }
