@@ -155,6 +155,13 @@ extern void CONT_CheckFeedback(void) {
                     DIAG_STRING,
                     (uint8_t)cont_contactorStates[contactor].stringIndex);
                 break;
+            case CONT_MAIN:
+                DIAG_Handler(
+                    DIAG_ID_MAIN_CONTACTOR_FEEDBACK,
+                    feedbackStatus,
+                    DIAG_STRING,
+                    (uint8_t)cont_contactorStates[contactor].stringIndex);
+                break;
             default:
                 /* Type: CONT_UNDEFINED -> trap */
                 FAS_ASSERT(FAS_TRAP);

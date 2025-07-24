@@ -230,7 +230,7 @@ typedef enum {
  *          - If set to true, foxBMS checks CAN timing. A valid request must
  *            come every 100ms, within the 95-105ms window.
  */
-#define BS_CHECK_CAN_TIMING (true)
+#define BS_CHECK_CAN_TIMING (false)
 
 /**
  * @brief   Defines whether balancing shall be available or not
@@ -247,8 +247,8 @@ typedef enum {
  */
 #define BS_NR_OF_VOLTAGES_FROM_CURRENT_SENSOR (3u)
 
-/** Number of contactors in addition to string contactors (e.g., PRECHARGE).*/
-#define BS_NR_OF_CONTACTORS_OUTSIDE_STRINGS (1u)
+/** Number of contactors in addition to string contactors (PRECHARGE, MAIN).*/
+#define BS_NR_OF_CONTACTORS_OUTSIDE_STRINGS (2u)
 
 /** Total number of contactors in system:
  *  - Two contactors per string (string+ and string-)

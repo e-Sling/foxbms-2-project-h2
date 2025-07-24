@@ -185,8 +185,8 @@ typedef enum {
     DIAG_ID_STRING_PLUS_CONTACTOR_FEEDBACK,  /*!< the feedback on a string plus contactor does not match the expected
                                               * value
                                               */
-    DIAG_ID_PRECHARGE_CONTACTOR_FEEDBACK, /*!< the feedback on a precharge contactor does not match the expected value
-                                           */
+    DIAG_ID_PRECHARGE_CONTACTOR_FEEDBACK, /*!< the feedback on a precharge contactor does not match the expected value */
+    DIAG_ID_MAIN_CONTACTOR_FEEDBACK,      /*!< the feedback on main contactor does not match the expected value */
     DIAG_ID_SBC_FIN_ERROR,                /*!< the state of the FIN signal in the SBC is not ok */
     DIAG_ID_SBC_RSTB_ERROR,               /*!< an activation of the RSTB pin of the SBC has been detected */
     DIAG_ID_BASE_CELL_VOLTAGE_MEASUREMENT_TIMEOUT, /*!< the redundancy module has detected that the base cell voltage

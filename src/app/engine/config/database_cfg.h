@@ -356,6 +356,7 @@ typedef struct {
     bool contactorInNegativePathOfStringFeedbackError[BS_NR_OF_STRINGS]; /*!< false -> no error, true -> error */
     bool contactorInPositivePathOfStringFeedbackError[BS_NR_OF_STRINGS]; /*!< false -> no error, true -> error */
     bool prechargeContactorFeedbackError[BS_NR_OF_STRINGS];              /*!< false -> no error, true -> error */
+    bool mainContactorFeedbackError[BS_NR_OF_STRINGS];                   /*!< false -> no error, true -> error */
     bool interlockOpenedError;                                           /*!< false -> no error, true -> error */
     bool insulationMeasurementInvalidError;                              /*!< false -> no error, true -> error */
     bool criticalLowInsulationResistanceError; /*!< false -> no critical resistance , true -> critical low resistance */

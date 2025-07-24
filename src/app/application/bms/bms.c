@@ -533,6 +533,11 @@ static bool BMS_IsContactorFeedbackValid(uint8_t stringNumber, CONT_TYPE_e conta
                 feedbackValid = true;
             }
             break;
+        case CONT_MAIN:
+            if (tableErrorFlags.mainContactorFeedbackError[stringNumber] == false) {
+                feedbackValid = true;
+            }
+            break;
         default:
             /* CONT_UNDEFINED already prevent via assert */
             break;
@@ -1075,8 +1080,8 @@ void BMS_Trigger(void) {
                         bms_state.timer    = BMS_STATEMACH_SHORTTIME;
                         break;
                     } else {
-                        /* All strings opened -> prepare to leave state BMS_STATEMACH_OPEN_CONTACTORS */
-                        bms_state.substate = BMS_OPEN_STRINGS_EXIT;
+                        /* All strings opened -> open main contactor in HV-PDU*/
+                        bms_state.substate = BMS_OPEN_MAIN_CONTACTOR;
                         bms_state.timer    = BMS_STATEMACH_SHORTTIME;
                     }
                     break;
@@ -1090,6 +1095,33 @@ void BMS_Trigger(void) {
                     CONT_OpenContactor(bms_state.stringToBeOpened, bms_state.contactorToBeOpened);
                     bms_state.timer = BMS_STATEMACH_SHORTTIME;
                     break;
+                }
+            } else if (bms_state.substate == BMS_OPEN_MAIN_CONTACTOR) {
+                bms_state.contactorToBeOpened = CONT_MAIN;
+                /* Open main contactor */
+                CONT_OpenContactor(bms_state.stringToBeOpened, bms_state.contactorToBeOpened);
+                bms_state.timer    = BMS_WAIT_TIME_AFTER_OPENING_STRING_CONTACTOR;
+                bms_state.substate = BMS_CHECK_MAIN_CONTACTOR;
+            } else if (bms_state.substate == BMS_CHECK_MAIN_CONTACTOR) {
+                /* Check if second contactor has been opened correctly */
+                contactorState = CONT_GetContactorState(bms_state.stringToBeOpened, bms_state.contactorToBeOpened);
+                contactorFeedbackValid =
+                    BMS_IsContactorFeedbackValid(bms_state.stringToBeOpened, bms_state.contactorToBeOpened);
+                /* If we want to open the contactors because of a feedback
+                 * error for this contactor, the statement will never be true.
+                 * Thus, also continue if a feedback error for this contactor
+                 * is detected as we are not able to get a valid feedback
+                 * information at this point */
+                if ((contactorState == CONT_SWITCH_OFF) || (contactorFeedbackValid == false)) {
+                    /* Main contactor opened correctly. Reset state variables used for opening */
+                    bms_state.contactorToBeOpened = CONT_UNDEFINED;
+                    /* All contactors opened -> prepare to leave state BMS_STATEMACH_OPEN_CONTACTORS */
+                    bms_state.substate = BMS_OPEN_STRINGS_EXIT;
+                    bms_state.timer    = BMS_STATEMACH_SHORTTIME;
+                } else {
+                    /* String not opened, re-issue closing request */
+                    CONT_OpenContactor(bms_state.stringToBeOpened, bms_state.contactorToBeOpened);
+                    bms_state.timer = BMS_STATEMACH_SHORTTIME;
                 }
             } else if (bms_state.substate == BMS_HANDLE_SUPPLY_VOLTAGE_30C_LOSS) {
                 CONT_OpenAllContactors();
@@ -1212,8 +1244,9 @@ void BMS_Trigger(void) {
                 bms_state.prechargeTryCounter = 0u;
                 bms_state.firstClosedString   = stringNumber;
                 if (bms_state.OscillationTimeout == 0u) {
-                    /* Close MINUS string contactor */
-                    if (CONT_CloseContactor(bms_state.firstClosedString, CONT_MINUS) == STD_OK) {
+                    /* Cellsius: Close MINUS and PLUS string contactor */
+                    if (CONT_CloseContactor(bms_state.firstClosedString, CONT_MINUS) == STD_OK &&
+                        CONT_CloseContactor(bms_state.firstClosedString, CONT_PLUS) == STD_OK) {
                         bms_state.stringCloseTimeout = BMS_STRING_CLOSE_TIMEOUT;
                         bms_state.timer              = BMS_WAIT_TIME_AFTER_CLOSING_STRING_CONTACTOR;
                         bms_state.substate           = BMS_PRECHARGE_CLOSE_PRECHARGE;
@@ -1237,17 +1270,21 @@ void BMS_Trigger(void) {
                 /* Check if MINUS contactor has been successfully closed */
                 contactorState = CONT_GetContactorState(bms_state.firstClosedString, CONT_MINUS);
                 if (contactorState == CONT_SWITCH_ON) {
-                    bms_state.OscillationTimeout = BMS_OSCILLATION_TIMEOUT;
-                    contRetVal                   = CONT_ClosePrecharge(bms_state.firstClosedString);
-                    bms_state.closedPrechargeContactors[stringNumber] = 1u;
-                    if (contRetVal == STD_OK) {
-                        bms_state.timer    = BMS_TIME_WAIT_AFTER_CLOSING_PRECHARGE;
-                        bms_state.substate = BMS_CHECK_ERROR_FLAGS_CLOSING_PRECHARGE;
-                    } else {
-                        bms_state.timer     = BMS_STATEMACH_SHORTTIME;
-                        bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
-                        bms_state.nextState = BMS_STATEMACH_ERROR;
-                        bms_state.substate  = BMS_ENTRY;
+                    /* Cellsius: Check if PLUS contactor has been successfully closed */
+                    contactorState = CONT_GetContactorState(bms_state.firstClosedString, CONT_PLUS);
+                    if (contactorState == CONT_SWITCH_ON) {
+                        bms_state.OscillationTimeout = BMS_OSCILLATION_TIMEOUT;
+                        contRetVal                   = CONT_ClosePrecharge(bms_state.firstClosedString);
+                        bms_state.closedPrechargeContactors[stringNumber] = 1u;
+                        if (contRetVal == STD_OK) {
+                            bms_state.timer    = BMS_TIME_WAIT_AFTER_CLOSING_PRECHARGE;
+                            bms_state.substate = BMS_CHECK_ERROR_FLAGS_CLOSING_PRECHARGE;
+                        } else {
+                            bms_state.timer     = BMS_STATEMACH_SHORTTIME;
+                            bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
+                            bms_state.nextState = BMS_STATEMACH_ERROR;
+                            bms_state.substate  = BMS_ENTRY;
+                        }
                     }
                 } else if (bms_state.stringCloseTimeout == 0u) {
                     /* String takes too long to close */
@@ -1258,6 +1295,7 @@ void BMS_Trigger(void) {
                 } else {
                     /* String not closed, re-issue closing request */
                     CONT_CloseContactor(bms_state.firstClosedString, CONT_MINUS);
+                    CONT_CloseContactor(bms_state.firstClosedString, CONT_PLUS);
                     bms_state.timer = BMS_STATEMACH_SHORTTIME;
                 }
                 break;
@@ -1289,11 +1327,11 @@ void BMS_Trigger(void) {
                 retVal         = BMS_CheckPrecharge(bms_state.firstClosedString, &bms_tablePackValues);
                 /* Check if precharge contactor is closed and precharge is finished */
                 if ((contactorState == CONT_SWITCH_ON) && (retVal == STD_OK)) {
-                    /* Successfully precharged. Close string PLUS contactor */
-                    CONT_CloseContactor(bms_state.firstClosedString, CONT_PLUS);
+                    /* Cellsius: Successfully precharged. Close MAIN contactor */
+                    CONT_CloseContactor(bms_state.firstClosedString, CONT_MAIN);
                     bms_state.stringCloseTimeout = BMS_STRING_CLOSE_TIMEOUT;
                     bms_state.timer              = BMS_WAIT_TIME_AFTER_CLOSING_STRING_CONTACTOR;
-                    bms_state.substate           = BMS_CHECK_CLOSE_SECOND_STRING_CONTACTOR_PRECHARGE_STATE;
+                    bms_state.substate           = BMS_CHECK_CLOSE_MAIN_CONTACTOR_PRECHARGE_STATE;
                     break;
                 } else {
                     /* Precharging failed. Open precharge contactor. */
@@ -1321,8 +1359,8 @@ void BMS_Trigger(void) {
                         break;
                     }
                 }
-            } else if (bms_state.substate == BMS_CHECK_CLOSE_SECOND_STRING_CONTACTOR_PRECHARGE_STATE) {
-                contactorState = CONT_GetContactorState(bms_state.firstClosedString, CONT_PLUS);
+            } else if (bms_state.substate == BMS_CHECK_CLOSE_MAIN_CONTACTOR_PRECHARGE_STATE) {
+                contactorState = CONT_GetContactorState(bms_state.firstClosedString, CONT_MAIN);
                 if (contactorState == CONT_SWITCH_ON) {
                     bms_state.closedStrings[bms_state.firstClosedString] = 1u;
                     bms_state.numberOfClosedStrings++;
@@ -1338,7 +1376,7 @@ void BMS_Trigger(void) {
                     break;
                 } else {
                     /* String not closed, re-issue closing request */
-                    CONT_CloseContactor(bms_state.firstClosedString, CONT_PLUS);
+                    CONT_CloseContactor(bms_state.firstClosedString, CONT_MAIN);
                     bms_state.timer    = BMS_STATEMACH_SHORTTIME;
                     bms_state.substate = BMS_CHECK_ERROR_FLAGS_PRECHARGE_FIRST_STRING;
                     break;
@@ -1352,7 +1390,7 @@ void BMS_Trigger(void) {
                     break;
                 } else {
                     bms_state.timer    = BMS_STATEMACH_SHORTTIME;
-                    bms_state.substate = BMS_CHECK_CLOSE_SECOND_STRING_CONTACTOR_PRECHARGE_STATE;
+                    bms_state.substate = BMS_CHECK_CLOSE_MAIN_CONTACTOR_PRECHARGE_STATE;
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS_PRECHARGE_CLOSING_STRINGS) {
