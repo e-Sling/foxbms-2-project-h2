@@ -79,7 +79,7 @@
  * @unit    deci &deg;C
  */
 /**@{*/
-#define BC_TEMPERATURE_MAX_DISCHARGE_MSL_ddegC (800)
+#define BC_TEMPERATURE_MAX_DISCHARGE_MSL_ddegC (700)
 #define BC_TEMPERATURE_MAX_DISCHARGE_RSL_ddegC (600)
 #define BC_TEMPERATURE_MAX_DISCHARGE_MOL_ddegC (500)
 /**@}*/

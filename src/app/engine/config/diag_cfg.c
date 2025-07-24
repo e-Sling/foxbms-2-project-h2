@@ -92,7 +92,7 @@
 
 /*========== Macros and Definitions =========================================*/
 /** value of #DIAG_ID_MAX (as a define for the pre-processor) */
-#define DIAG_ID_MAX_FOR_INIT (85u)
+#define DIAG_ID_MAX_FOR_INIT (86u)
 
 FAS_STATIC_ASSERT(DIAG_ID_MAX_FOR_INIT == (uint16_t)DIAG_ID_MAX, "Both values need to be identical.");
 
@@ -122,7 +122,7 @@ DIAG_ID_CFG_s diag_diagnosisIdConfiguration[] = {
     /* clang-format off */
     {DIAG_ID_FLASHCHECKSUM,                                     DIAG_SEN_EVENT_1,   DIAG_FATAL_ERROR,   DIAG_NO_DELAY,      DIAG_EVALUATION_ENABLED,    DIAG_DummyCallback},
     {DIAG_ID_SYSTEM_MONITORING,                                 DIAG_SEN_EVENT_1,   DIAG_FATAL_ERROR,   DIAG_NO_DELAY,      DIAG_EVALUATION_ENABLED,    DIAG_ErrorSystemMonitoring},
-    {DIAG_ID_INTERLOCK_FEEDBACK,                                DIAG_SEN_EVENT_10,  DIAG_FATAL_ERROR,   DIAG_DELAY_100ms,   DIAG_EVALUATION_ENABLED,    DIAG_ErrorInterlock},
+    {DIAG_ID_INTERLOCK_FEEDBACK,                                DIAG_SEN_EVENT_10,  DIAG_FATAL_ERROR,   DIAG_DELAY_100ms,   DIAG_EVALUATION_DISABLED,    DIAG_ErrorInterlock},
     {DIAG_ID_SUPPLY_VOLTAGE_CLAMP_30C_LOST,                     DIAG_SEN_EVENT_3,   DIAG_FATAL_ERROR,   DIAG_NO_DELAY,      DIAG_EVALUATION_ENABLED,    DIAG_SupplyVoltageClamp30c},
     {DIAG_ID_CELL_VOLTAGE_OVERVOLTAGE_MSL,                      DIAG_SEN_EVENT_50,  DIAG_FATAL_ERROR,   DIAG_DELAY_200ms,   DIAG_EVALUATION_ENABLED,    DIAG_ErrorOvervoltage},
     {DIAG_ID_CELL_VOLTAGE_OVERVOLTAGE_RSL,                      DIAG_SEN_EVENT_50,  DIAG_WARNING,       DIAG_DELAY_DISCARD, DIAG_EVALUATION_ENABLED,    DIAG_ErrorOvervoltage},
@@ -195,13 +195,13 @@ DIAG_ID_CFG_s diag_diagnosisIdConfiguration[] = {
     {DIAG_ID_CURRENT_SENSOR_POWER_MEASUREMENT_TIMEOUT,          DIAG_SEN_EVENT_1,   DIAG_FATAL_ERROR,   DIAG_DELAY_100ms,   DIAG_CAN_SENSOR_PRESENT,    DIAG_ErrorPowerMeasurement},
     {DIAG_ID_POWER_MEASUREMENT_ERROR,                           DIAG_SEN_EVENT_1,   DIAG_FATAL_ERROR,   DIAG_DELAY_100ms,   DIAG_EVALUATION_ENABLED,    DIAG_ErrorPowerMeasurement},
     {DIAG_ID_INSULATION_MEASUREMENT_VALID,                      DIAG_SEN_EVENT_1,   DIAG_WARNING,       DIAG_DELAY_DISCARD, DIAG_EVALUATION_ENABLED,    DIAG_Insulation},
-    {DIAG_ID_LOW_INSULATION_RESISTANCE_ERROR,                   DIAG_SEN_EVENT_5,   DIAG_WARNING,       DIAG_DELAY_DISCARD, DIAG_EVALUATION_ENABLED,    DIAG_Insulation},
-    {DIAG_ID_LOW_INSULATION_RESISTANCE_WARNING,                 DIAG_SEN_EVENT_5,   DIAG_WARNING,       DIAG_DELAY_DISCARD, DIAG_EVALUATION_ENABLED,    DIAG_Insulation},
-    {DIAG_ID_INSULATION_GROUND_ERROR,                           DIAG_SEN_EVENT_1,   DIAG_WARNING,       DIAG_DELAY_DISCARD, DIAG_EVALUATION_ENABLED,    DIAG_Insulation},
+    {DIAG_ID_LOW_INSULATION_RESISTANCE_ERROR,                   DIAG_SEN_EVENT_5,   DIAG_WARNING,       DIAG_DELAY_DISCARD, DIAG_EVALUATION_DISABLED,    DIAG_Insulation},
+    {DIAG_ID_LOW_INSULATION_RESISTANCE_WARNING,                 DIAG_SEN_EVENT_5,   DIAG_WARNING,       DIAG_DELAY_DISCARD, DIAG_EVALUATION_DISABLED,    DIAG_Insulation},
+    {DIAG_ID_INSULATION_GROUND_ERROR,                           DIAG_SEN_EVENT_1,   DIAG_WARNING,       DIAG_DELAY_DISCARD, DIAG_EVALUATION_DISABLED,    DIAG_Insulation},
     {DIAG_ID_I2C_PEX_ERROR,                                     DIAG_SEN_EVENT_1,   DIAG_INFO,          DIAG_NO_DELAY,      DIAG_EVALUATION_ENABLED,    DIAG_I2c},
     {DIAG_ID_I2C_RTC_ERROR,                                     DIAG_SEN_EVENT_1,   DIAG_INFO,          DIAG_NO_DELAY,      DIAG_EVALUATION_ENABLED,    DIAG_I2c},
-    {DIAG_ID_RTC_CLOCK_INTEGRITY_ERROR,                         DIAG_SEN_EVENT_1,   DIAG_INFO,          DIAG_NO_DELAY,      DIAG_EVALUATION_ENABLED,    DIAG_Rtc},
-    {DIAG_ID_RTC_BATTERY_LOW_ERROR,                             DIAG_SEN_EVENT_1,   DIAG_INFO,          DIAG_NO_DELAY,      DIAG_EVALUATION_ENABLED,    DIAG_Rtc},
+    {DIAG_ID_RTC_CLOCK_INTEGRITY_ERROR,                         DIAG_SEN_EVENT_1,   DIAG_INFO,          DIAG_NO_DELAY,      DIAG_EVALUATION_DISABLED,    DIAG_Rtc},
+    {DIAG_ID_RTC_BATTERY_LOW_ERROR,                             DIAG_SEN_EVENT_1,   DIAG_INFO,          DIAG_NO_DELAY,      DIAG_EVALUATION_DISABLED,    DIAG_Rtc},
     {DIAG_ID_FRAM_READ_CRC_ERROR,                               DIAG_SEN_EVENT_1,   DIAG_INFO,          DIAG_NO_DELAY,      DIAG_EVALUATION_ENABLED,    DIAG_FramError},
     {DIAG_ID_ALERT_MODE,                                        DIAG_SEN_EVENT_1,   DIAG_FATAL_ERROR,   DIAG_NO_DELAY,      DIAG_EVALUATION_ENABLED,    DIAG_AlertFlag},
     {DIAG_ID_AEROSOL_ALERT,                                     DIAG_SEN_EVENT_1,   DIAG_WARNING,       DIAG_NO_DELAY,      DIAG_EVALUATION_ENABLED,    DIAG_AerosolAlert},
