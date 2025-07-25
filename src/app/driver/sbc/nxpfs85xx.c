@@ -87,7 +87,7 @@ FS85_STATE_s fs85xx_mcuSupervisor = {
     .configValues.watchdogSeed      = FS8x_WD_SEED_DEFAULT,
     .configValues.communicationMode = fs8xSPI,
     .configValues.i2cAddressOtp     = 0, /* Not used as SPI is selected */
-    .fin.finUsed                    = false,
+    .fin.finUsed                    = true,
     .fin.finState                   = STD_NOT_OK,
     .fin.pGIOport = &(systemREG1->SYSPC4), /* FIN connected to ECLK1 (ball A12): PRIVILEGE MODE REQUIRED! */
     .fin.pin      = 0,
@@ -918,6 +918,7 @@ extern bool FS85_CheckIgnitionSignal(FS85_STATE_s *pInstance) {
     bool ignitionSignalDetected = true;
     /* variables for storing current and previous wake1 signal levels */
     static uint16_t wake1Level    = 0u;
+    static uint16_t wake2Level    = 0u;
     static uint16_t oldWake1Level = 0u;
 
     /* Read wake1 signal level */
@@ -925,10 +926,11 @@ extern bool FS85_CheckIgnitionSignal(FS85_STATE_s *pInstance) {
     if (fs8xStatusOk ==
         FS8x_ReadRegister(pInstance->pSpiInterface, &(pInstance->configValues), false, FS8X_M_FLAG2_ADDR, &rxTemp)) {
         wake1Level = rxTemp.readData & FS8X_M_WK1RT_WAKE1_HIGH;
+        wake2Level = rxTemp.readData & FS8X_M_WK2RT_WAKE2_HIGH;
     }
 
     /* Check for falling edge in wake1 signal */
-    if ((oldWake1Level != wake1Level) && (wake1Level == 0u)) {
+    if ((oldWake1Level != wake1Level) && (wake2Level == 0u) && false) {
         if (STD_OK != FS85_GoToStandby(pInstance)) {
             /* error in switch to standby mode, reset ole level to try again */
             wake1Level = oldWake1Level;
