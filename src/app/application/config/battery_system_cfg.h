@@ -237,8 +237,9 @@ typedef enum {
  * @details - If set to true, balancing is deactivated completely.
  *          - If set to false, foxBMS checks when balancing must be done and
  *            activates it accordingly.
+ *          Cellsius: Balancing is globally deactivated, but can be activated via CAN
  */
-#define BS_BALANCING_DEFAULT_INACTIVE (false)
+#define BS_BALANCING_DEFAULT_INACTIVE (true)
 
 /**
  * @brief   number of high voltage inputs measured by current sensors (like
@@ -265,7 +266,7 @@ typedef enum {
  * @brief   Wait time in 10ms before battery system is at rest. Balancing for
  *          example only starts if battery system is at rest.
  */
-#define BS_RELAXATION_PERIOD_10ms (60000u)
+#define BS_RELAXATION_PERIOD_10ms (1000u)
 
 /**
  * @brief   current sensor threshold for 0 current in mA as the sensor has a

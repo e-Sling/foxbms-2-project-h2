@@ -941,6 +941,23 @@ extern bool FS85_CheckIgnitionSignal(FS85_STATE_s *pInstance) {
     return ignitionSignalDetected;
 }
 
+/* Cellsius: Check Bat_On Signal */
+extern bool FS85_CheckBatOnSignal(FS85_STATE_s *pInstance) {
+    FAS_ASSERT(pInstance != NULL_PTR);
+
+    /* Default state */
+    bool wake2Level = false;
+
+    /* Read bat_on signal level */
+    fs8x_rx_frame_t rxTemp = {.deviceStatus = 0u, .readData = 0u};
+    if (fs8xStatusOk ==
+        FS8x_ReadRegister(pInstance->pSpiInterface, &(pInstance->configValues), false, FS8X_M_FLAG2_ADDR, &rxTemp)) {
+        wake2Level = rxTemp.readData & FS8X_M_WK2RT_WAKE2_HIGH;
+    }
+
+    return wake2Level;
+}
+
 extern STD_RETURN_TYPE_e FS85_InitializeNumberOfRequiredWatchdogRefreshes(
     FS85_STATE_s *pInstance,
     uint8_t *pRequiredWatchdogRefreshes) {

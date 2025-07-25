@@ -67,6 +67,7 @@
 #include "imd.h"
 #include "led.h"
 #include "meas.h"
+#include "nxpfs85xx.h"
 #include "os.h"
 #include "soa.h"
 #include "sps.h"
@@ -950,7 +951,8 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                if (BMS_CheckCanRequests() == BMS_REQ_ID_STANDBY) {
+                /* Cellsius: Go to standby without request */
+                if (true /* BMS_CheckCanRequests() == BMS_REQ_ID_STANDBY */) {
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;
@@ -1190,7 +1192,9 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                if (BMS_CheckCanRequests() == BMS_REQ_ID_NORMAL) {
+                /* if (BMS_CheckCanRequests() == BMS_REQ_ID_NORMAL) { */
+                /* Cellsius: Check for HV_ready and Bat_On */
+                if (/* HV_ready && */ FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor)) {
                     bms_state.powerPath = BMS_POWER_PATH_0;
                     bms_state.nextState = BMS_STATEMACH_DISCHARGE;
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
@@ -1199,6 +1203,7 @@ void BMS_Trigger(void) {
                     break;
                 }
                 if (BMS_CheckCanRequests() == BMS_REQ_ID_CHARGE) {
+                    /* TODO: Check Charging state. Right now part uf Running State*/
                     bms_state.powerPath = BMS_POWER_PATH_1;
                     bms_state.nextState = BMS_STATEMACH_CHARGE;
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
