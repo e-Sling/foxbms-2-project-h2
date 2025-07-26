@@ -1413,12 +1413,13 @@ void LTC_Trigger(LTC_STATE_s *ltc_state) {
 
                         ltc_state->check_spi_flag = STD_NOT_OK;
                         /* user multiplexer type -> connected to GPIO2! */
-                        if ((ltc_state->muxmeas_seqptr[ltc_state->currentString]->muxID == 2)) {
-                            retVal = LTC_StartGpioMeasurement(
-                                ltc_state->spiSeqPtr, ltc_state->adcMode, LTC_ADCMEAS_SINGLECHANNEL_GPIO2);
-                        } else {
+                        if ((ltc_state->muxmeas_seqptr[ltc_state->currentString]->muxID == 1) ||
+                            (ltc_state->muxmeas_seqptr[ltc_state->currentString]->muxID == 2)) {
                             retVal = LTC_StartGpioMeasurement(
                                 ltc_state->spiSeqPtr, ltc_state->adcMode, LTC_ADCMEAS_SINGLECHANNEL_GPIO1);
+                        } else {
+                            retVal = LTC_StartGpioMeasurement(
+                                ltc_state->spiSeqPtr, ltc_state->adcMode, LTC_ADCMEAS_SINGLECHANNEL_GPIO2);
                         }
                     }
                     LTC_CondBasedStateTransition(

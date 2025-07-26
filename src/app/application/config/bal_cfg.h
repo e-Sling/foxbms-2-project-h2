@@ -72,7 +72,7 @@
 #define BAL_STATEMACH_BALANCING_TIME_100ms (10u)
 
 /** default value for the BAL voltage threshold */
-#define BAL_DEFAULT_THRESHOLD_mV (200)
+#define BAL_DEFAULT_THRESHOLD_mV (50)
 
 /** maximum value that BAL voltage threshold may take */
 #define BAL_MAXIMUM_THRESHOLD_mV (5000)
@@ -81,7 +81,7 @@
 #define BAL_MINIMUM_THRESHOLD_mV (0)
 
 /** BAL hysteresis for voltage threshold when balancing was finished in mV */
-#define BAL_HYSTERESIS_mV (200)
+#define BAL_HYSTERESIS_mV (10)
 
 /** BAL lower voltage limit in mV */
 #define BAL_LOWER_VOLTAGE_LIMIT_mV (3000)

@@ -101,11 +101,11 @@ LTC_MUX_CH_CFG_s ltc_mux_seq_main_ch1[] = {
     {
         .muxID = 0,
         .muxCh = 7,
-    }, */
+    }, 
     {
         .muxID    = 0,
         .muxCh    = 0xFF,    // disable enabled mux
-    },
+    }, */
     {
         .muxID    = 1,
         .muxCh    = 0,

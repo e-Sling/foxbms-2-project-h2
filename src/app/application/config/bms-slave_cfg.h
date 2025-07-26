@@ -76,7 +76,7 @@
 #define SLV_NR_OF_GPAS_PER_MODULE (2u)
 
 /** Value of the balancing resistors on the slave-board */
-#define SLV_BALANCING_RESISTANCE_ohm (75.0f)
+#define SLV_BALANCING_RESISTANCE_ohm (51.2f)
 
 /** Value of the input capacitors between the cell inputs on the BMS-Slave
  *  board. Set to 0 if no capacitors are used at all */
