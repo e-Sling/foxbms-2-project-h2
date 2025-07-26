@@ -1390,8 +1390,7 @@ void LTC_Trigger(LTC_STATE_s *ltc_state) {
                     if (ltc_state->muxmeas_seqptr[ltc_state->currentString]->muxCh == 0xFF) {
                         /* actual multiplexer is switched off, so do not make a measurement and follow up with next step
                          * (mux configuration) */
-                        ++ltc_state
-                              ->muxmeas_seqptr[ltc_state->currentString]; /*  go further with next step of sequence
+                        ++ltc_state->muxmeas_seqptr[ltc_state->currentString]; /*  go further with next step of sequence
                                                                  ltc_state.numberOfMeasuredMux not decremented, this
                                                                  does not count as a measurement */
                         LTC_StateTransition(ltc_state, LTC_STATEMACH_STARTMEAS, LTC_ENTRY, LTC_STATEMACH_SHORTTIME);
@@ -3031,11 +3030,16 @@ static void LTC_SaveMuxMeasurement(
                     buffer_MSB = pRxBuff[4u + (i * 8u) + 3u];  //read registervalues gathered by GPIO2
                     buffer_LSB = pRxBuff[4u + (i * 8u) + 2u];
                 }
-                val_ui     = buffer_LSB | (buffer_MSB << 8);
+                val_ui = buffer_LSB | (buffer_MSB << 8);
                 /* val_ui = *((uint16_t *)(&pRxBuff[4+i*8])); */
                 /* GPIO voltage in 100uV -> * 0.1 ----  conversion to mV */
                 temperature_ddegC = LTC_ConvertMuxVoltagesToTemperatures(val_ui / 10u); /* unit: deci &deg;C */
-                sensor_idx = muxseqptr->muxCh + LTC_N_MUX_CHANNELS_PER_MUX * muxseqptr->muxID;
+                /* Cellsius: change id because the sensors were wired in reverse order for each of the two connectors */
+                if (muxseqptr->muxCh > 5) {
+                    FAS_ASSERT(
+                        FAS_TRAP); /* muxCh must be in range 0..5 because were are using a different wiring scheme */
+                }
+                sensor_idx = 5 - muxseqptr->muxCh + LTC_N_MUX_CHANNELS_PER_MUX * muxseqptr->muxID;
                 /* wrong configuration! */
                 if (sensor_idx >= BS_NR_OF_TEMP_SENSORS_PER_MODULE) {
                     FAS_ASSERT(FAS_TRAP);

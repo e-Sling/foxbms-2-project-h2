@@ -65,26 +65,17 @@
 
 /*========== Extern Constant and Variable Definitions =======================*/
 /**
- * Default multiplexer measurement sequence
- * Must be adapted to the application
+ * Order is reversed in each multiplexer, because the temeprature sensors were 
+ * not wired according to the schematic. On each of the two connectors the 
+ * order is reversed. This means that the temperature 0 is hooked up to mux 0, 
+ * channel 5, and the temperature 5 is hooked up to mux 0, channel 0. The same
+ * applies for mux 1.
  */
 LTC_MUX_CH_CFG_s ltc_mux_seq_main_ch1[] = {
     /*  multiplexer 0 measurement */
     {
         .muxID = 0,
-        .muxCh = 0,
-    },
-    {
-        .muxID = 0,
-        .muxCh = 1,
-    },
-    {
-        .muxID = 0,
-        .muxCh = 2,
-    },
-    {
-        .muxID = 0,
-        .muxCh = 3,
+        .muxCh = 5,
     },
     {
         .muxID = 0,
@@ -92,7 +83,19 @@ LTC_MUX_CH_CFG_s ltc_mux_seq_main_ch1[] = {
     },
     {
         .muxID = 0,
-        .muxCh = 5,
+        .muxCh = 3,
+    },
+    {
+        .muxID = 0,
+        .muxCh = 2,
+    },
+    {
+        .muxID = 0,
+        .muxCh = 1,
+    },
+    {
+        .muxID = 0,
+        .muxCh = 0,
     },
     /*{
         .muxID = 0,
@@ -107,28 +110,28 @@ LTC_MUX_CH_CFG_s ltc_mux_seq_main_ch1[] = {
         .muxCh    = 0xFF,    // disable enabled mux
     }, */
     {
-        .muxID    = 1,
-        .muxCh    = 0,
+        .muxID = 1,
+        .muxCh = 5,
     },
     {
-        .muxID    = 1,
-        .muxCh    = 1,
+        .muxID = 1,
+        .muxCh = 4,
     },
     {
-        .muxID    = 1,
-        .muxCh    = 2,
+        .muxID = 1,
+        .muxCh = 3,
     },
     {
-        .muxID    = 1,
-        .muxCh    = 3,
+        .muxID = 1,
+        .muxCh = 2,
     },
     {
-        .muxID    = 1,
-        .muxCh    = 4,
+        .muxID = 1,
+        .muxCh = 1,
     },
     {
-        .muxID    = 1,
-        .muxCh    = 5,
+        .muxID = 1,
+        .muxCh = 0,
     } /*,
     {
         .muxID    = 1,
@@ -182,12 +185,12 @@ LTC_MUX_SEQUENCE_s ltc_mux_seq = {
     .nr_of_steps = (sizeof(ltc_mux_seq_main_ch1) / sizeof(LTC_MUX_CH_CFG_s))};
 
 const uint8_t ltc_muxSensorTemperature_cfg[BS_NR_OF_TEMP_SENSORS_PER_MODULE] = {
-    1 - 1,  /*!< index 0 = mux 0, ch 0 */
-    2 - 1,  /*!< index 1 = mux 0, ch 1 */
-    3 - 1,  /*!< index 2 = mux 0, ch 2 */
-    4 - 1,  /*!< index 3 = mux 0, ch 3 */
-    5 - 1,  /*!< index 4 = mux 0, ch 4 */
-    6 - 1,  /*!< index 5 = mux 0, ch 5 */
+    1 - 1, /*!< index 0 = mux 0, ch 0 */
+    2 - 1, /*!< index 1 = mux 0, ch 1 */
+    3 - 1, /*!< index 2 = mux 0, ch 2 */
+    4 - 1, /*!< index 3 = mux 0, ch 3 */
+    5 - 1, /*!< index 4 = mux 0, ch 4 */
+    6 - 1, /*!< index 5 = mux 0, ch 5 */
     // 7 - 1, /*!< index 6 = mux 0, ch 6 */
     // 8 - 1, /*!< index 7 = mux 0, ch 7 */
     9 - 1,  /*!< index 8 = mux 1, ch 0 */
