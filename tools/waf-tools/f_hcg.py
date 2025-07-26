@@ -438,7 +438,6 @@ def configure(ctx):
     """
     ctx.start_msg("Checking for TI Code Generator (HALCoGen)")
     ctx.find_program("HALCOGEN", var="HALCOGEN", mandatory=False)
-    ctx.env.HALCOGEN = "not_available"
     if ctx.env.HALCOGEN:
         incpath_halcogen = os.path.join(
             pathlib.Path(ctx.env.HALCOGEN[0]).parent.parent.parent,
@@ -458,7 +457,5 @@ def configure(ctx):
             ctx.env.append_unique("STLIBPATH", libpath_halcogen)
         ctx.env["HALCOGEN_SRC_INPUT"] = ["-i"]
     else:
-        Logs.warn(
-            "HALCogen is not available  and therefore the code generator can not run."
-        )
+        ctx.env.HALCOGEN = "not_available"
     ctx.end_msg(ctx.env.get_flat("HALCOGEN"))
