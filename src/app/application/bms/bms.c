@@ -67,7 +67,6 @@
 #include "imd.h"
 #include "led.h"
 #include "meas.h"
-#include "nxpfs85xx.h"
 #include "os.h"
 #include "soa.h"
 #include "sps.h"
@@ -1196,9 +1195,7 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                /* if (BMS_CheckCanRequests() == BMS_REQ_ID_NORMAL) { */
-                /* Cellsius: Check for HV_ready and Bat_On */
-                if (/* HV_ready && */ FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor)) {
+                if (BMS_CheckCanRequests() == BMS_REQ_ID_NORMAL) {
                     bms_state.powerPath = BMS_POWER_PATH_0;
                     bms_state.nextState = BMS_STATEMACH_DISCHARGE;
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
@@ -1237,36 +1234,11 @@ void BMS_Trigger(void) {
                 DATA_READ_DATA(&systemState);
                 systemState.bmsCanState = BMS_CAN_STATE_PRECHARGE;
                 DATA_WRITE_DATA(&systemState);
-                /* if (bms_state.nextState == BMS_STATEMACH_CHARGE) {
-                    stringNumber = BMS_GetLowestString(BMS_TAKE_PRECHARGE_INTO_ACCOUNT, &bms_tablePackValues);
-                } else {
-                    stringNumber = BMS_GetHighestString(BMS_TAKE_PRECHARGE_INTO_ACCOUNT, &bms_tablePackValues);
-                }
-                if (stringNumber == BMS_NO_STRING_AVAILABLE) {
-                    bms_state.timer     = BMS_STATEMACH_SHORTTIME;
-                    bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
-                    bms_state.nextState = BMS_STATEMACH_ERROR;
-                    bms_state.substate  = BMS_ENTRY;
-                    break;
-                } */
-                /* Cellsius: Only one string with index 0 */
-                stringNumber                  = 0u;
+                /* Cellsius: On this branch, just precharge and main contactor are used */
                 bms_state.prechargeTryCounter = 0u;
-                bms_state.firstClosedString   = stringNumber;
                 if (bms_state.OscillationTimeout == 0u) {
-                    /* Cellsius: Close MINUS and PLUS contactor */
-                    if (CONT_CloseContactor(bms_state.firstClosedString, CONT_MINUS) == STD_OK &&
-                        CONT_CloseContactor(bms_state.firstClosedString, CONT_PLUS) == STD_OK) {
-                        bms_state.stringCloseTimeout = BMS_STRING_CLOSE_TIMEOUT;
-                        bms_state.timer              = BMS_WAIT_TIME_AFTER_CLOSING_STRING_CONTACTOR;
-                        bms_state.substate           = BMS_PRECHARGE_CLOSE_PRECHARGE;
-                    } else {
-                        /* Invalid contactor requested */
-                        bms_state.timer     = BMS_STATEMACH_SHORTTIME;
-                        bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
-                        bms_state.nextState = BMS_STATEMACH_ERROR;
-                        bms_state.substate  = BMS_ENTRY;
-                    }
+                    bms_state.timer    = BMS_STATEMACH_SHORTTIME;
+                    bms_state.substate = BMS_PRECHARGE_CLOSE_PRECHARGE;
                 } else if (BMS_IsBatterySystemStateOkay() == STD_NOT_OK) {
                     /* If precharge re-enter timeout not elapsed, wait (and check errors while waiting) */
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
@@ -1277,36 +1249,17 @@ void BMS_Trigger(void) {
                 }
                 break;
             } else if (bms_state.substate == BMS_PRECHARGE_CLOSE_PRECHARGE) {
-                /* Check if MINUS contactor has been successfully closed */
-                contactorState = CONT_GetContactorState(bms_state.firstClosedString, CONT_MINUS);
-                if (contactorState == CONT_SWITCH_ON) {
-                    /* Cellsius: Check if PLUS contactor has been successfully closed */
-                    contactorState = CONT_GetContactorState(bms_state.firstClosedString, CONT_PLUS);
-                    if (contactorState == CONT_SWITCH_ON) {
-                        bms_state.OscillationTimeout = BMS_OSCILLATION_TIMEOUT;
-                        contRetVal                   = CONT_ClosePrecharge(bms_state.firstClosedString);
-                        bms_state.closedPrechargeContactors[stringNumber] = 1u;
-                        if (contRetVal == STD_OK) {
-                            bms_state.timer    = BMS_TIME_WAIT_AFTER_CLOSING_PRECHARGE;
-                            bms_state.substate = BMS_CHECK_ERROR_FLAGS_CLOSING_PRECHARGE;
-                        } else {
-                            bms_state.timer     = BMS_STATEMACH_SHORTTIME;
-                            bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
-                            bms_state.nextState = BMS_STATEMACH_ERROR;
-                            bms_state.substate  = BMS_ENTRY;
-                        }
-                    }
-                } else if (bms_state.stringCloseTimeout == 0u) {
-                    /* String takes too long to close */
+                bms_state.OscillationTimeout                      = BMS_OSCILLATION_TIMEOUT;
+                contRetVal                                        = CONT_ClosePrecharge(bms_state.firstClosedString);
+                bms_state.closedPrechargeContactors[stringNumber] = 1u;
+                if (contRetVal == STD_OK) {
+                    bms_state.timer    = BMS_TIME_WAIT_AFTER_CLOSING_PRECHARGE;
+                    bms_state.substate = BMS_CHECK_ERROR_FLAGS_CLOSING_PRECHARGE;
+                } else {
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_ERROR;
                     bms_state.substate  = BMS_ENTRY;
-                } else {
-                    /* String not closed, re-issue closing request */
-                    CONT_CloseContactor(bms_state.firstClosedString, CONT_MINUS);
-                    CONT_CloseContactor(bms_state.firstClosedString, CONT_PLUS);
-                    bms_state.timer = BMS_STATEMACH_SHORTTIME;
                 }
                 break;
             } else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS_CLOSING_PRECHARGE) {
@@ -1322,8 +1275,7 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                /* Cellsius: Check if HV_ready or Bat_On was lost */
-                if (!(/* HV_ready && */ FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor))) {
+                if (BMS_CheckCanRequests() == BMS_REQ_ID_STANDBY) {
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;
@@ -1484,8 +1436,7 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                /* Cellsius: Check if HV_ready or Bat_On was lost */
-                if (!(/* HV_ready && */ FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor))) {
+                if (BMS_CheckCanRequests() == BMS_REQ_ID_STANDBY) {
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;
