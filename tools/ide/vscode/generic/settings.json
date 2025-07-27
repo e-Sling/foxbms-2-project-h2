@@ -93,7 +93,6 @@
     "**/CVS": true,
     "**/Thumbs.db": true,
     "**/__pycache__/**": true,
-    "**/build/**/": true,
     "**/conf/hcg/include/**": true,
     "**/tmp/**": true,
     ".github/**": true,

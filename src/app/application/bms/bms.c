@@ -231,7 +231,7 @@ static STD_RETURN_TYPE_e BMS_CheckPrecharge(uint8_t stringNumber, const DATA_BLO
  * @return  index of string with highest voltage If no string is available,
  *          returns #BMS_NO_STRING_AVAILABLE.
  */
-static uint8_t BMS_GetHighestString(BMS_CONSIDER_PRECHARGE_e precharge, DATA_BLOCK_PACK_VALUES_s *pPackValues);
+/* static uint8_t BMS_GetHighestString(BMS_CONSIDER_PRECHARGE_e precharge, DATA_BLOCK_PACK_VALUES_s *pPackValues); */
 
 /**
  * @brief   Returns ID of string with voltage closest to first closed string voltage
@@ -244,7 +244,7 @@ static uint8_t BMS_GetHighestString(BMS_CONSIDER_PRECHARGE_e precharge, DATA_BLO
  * @return  index of string with voltage closest to the first closed string voltage.
  *          If no string is available, returns #BMS_NO_STRING_AVAILABLE.
  */
-static uint8_t BMS_GetClosestString(BMS_CONSIDER_PRECHARGE_e precharge, DATA_BLOCK_PACK_VALUES_s *pPackValues);
+/* static uint8_t BMS_GetClosestString(BMS_CONSIDER_PRECHARGE_e precharge, DATA_BLOCK_PACK_VALUES_s *pPackValues); */
 
 /**
  * @brief   Returns ID of string with lowest total voltage
@@ -257,7 +257,7 @@ static uint8_t BMS_GetClosestString(BMS_CONSIDER_PRECHARGE_e precharge, DATA_BLO
  * @return  index of string with lowest voltage. If no string is available,
  *          returns #BMS_NO_STRING_AVAILABLE.
  */
-static uint8_t BMS_GetLowestString(BMS_CONSIDER_PRECHARGE_e precharge, DATA_BLOCK_PACK_VALUES_s *pPackValues);
+/* static uint8_t BMS_GetLowestString(BMS_CONSIDER_PRECHARGE_e precharge, DATA_BLOCK_PACK_VALUES_s *pPackValues); */
 
 /**
  * @brief   Returns voltage difference between first closed string and
@@ -270,7 +270,7 @@ static uint8_t BMS_GetLowestString(BMS_CONSIDER_PRECHARGE_e precharge, DATA_BLOC
  * @return voltage difference in mV, will return INT32_MAX if voltages are
  *         invalid and difference can not be calculated
  */
-static int32_t BMS_GetStringVoltageDifference(uint8_t string, const DATA_BLOCK_PACK_VALUES_s *pPackValues);
+/* static int32_t BMS_GetStringVoltageDifference(uint8_t string, const DATA_BLOCK_PACK_VALUES_s *pPackValues); */
 
 /**
  * @brief   Returns the average current flowing through all strings.
@@ -278,7 +278,7 @@ static int32_t BMS_GetStringVoltageDifference(uint8_t string, const DATA_BLOCK_P
  * @param[in]   pPackValues pointer to pack values database entry
  * @return  average current taking all strings into account in mA. INT32_MAX if there is no valid current measurement
  */
-static int32_t BMS_GetAverageStringCurrent(DATA_BLOCK_PACK_VALUES_s *pPackValues);
+/* static int32_t BMS_GetAverageStringCurrent(DATA_BLOCK_PACK_VALUES_s *pPackValues); */
 
 /**
  * @brief   Updates battery system state variable depending on measured/recent
@@ -546,7 +546,7 @@ static bool BMS_IsContactorFeedbackValid(uint8_t stringNumber, CONT_TYPE_e conta
     return feedbackValid;
 }
 
-static uint8_t BMS_GetHighestString(BMS_CONSIDER_PRECHARGE_e precharge, DATA_BLOCK_PACK_VALUES_s *pPackValues) {
+/* static uint8_t BMS_GetHighestString(BMS_CONSIDER_PRECHARGE_e precharge, DATA_BLOCK_PACK_VALUES_s *pPackValues) {
     FAS_ASSERT(pPackValues != NULL_PTR);
     uint8_t highest_string_index = BMS_NO_STRING_AVAILABLE;
     int32_t max_stringVoltage_mV = INT32_MIN;
@@ -569,55 +569,56 @@ static uint8_t BMS_GetHighestString(BMS_CONSIDER_PRECHARGE_e precharge, DATA_BLO
     }
 
     return highest_string_index;
-}
+} */
 
-static uint8_t BMS_GetClosestString(BMS_CONSIDER_PRECHARGE_e precharge, DATA_BLOCK_PACK_VALUES_s *pPackValues) {
+/* static uint8_t BMS_GetClosestString(BMS_CONSIDER_PRECHARGE_e precharge, DATA_BLOCK_PACK_VALUES_s *pPackValues) {
     FAS_ASSERT(pPackValues != NULL_PTR);
     uint8_t closestStringIndex     = BMS_NO_STRING_AVAILABLE;
     int32_t closedStringVoltage_mV = 0;
     bool searchString              = false;
 
-    /* Get voltage of first closed string */
-    if (pPackValues->invalidStringVoltage[bms_state.firstClosedString] == 0u) {
-        closedStringVoltage_mV = pPackValues->stringVoltage_mV[bms_state.firstClosedString];
-        searchString           = true;
-    } else if (pPackValues->invalidHvBusVoltage == 0u) {
-        /* Use high voltage bus voltage if measured string voltage is invalid */
-        closedStringVoltage_mV = pPackValues->highVoltageBusVoltage_mV;
-        searchString           = true;
-    } else {
-        /* Do not search for next string  if no valid voltages could be measured */
-        searchString = false;
-    }
+    / Get voltage of first closed string
+if (pPackValues->invalidStringVoltage[bms_state.firstClosedString] == 0u) {
+    closedStringVoltage_mV = pPackValues->stringVoltage_mV[bms_state.firstClosedString];
+    searchString           = true;
+} else if (pPackValues->invalidHvBusVoltage == 0u) {
+    / Use high voltage bus voltage if measured string voltage is invalid
+    closedStringVoltage_mV = pPackValues->highVoltageBusVoltage_mV;
+    searchString           = true;
+} else {
+    / Do not search for next string  if no valid voltages could be measured
+    searchString = false;
+}
 
-    if (searchString == true) {
-        for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
-            const bool isStringClosed          = BMS_IsStringClosed(s);
-            const uint8_t isStringVoltageValid = pPackValues->invalidStringVoltage[s];
-            if ((isStringClosed == false) && (isStringVoltageValid == 0u)) {
-                /* Only check open strings with valid voltages */
-                int32_t minimumVoltageDifference_mV = INT32_MAX;
-                int32_t voltageDifference_mV        = labs(closedStringVoltage_mV - pPackValues->stringVoltage_mV[s]);
-                if (voltageDifference_mV <= minimumVoltageDifference_mV) {
-                    if (bms_state.deactivatedStrings[s] == 0u) {
-                        if (precharge == BMS_TAKE_PRECHARGE_INTO_ACCOUNT) {
-                            if (bs_stringsWithPrecharge[s] == BS_STRING_WITH_PRECHARGE) {
-                                minimumVoltageDifference_mV = voltageDifference_mV;
-                                closestStringIndex          = s;
-                            }
-                        } else {
+if (searchString == true) {
+    for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
+        const bool isStringClosed          = BMS_IsStringClosed(s);
+        const uint8_t isStringVoltageValid = pPackValues->invalidStringVoltage[s];
+        if ((isStringClosed == false) && (isStringVoltageValid == 0u)) {
+            / Only check open strings with valid voltages
+            int32_t minimumVoltageDifference_mV = INT32_MAX;
+            int32_t voltageDifference_mV        = labs(closedStringVoltage_mV - pPackValues->stringVoltage_mV[s]);
+            if (voltageDifference_mV <= minimumVoltageDifference_mV) {
+                if (bms_state.deactivatedStrings[s] == 0u) {
+                    if (precharge == BMS_TAKE_PRECHARGE_INTO_ACCOUNT) {
+                        if (bs_stringsWithPrecharge[s] == BS_STRING_WITH_PRECHARGE) {
                             minimumVoltageDifference_mV = voltageDifference_mV;
                             closestStringIndex          = s;
                         }
+                    } else {
+                        minimumVoltageDifference_mV = voltageDifference_mV;
+                        closestStringIndex          = s;
                     }
                 }
             }
         }
     }
-    return closestStringIndex;
 }
+return closestStringIndex;
+}
+*/
 
-static uint8_t BMS_GetLowestString(BMS_CONSIDER_PRECHARGE_e precharge, DATA_BLOCK_PACK_VALUES_s *pPackValues) {
+/* static uint8_t BMS_GetLowestString(BMS_CONSIDER_PRECHARGE_e precharge, DATA_BLOCK_PACK_VALUES_s *pPackValues) {
     FAS_ASSERT(pPackValues != NULL_PTR);
     uint8_t lowest_string_index  = BMS_NO_STRING_AVAILABLE;
     int32_t min_stringVoltage_mV = INT32_MAX;
@@ -639,36 +640,39 @@ static uint8_t BMS_GetLowestString(BMS_CONSIDER_PRECHARGE_e precharge, DATA_BLOC
         }
     }
     return lowest_string_index;
-}
+} */
 
-static int32_t BMS_GetStringVoltageDifference(uint8_t string, const DATA_BLOCK_PACK_VALUES_s *pPackValues) {
+/* static int32_t BMS_GetStringVoltageDifference(uint8_t string, const DATA_BLOCK_PACK_VALUES_s *pPackValues) {
     FAS_ASSERT(string < BS_NR_OF_STRINGS);
     FAS_ASSERT(pPackValues != NULL_PTR);
     int32_t voltageDifference_mV = INT32_MAX;
     if ((pPackValues->invalidStringVoltage[string] == 0u) &&
         (pPackValues->invalidStringVoltage[bms_state.firstClosedString] == 0u)) {
-        /* Calculate difference between string voltages */
-        voltageDifference_mV = MATH_AbsInt32_t(
-            pPackValues->stringVoltage_mV[string] - pPackValues->stringVoltage_mV[bms_state.firstClosedString]);
-    } else if ((pPackValues->invalidStringVoltage[string] == 0u) && (pPackValues->invalidHvBusVoltage == 0u)) {
-        /* Calculate difference between string and high voltage bus voltage */
-        voltageDifference_mV =
-            MATH_AbsInt32_t(pPackValues->stringVoltage_mV[string] - pPackValues->highVoltageBusVoltage_mV);
-    } else {
-        /* No valid voltages for comparison -> do not calculate difference and return INT32_MAX */
-        voltageDifference_mV = INT32_MAX;
-    }
-    return voltageDifference_mV;
+        / Calculate difference between string voltages
+voltageDifference_mV =
+    MATH_AbsInt32_t(pPackValues->stringVoltage_mV[string] - pPackValues->stringVoltage_mV[bms_state.firstClosedString]);
 }
+else if ((pPackValues->invalidStringVoltage[string] == 0u) && (pPackValues->invalidHvBusVoltage == 0u)) {
+    / Calculate difference between string and high voltage bus voltage
+    voltageDifference_mV =
+        MATH_AbsInt32_t(pPackValues->stringVoltage_mV[string] - pPackValues->highVoltageBusVoltage_mV);
+}
+else {
+    / No valid voltages for comparison -> do not calculate difference and return INT32_MAX
+    voltageDifference_mV = INT32_MAX;
+}
+return voltageDifference_mV;
+}
+*/
 
-static int32_t BMS_GetAverageStringCurrent(DATA_BLOCK_PACK_VALUES_s *pPackValues) {
+/* static int32_t BMS_GetAverageStringCurrent(DATA_BLOCK_PACK_VALUES_s *pPackValues) {
     FAS_ASSERT(pPackValues != NULL_PTR);
     int32_t average_current = pPackValues->packCurrent_mA / (int32_t)BS_NR_OF_STRINGS;
     if (pPackValues->invalidPackCurrent == 1u) {
         average_current = INT32_MAX;
     }
     return average_current;
-}
+} */
 
 static void BMS_UpdateBatterySystemState(DATA_BLOCK_PACK_VALUES_s *pPackValues) {
     FAS_ASSERT(pPackValues != NULL_PTR);
@@ -837,13 +841,13 @@ BMS_RETURN_TYPE_e BMS_SetStateRequest(BMS_STATE_REQUEST_e statereq) {
 }
 
 void BMS_Trigger(void) {
-    BMS_STATE_REQUEST_e statereq                = BMS_STATE_NO_REQUEST;
-    DATA_BLOCK_SYSTEM_STATE_s systemState       = {.header.uniqueId = DATA_BLOCK_ID_SYSTEM_STATE};
-    uint32_t timestamp                          = OS_GetTickCount();
-    static uint32_t nextOpenWireCheck           = 0;
-    STD_RETURN_TYPE_e retVal                    = STD_NOT_OK;
-    static uint8_t stringNumber                 = 0u;
-    static uint8_t nextStringNumber             = 0u;
+    BMS_STATE_REQUEST_e statereq          = BMS_STATE_NO_REQUEST;
+    DATA_BLOCK_SYSTEM_STATE_s systemState = {.header.uniqueId = DATA_BLOCK_ID_SYSTEM_STATE};
+    uint32_t timestamp                    = OS_GetTickCount();
+    static uint32_t nextOpenWireCheck     = 0;
+    STD_RETURN_TYPE_e retVal              = STD_NOT_OK;
+    static uint8_t stringNumber           = 0u;
+    /*     static uint8_t nextStringNumber             = 0u; */
     CONT_ELECTRICAL_STATE_TYPE_e contactorState = CONT_SWITCH_UNDEFINED;
     bool contactorFeedbackValid                 = false;
     STD_RETURN_TYPE_e contRetVal                = STD_NOT_OK;
@@ -1100,12 +1104,12 @@ void BMS_Trigger(void) {
                 }
             } else if (bms_state.substate == BMS_OPEN_MAIN_CONTACTOR) {
                 bms_state.contactorToBeOpened = CONT_MAIN;
-                /* Open main contactor */
+                /* Cellsius: Open main contactor */
                 CONT_OpenContactor(bms_state.stringToBeOpened, bms_state.contactorToBeOpened);
                 bms_state.timer    = BMS_WAIT_TIME_AFTER_OPENING_STRING_CONTACTOR;
                 bms_state.substate = BMS_CHECK_MAIN_CONTACTOR;
             } else if (bms_state.substate == BMS_CHECK_MAIN_CONTACTOR) {
-                /* Check if second contactor has been opened correctly */
+                /* Cellsius: Check if main contactor has been opened correctly */
                 contactorState = CONT_GetContactorState(bms_state.stringToBeOpened, bms_state.contactorToBeOpened);
                 contactorFeedbackValid =
                     BMS_IsContactorFeedbackValid(bms_state.stringToBeOpened, bms_state.contactorToBeOpened);
@@ -1203,11 +1207,9 @@ void BMS_Trigger(void) {
                     break;
                 }
                 if (BMS_CheckCanRequests() == BMS_REQ_ID_CHARGE) {
-                    /* TODO: Check Charging state. Right now part uf Running State*/
                     bms_state.powerPath = BMS_POWER_PATH_1;
-                    bms_state.nextState = BMS_STATEMACH_CHARGE;
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
-                    bms_state.state     = BMS_STATEMACH_PRECHARGE;
+                    bms_state.state     = BMS_STATEMACH_CHARGE;
                     bms_state.substate  = BMS_ENTRY;
                     break;
                 } else {
@@ -1231,10 +1233,11 @@ void BMS_Trigger(void) {
             BMS_SAVE_LAST_STATES();
 
             if (bms_state.substate == BMS_ENTRY) {
+                BAL_SetStateRequest(BAL_STATE_NO_BALANCING_REQUEST);
                 DATA_READ_DATA(&systemState);
                 systemState.bmsCanState = BMS_CAN_STATE_PRECHARGE;
                 DATA_WRITE_DATA(&systemState);
-                if (bms_state.nextState == BMS_STATEMACH_CHARGE) {
+                /* if (bms_state.nextState == BMS_STATEMACH_CHARGE) {
                     stringNumber = BMS_GetLowestString(BMS_TAKE_PRECHARGE_INTO_ACCOUNT, &bms_tablePackValues);
                 } else {
                     stringNumber = BMS_GetHighestString(BMS_TAKE_PRECHARGE_INTO_ACCOUNT, &bms_tablePackValues);
@@ -1245,11 +1248,13 @@ void BMS_Trigger(void) {
                     bms_state.nextState = BMS_STATEMACH_ERROR;
                     bms_state.substate  = BMS_ENTRY;
                     break;
-                }
+                } */
+                /* Cellsius: Only one string with index 0 */
+                stringNumber                  = 0u;
                 bms_state.prechargeTryCounter = 0u;
                 bms_state.firstClosedString   = stringNumber;
                 if (bms_state.OscillationTimeout == 0u) {
-                    /* Cellsius: Close MINUS and PLUS string contactor */
+                    /* Cellsius: Close MINUS and PLUS contactor */
                     if (CONT_CloseContactor(bms_state.firstClosedString, CONT_MINUS) == STD_OK &&
                         CONT_CloseContactor(bms_state.firstClosedString, CONT_PLUS) == STD_OK) {
                         bms_state.stringCloseTimeout = BMS_STRING_CLOSE_TIMEOUT;
@@ -1317,7 +1322,8 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                if (BMS_CheckCanRequests() == BMS_REQ_ID_STANDBY) {
+                /* Cellsius: Check if HV_ready or Bat_On was lost */
+                if (!(/* HV_ready && */ FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor))) {
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;
@@ -1459,11 +1465,7 @@ void BMS_Trigger(void) {
                 nextOpenWireCheck = timestamp + BS_NORMAL_OPEN_WIRE_PERIOD_ms;
 #endif /* BS_NORMAL_PERIODIC_OPEN_WIRE_CHECK == TRUE */
                 DATA_READ_DATA(&systemState);
-                if (bms_state.nextState == BMS_STATEMACH_CHARGE) {
-                    systemState.bmsCanState = BMS_CAN_STATE_CHARGE;
-                } else {
-                    systemState.bmsCanState = BMS_CAN_STATE_NORMAL;
-                }
+                systemState.bmsCanState = BMS_CAN_STATE_NORMAL;
                 DATA_WRITE_DATA(&systemState);
                 bms_state.timer                 = BMS_STATEMACH_SHORTTIME;
                 bms_state.substate              = BMS_CHECK_ERROR_FLAGS;
@@ -1482,7 +1484,8 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                if (BMS_CheckCanRequests() == BMS_REQ_ID_STANDBY) {
+                /* Cellsius: Check if HV_ready or Bat_On was lost */
+                if (!(/* HV_ready && */ FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor))) {
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;
@@ -1495,11 +1498,13 @@ void BMS_Trigger(void) {
                         nextOpenWireCheck = timestamp + BS_NORMAL_OPEN_WIRE_PERIOD_ms;
                     }
 #endif /* BS_NORMAL_PERIODIC_OPEN_WIRE_CHECK == TRUE */
-                    bms_state.timer    = BMS_STATEMACH_SHORTTIME;
-                    bms_state.substate = BMS_NORMAL_CLOSE_NEXT_STRING;
+                    bms_state.timer = BMS_STATEMACH_SHORTTIME;
+                    /* bms_state.substate = BMS_NORMAL_CLOSE_NEXT_STRING; */
+                    /* Cellsius: Only one string, directly go to Check Error */
+                    bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                     break;
                 }
-            } else if (bms_state.substate == BMS_NORMAL_CLOSE_NEXT_STRING) {
+            } /* else if (bms_state.substate == BMS_NORMAL_CLOSE_NEXT_STRING) {
                 if (bms_state.nextStringClosedTimer == 0u) {
                     nextStringNumber =
                         BMS_GetClosestString(BMS_DO_NOT_TAKE_PRECHARGE_INTO_ACCOUNT, &bms_tablePackValues);
@@ -1511,8 +1516,7 @@ void BMS_Trigger(void) {
                         (BMS_GetStringVoltageDifference(nextStringNumber, &bms_tablePackValues) <=
                          BMS_NEXT_STRING_VOLTAGE_LIMIT_MV) &&
                         (BMS_GetAverageStringCurrent(&bms_tablePackValues) <= BMS_AVERAGE_STRING_CURRENT_LIMIT_MA)) {
-                        /* Voltage/current conditions suitable to close a further string. Close first string contactor
-                         */
+                        / Voltage/current conditions suitable to close a further string. Close first string contactor
                         CONT_CloseContactor(nextStringNumber, CONT_MINUS);
                         bms_state.nextStringClosedTimer = BMS_STRING_CLOSE_TIMEOUT;
                         bms_state.timer                 = BMS_WAIT_TIME_AFTER_CLOSING_STRING_CONTACTOR;
@@ -1527,19 +1531,19 @@ void BMS_Trigger(void) {
             } else if (bms_state.substate == BMS_NORMAL_CLOSE_SECOND_STRING_CONTACTOR) {
                 contactorState = CONT_GetContactorState(nextStringNumber, CONT_MINUS);
                 if (contactorState == CONT_SWITCH_ON) {
-                    /* First string contactor closed. Close second string contactor */
+                    / First string contactor closed. Close second string contactor
                     CONT_CloseContactor(nextStringNumber, CONT_PLUS);
                     bms_state.timer    = BMS_WAIT_TIME_AFTER_CLOSING_STRING_CONTACTOR;
                     bms_state.substate = BMS_NORMAL_CLOSE_SECOND_STRING_CONTACTOR;
                 } else if (bms_state.stringCloseTimeout == 0u) {
-                    /* String takes too long to close */
+                    / String takes too long to close
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_ERROR;
                     bms_state.substate  = BMS_ENTRY;
                     break;
                 } else {
-                    /* String minus contactor has not been closed successfully. Re-trigger closing */
+                    / String minus contactor has not been closed successfully. Re-trigger closing
                     CONT_CloseContactor(nextStringNumber, CONT_MINUS);
                     bms_state.timer = BMS_STATEMACH_SHORTTIME;
                 }
@@ -1550,11 +1554,11 @@ void BMS_Trigger(void) {
                     bms_state.numberOfClosedStrings++;
                     bms_state.closedStrings[nextStringNumber] = 1u;
                     bms_state.nextStringClosedTimer           = BMS_WAIT_TIME_BETWEEN_CLOSING_STRINGS;
-                    /* Go to begin of NORMAL case to redo the full procedure with error check and request check */
+                    / Go to begin of NORMAL case to redo the full procedure with error check and request check
                     bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                     break;
                 } else if (bms_state.stringCloseTimeout == 0u) {
-                    /* String takes too long to close */
+                    / String takes too long to close
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_ERROR;
@@ -1573,12 +1577,13 @@ void BMS_Trigger(void) {
                     bms_state.substate  = BMS_ENTRY;
                     break;
                 } else {
-                    /* String not closed, re-issue closing request */
+                    / String not closed, re-issue closing request
                     CONT_CloseContactor(nextStringNumber, CONT_PLUS);
                     bms_state.timer = BMS_STATEMACH_SHORTTIME;
                     break;
                 }
-            } else {
+            }*/
+            else {
                 FAS_ASSERT(FAS_TRAP);
             }
             break;
@@ -1621,7 +1626,8 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                if (BMS_CheckCanRequests() == BMS_REQ_ID_STANDBY) {
+                /* Cellsius: Go to standby without request */
+                if (true /* BMS_CheckCanRequests() == BMS_REQ_ID_STANDBY */) {
                     /* Activate balancing again */
                     BAL_SetStateRequest(BAL_STATE_ALLOW_BALANCING_REQUEST);
                     /* Set LED frequency to normal operation as we leave error
@@ -1647,6 +1653,23 @@ void BMS_Trigger(void) {
         default:
             /* invalid state */
             FAS_ASSERT(FAS_TRAP);
+            break;
+
+        /****************************PRECHARGE********************************/
+        case BMS_STATEMACH_CHARGE:
+            BMS_SAVE_LAST_STATES();
+
+            /* Leon: to implement*/
+
+            if (bms_state.substate == BMS_ENTRY) {
+                BAL_SetStateRequest(BAL_STATE_NO_BALANCING_REQUEST);
+                DATA_READ_DATA(&systemState);
+                systemState.bmsCanState = BMS_CAN_STATE_CHARGE;
+                DATA_WRITE_DATA(&systemState);
+                break;
+            }
+
+            /* TODO: Different precharge sequence. Implemented in this state */
             break;
     } /* end switch (bms_state.state) */
 

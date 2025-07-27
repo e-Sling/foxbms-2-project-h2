@@ -82,20 +82,20 @@
 /** @{
  * defines for the state request signal data
  */
-#define CANRX_STATE_REQUEST_DISABLE_INSULATION_MONITORING_START_BIT (5u)
+/* #define CANRX_STATE_REQUEST_DISABLE_INSULATION_MONITORING_START_BIT (5u)
 #define CANRX_STATE_REQUEST_DISABLE_INSULATION_MONITORING_LENGTH    (CAN_BIT)
 #define CANRX_STATE_REQUEST_CHARGER_CONNECTED_START_BIT             (4u)
 #define CANRX_STATE_REQUEST_CHARGER_CONNECTED_LENGTH                (CAN_BIT)
 #define CANRX_STATE_REQUEST_INDICATE_PRECHARGE_TYPE_START_BIT       (3u)
-#define CANRX_STATE_REQUEST_INDICATE_PRECHARGE_TYPE_LENGTH          (CAN_BIT)
-#define CANRX_STATE_REQUEST_RESET_PERSISTENT_FLAGS_START_BIT        (2u)
-#define CANRX_STATE_REQUEST_RESET_PERSISTENT_FLAGS_LENGTH           (CAN_BIT)
-#define CANRX_STATE_REQUEST_REQUEST_BMS_MODE_START_BIT              (1u)
-#define CANRX_STATE_REQUEST_REQUEST_BMS_MODE_LENGTH                 (2u)
-#define CANRX_STATE_REQUEST_ACTIVATE_BALANCING_START_BIT            (8u)
-#define CANRX_STATE_REQUEST_ACTIVATE_BALANCING_LENGTH               (CAN_BIT)
-#define CANRX_STATE_REQUEST_SET_BALANCING_THRESHOLD_START_BIT       (23u)
-#define CANRX_STATE_REQUEST_SET_BALANCING_THRESHOLD_LENGTH          (8u)
+#define CANRX_STATE_REQUEST_INDICATE_PRECHARGE_TYPE_LENGTH          (CAN_BIT) */
+#define CANRX_STATE_REQUEST_REQUEST_BMS_MODE_START_BIT        (0u)
+#define CANRX_STATE_REQUEST_REQUEST_BMS_MODE_LENGTH           (4u)
+#define CANRX_STATE_REQUEST_ACTIVATE_BALANCING_START_BIT      (8u)
+#define CANRX_STATE_REQUEST_ACTIVATE_BALANCING_LENGTH         (CAN_BIT)
+#define CANRX_STATE_REQUEST_SET_BALANCING_THRESHOLD_START_BIT (16u)
+#define CANRX_STATE_REQUEST_SET_BALANCING_THRESHOLD_LENGTH    (8u)
+#define CANRX_STATE_REQUEST_RESET_PERSISTENT_FLAGS_START_BIT  (24u)
+#define CANRX_STATE_REQUEST_RESET_PERSISTENT_FLAGS_LENGTH     (CAN_BIT)
 /** @} */
 
 /*========== Static Constant and Variable Definitions =======================*/
@@ -171,13 +171,13 @@ static void CANRX_HandleModeRequest(uint64_t messageData, const CAN_SHIM_s *cons
     uint8_t stateRequest = BMS_REQ_ID_NOREQ;
 
     switch (signalData) {
-        case 0u:
+        case 1u:
             stateRequest = BMS_REQ_ID_STANDBY;
             break;
-        case 1u:
+        case 2u:
             stateRequest = BMS_REQ_ID_NORMAL;
             break;
-        case 2u:
+        case 3u:
             stateRequest = BMS_REQ_ID_CHARGE;
             break;
         default:

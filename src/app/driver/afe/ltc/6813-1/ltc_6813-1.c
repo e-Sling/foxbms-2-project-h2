@@ -1390,7 +1390,8 @@ void LTC_Trigger(LTC_STATE_s *ltc_state) {
                     if (ltc_state->muxmeas_seqptr[ltc_state->currentString]->muxCh == 0xFF) {
                         /* actual multiplexer is switched off, so do not make a measurement and follow up with next step
                          * (mux configuration) */
-                        ++ltc_state->muxmeas_seqptr[ltc_state->currentString]; /*  go further with next step of sequence
+                        ++ltc_state
+                              ->muxmeas_seqptr[ltc_state->currentString]; /*  go further with next step of sequence
                                                                  ltc_state.numberOfMeasuredMux not decremented, this
                                                                  does not count as a measurement */
                         LTC_StateTransition(ltc_state, LTC_STATEMACH_STARTMEAS, LTC_ENTRY, LTC_STATEMACH_SHORTTIME);
@@ -1411,7 +1412,7 @@ void LTC_Trigger(LTC_STATE_s *ltc_state) {
                         }
 
                         ltc_state->check_spi_flag = STD_NOT_OK;
-                        /* user multiplexer type -> connected to GPIO2! */
+                        /* Cellsius: muxID 0 -> GPIO2, muxID 1 -> GPIO1 */
                         if ((ltc_state->muxmeas_seqptr[ltc_state->currentString]->muxID == 1) ||
                             (ltc_state->muxmeas_seqptr[ltc_state->currentString]->muxID == 2)) {
                             retVal = LTC_StartGpioMeasurement(
