@@ -381,6 +381,19 @@ extern void DIAG_PrechargeContactorFeedback(
     uint32_t stringNumber);
 
 /**
+ * @brief diagnosis callback function for main contactor feedback related events
+ * @param[in] diagId        ID of diag entry
+ * @param[in] event         #DIAG_EVENT_e
+ * @param[in] kpkDiagShim   shim to the database entries
+ * @param[in] stringNumber  stringNumber where main feedback event occurred
+ */
+extern void DIAG_MainContactorFeedback(
+    DIAG_ID_e diagId,
+    DIAG_EVENT_e event,
+    const DIAG_DATABASE_SHIM_s *const kpkDiagShim,
+    uint32_t stringNumber);
+
+/**
  * @brief diagnosis callback function for plausibility check related events
  * @param[in] diagId        ID of diag entry
  * @param[in] event         #DIAG_EVENT_e

@@ -124,6 +124,29 @@ extern void DIAG_PrechargeContactorFeedback(
     }
 }
 
+extern void DIAG_MainContactorFeedback(
+    DIAG_ID_e diagId,
+    DIAG_EVENT_e event,
+    const DIAG_DATABASE_SHIM_s *const kpkDiagShim,
+    uint32_t stringNumber) {
+    FAS_ASSERT(diagId == DIAG_ID_MAIN_CONTACTOR_FEEDBACK);
+    FAS_ASSERT((event == DIAG_EVENT_OK) || (event == DIAG_EVENT_NOT_OK) || (event == DIAG_EVENT_RESET));
+    FAS_ASSERT(kpkDiagShim != NULL_PTR);
+    FAS_ASSERT(stringNumber < BS_NR_OF_STRINGS);
+
+    if (diagId == DIAG_ID_MAIN_CONTACTOR_FEEDBACK) {
+        if (event == DIAG_EVENT_RESET) {
+            kpkDiagShim->pTableError->mainContactorFeedbackError[stringNumber] = false;
+        }
+        if (event == DIAG_EVENT_NOT_OK) {
+            kpkDiagShim->pTableError->mainContactorFeedbackError[stringNumber] = true;
+        }
+    } else {
+        /* This function should not be called with other diagnosis IDs */
+        FAS_ASSERT(FAS_TRAP);
+    }
+}
+
 /*========== Externalized Static Function Implementations (Unit Test) =======*/
 #ifdef UNITY_UNIT_TEST
 #endif

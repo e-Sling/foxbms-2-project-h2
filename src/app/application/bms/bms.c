@@ -768,7 +768,7 @@ void BMS_Trigger(void) {
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
                 /* Cellsius: Go to standby without request */
-                if (true /* BMS_CheckCanRequests() == BMS_REQ_ID_STANDBY */) {
+                if (true) {
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;
@@ -1008,9 +1008,8 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                /* if (BMS_CheckCanRequests() == BMS_REQ_ID_NORMAL) { */
-                /* Cellsius: Check for HV_ready and Bat_On */
-                if (/* HV_ready && */ FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor)) {
+                /* Cellsius: Check for Bat_On */
+                if (FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor)) {
                     bms_state.powerPath = BMS_POWER_PATH_0;
                     bms_state.nextState = BMS_STATEMACH_DISCHARGE;
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
@@ -1122,8 +1121,8 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                /* Cellsius: Check if HV_ready or Bat_On was lost */
-                if (!(/* HV_ready && */ FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor))) {
+                /* Cellsius: Check if Bat_On was lost */
+                if (!(FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor))) {
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;
@@ -1284,8 +1283,8 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                /* Cellsius: Check if HV_ready or Bat_On was lost */
-                if (!(/* HV_ready && */ FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor))) {
+                /* Cellsius: Check if Bat_On was lost */
+                if (!(FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor))) {
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;
@@ -1348,7 +1347,7 @@ void BMS_Trigger(void) {
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
                 /* Cellsius: Go to standby without request */
-                if (true /* BMS_CheckCanRequests() == BMS_REQ_ID_STANDBY */) {
+                if (true) {
                     /* Activate balancing again */
                     BAL_SetStateRequest(BAL_STATE_ALLOW_BALANCING_REQUEST);
                     /* Set LED frequency to normal operation as we leave error
@@ -1376,7 +1375,7 @@ void BMS_Trigger(void) {
             FAS_ASSERT(FAS_TRAP);
             break;
 
-        /****************************PRECHARGE********************************/
+        /****************************CHARGE********************************/
         case BMS_STATEMACH_CHARGE:
             BMS_SAVE_LAST_STATES();
 
