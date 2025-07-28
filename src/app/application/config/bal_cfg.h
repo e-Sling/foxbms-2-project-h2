@@ -75,10 +75,10 @@
 #define BAL_DEFAULT_THRESHOLD_mV (50)
 
 /** maximum value that BAL voltage threshold may take */
-#define BAL_MAXIMUM_THRESHOLD_mV (5000)
+#define BAL_MAXIMUM_THRESHOLD_mV (50)
 
 /** minimum value that BAL voltage threshold may take */
-#define BAL_MINIMUM_THRESHOLD_mV (0)
+#define BAL_MINIMUM_THRESHOLD_mV (50)
 
 /** BAL hysteresis for voltage threshold when balancing was finished in mV */
 #define BAL_HYSTERESIS_mV (10)

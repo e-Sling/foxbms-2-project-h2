@@ -67,13 +67,13 @@
 #define BMS_REQ_ID_NOREQ (0u)
 
 /** ID to request the STANDBY state via CAN */
-#define BMS_REQ_ID_STANDBY (3u)
+#define BMS_REQ_ID_STANDBY (1u)
 
 /** ID to request the NORMAL state via CAN */
-#define BMS_REQ_ID_NORMAL (1u)
+#define BMS_REQ_ID_NORMAL (2u)
 
 /** ID to request the CHARGE state via CAN */
-#define BMS_REQ_ID_CHARGE (2u)
+#define BMS_REQ_ID_CHARGE (3u)
 
 /**
  * @brief   Functions searching for next string return this value if no further
