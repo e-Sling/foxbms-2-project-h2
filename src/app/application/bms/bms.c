@@ -1010,18 +1010,16 @@ void BMS_Trigger(void) {
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
                 /* Cellsius: Check for Bat_On */
                 if (FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor)) {
-                    bms_state.powerPath = BMS_POWER_PATH_0;
-                    bms_state.nextState = BMS_STATEMACH_DISCHARGE;
+                    bms_state.nextState = BMS_STATEMACH_NORMAL;
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_PRECHARGE;
                     bms_state.substate  = BMS_ENTRY;
                     break;
                 }
                 if (BMS_CheckCanRequests() == BMS_REQ_ID_CHARGE) {
-                    bms_state.powerPath = BMS_POWER_PATH_1;
-                    bms_state.timer     = BMS_STATEMACH_SHORTTIME;
-                    bms_state.state     = BMS_STATEMACH_CHARGE;
-                    bms_state.substate  = BMS_ENTRY;
+                    bms_state.timer    = BMS_STATEMACH_SHORTTIME;
+                    bms_state.state    = BMS_STATEMACH_CHARGE;
+                    bms_state.substate = BMS_ENTRY;
                     break;
                 } else {
 #if BS_STANDBY_PERIODIC_OPEN_WIRE_CHECK == TRUE
