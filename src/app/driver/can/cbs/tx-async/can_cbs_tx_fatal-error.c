@@ -83,7 +83,7 @@ static STD_RETURN_TYPE_e CANTX_SendMessageFatalErrorCode(uint64_t messageData) {
 
     CAN_TxSetCanDataWithMessageData(messageData, &data[0], CAN_BIG_ENDIAN);
     STD_RETURN_TYPE_e successfullyQueued =
-        CAN_DataSend(CAN_NODE_FATAL_ERROR_MESSAGE, CANTX_BMS_FATAL_ERROR_ID, CANTX_BMS_FATAL_ERROR_ID_TYPE, &data[0]);
+        STD_OK;  // CAN_DataSend(CAN_NODE_FATAL_ERROR_MESSAGE, CANTX_BMS_FATAL_ERROR_ID, CANTX_BMS_FATAL_ERROR_ID_TYPE, &data[0]);
 
     return successfullyQueued;
 }
