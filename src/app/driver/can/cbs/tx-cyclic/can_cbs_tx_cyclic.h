@@ -250,6 +250,34 @@ extern uint32_t CANTX_StringStateEstimation(
     const CAN_SHIM_s *const kpkCanShim);
 /** @} */
 
+/***** Cellsius: Own CAN TX message definitions *****/
+
+/**
+ * @brief   CAN Tx callback function for pack voltage min/max/avg values
+ * @param[in] message     contains the message ID, DLC and endianness
+ * @param[in] pCanData    payload of can frame
+ * @param[in] pMuxId      multiplexer for multiplexed CAN messages
+ * @param[in] kpkCanShim  shim to the database entries
+ */
+extern uint32_t CANTX_VoltageMinMaxAvgValues(
+    CAN_MESSAGE_PROPERTIES_s message,
+    uint8_t *pCanData,
+    uint8_t *pMuxId,
+    const CAN_SHIM_s *const kpkCanShim);
+
+/**
+ * @brief   CAN Tx callback function for pack temperature min/max/avg values
+ * @param[in] message     contains the message ID, DLC and endianness
+ * @param[in] pCanData    payload of can frame
+ * @param[in] pMuxId      multiplexer for multiplexed CAN messages
+ * @param[in] kpkCanShim  shim to the database entries
+ */
+extern uint32_t CANTX_TempMinMaxAvgValues(
+    CAN_MESSAGE_PROPERTIES_s message,
+    uint8_t *pCanData,
+    uint8_t *pMuxId,
+    const CAN_SHIM_s *const kpkCanShim);
+
 /*========== Externalized Static Functions Prototypes (Unit Test) ===========*/
 #ifdef UNITY_UNIT_TEST
 /* externalized functions from src/app/driver/can/cbs/tx-cyclic/can_cbs_tx_bms-state-details.c */
