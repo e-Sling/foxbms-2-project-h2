@@ -67,7 +67,7 @@
  *  - Identifier type (standard or extended)
  *  - data length
  *  - Endianness @{*/
-#define CANTX_DEBUG_RESPONSE_ID         (0x301u)
+#define CANTX_DEBUG_RESPONSE_ID         (0x721u)
 #define CANTX_DEBUG_RESPONSE_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
 #define CANTX_DEBUG_RESPONSE_ENDIANNESS (CAN_BIG_ENDIAN)
 #define CANTX_DEBUG_RESPONSE_DLC        (CAN_DEFAULT_DLC)
@@ -79,7 +79,7 @@
  *  - Identifier type (standard or extended)
  *  - data length
  *  - Endianness @{*/
-#define CANTX_DEBUG_UNSUPPORTED_MULTIPLEXER_VAL_ID         (0x302u)
+#define CANTX_DEBUG_UNSUPPORTED_MULTIPLEXER_VAL_ID         (0x722u)
 #define CANTX_DEBUG_UNSUPPORTED_MULTIPLEXER_VAL_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
 #define CANTX_DEBUG_UNSUPPORTED_MULTIPLEXER_VAL_ENDIANNESS (CAN_BIG_ENDIAN)
 #define CANTX_DEBUG_UNSUPPORTED_MULTIPLEXER_VAL_DLC        (CAN_DEFAULT_DLC)
@@ -91,7 +91,7 @@
  *  - Identifier type (standard or extended)
  *  - data length
  *  - Endianness @{*/
-#define CANTX_DEBUG_BUILD_CONFIGURATION_ID         (0x303u)
+#define CANTX_DEBUG_BUILD_CONFIGURATION_ID         (0x723u)
 #define CANTX_DEBUG_BUILD_CONFIGURATION_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
 #define CANTX_DEBUG_BUILD_CONFIGURATION_ENDIANNESS (CAN_BIG_ENDIAN)
 #define CANTX_DEBUG_BUILD_CONFIGURATION_DLC        (CAN_DEFAULT_DLC)
@@ -102,7 +102,7 @@
  *  - Identifier type (standard or extended)
  *  - data length
  *  - Endianness @{*/
-#define CANTX_CRASH_DUMP_ID         (0xFFu)
+#define CANTX_CRASH_DUMP_ID         (0x724u)
 #define CANTX_CRASH_DUMP_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
 #define CANTX_CRASH_DUMP_ENDIANNESS (CAN_BIG_ENDIAN)
 #define CANTX_CRASH_DUMP_DLC        (CAN_DEFAULT_DLC)
@@ -113,9 +113,9 @@
  *  - Identifier type (standard or extended)
  *  - data length
  *  - Endianness @{*/
-#define CANTX_BMS_FATAL_ERROR_ID         (0x222u)
+#define CANTX_BMS_FATAL_ERROR_ID         (0x621u)
 #define CANTX_BMS_FATAL_ERROR_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANTX_BMS_FATAL_ERROR_ENDIANNESS (CAN_BIG_ENDIAN)
+#define CANTX_BMS_FATAL_ERROR_ENDIANNESS (CAN_LITTLE_ENDIAN)
 #define CANTX_BMS_FATAL_ERROR_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
 
