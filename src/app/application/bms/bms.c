@@ -121,6 +121,7 @@ static BMS_STATE_s bms_state = {
     .timeAboveContactorBreakCurrent_ms = 0u,
     .stringToBeOpened                  = 0u,
     .contactorToBeOpened               = CONT_UNDEFINED,
+    .batOnSignal                       = false,
 };
 
 /** local copies of database tables */
@@ -429,6 +430,10 @@ extern BMS_STATEMACH_SUB_e BMS_GetSubstate(void) {
     return bms_state.substate;
 }
 
+extern bool BMS_GetBatOnSignal(void) {
+    return bms_state.batOnSignal;
+}
+
 BMS_RETURN_TYPE_e BMS_SetStateRequest(BMS_STATE_REQUEST_e statereq) {
     BMS_RETURN_TYPE_e retVal = BMS_OK;
 
@@ -464,6 +469,8 @@ void BMS_Trigger(void) {
         SOA_CheckSlaveTemperatures();
         BMS_CheckOpenSenseWire(); */
         CONT_CheckFeedback();
+        /* Cellsius: Check Bat_On Signal */
+        bms_state.batOnSignal = FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor);
     }
     /* Check re-entrance of function */
     if (BMS_CheckReEntrance() > 0u) {

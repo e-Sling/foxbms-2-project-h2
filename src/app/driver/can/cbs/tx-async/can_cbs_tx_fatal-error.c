@@ -81,7 +81,7 @@ static STD_RETURN_TYPE_e CANTX_SendMessageFatalErrorCode(uint64_t messageData) {
     /* AXIVION Routine Generic-MissingParameterAssert: messageData: parameter accept whole range */
     uint8_t data[] = {GEN_REPEAT_U(0u, GEN_STRIP(CAN_MAX_DLC))};
 
-    CAN_TxSetCanDataWithMessageData(messageData, &data[0], CAN_BIG_ENDIAN);
+    CAN_TxSetCanDataWithMessageData(messageData, &data[0], CANTX_BMS_FATAL_ERROR_ENDIANNESS);
     STD_RETURN_TYPE_e successfullyQueued =
         STD_OK;  // CAN_DataSend(CAN_NODE_FATAL_ERROR_MESSAGE, CANTX_BMS_FATAL_ERROR_ID, CANTX_BMS_FATAL_ERROR_ID_TYPE, &data[0]);
 
@@ -94,7 +94,7 @@ extern STD_RETURN_TYPE_e CANTX_SendFatalErrorId(uint32_t errorId) {
     uint64_t message = 0u;
 
     CAN_TxSetMessageDataWithSignalData(
-        &message, CANTX_FATAL_ERROR_START_BIT, CANTX_FATAL_ERROR_LENGTH, errorId, CAN_BIG_ENDIAN);
+        &message, CANTX_FATAL_ERROR_START_BIT, CANTX_FATAL_ERROR_LENGTH, errorId, CANTX_BMS_FATAL_ERROR_ENDIANNESS);
 
     STD_RETURN_TYPE_e success = CANTX_SendMessageFatalErrorCode(message);
 

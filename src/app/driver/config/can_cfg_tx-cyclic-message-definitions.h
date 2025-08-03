@@ -68,7 +68,7 @@
  *  - Period and phase in ms
  *  - Endianness
  *  - data length @{*/
-#define CANTX_BMS_STATE_ID         (0x20u)
+#define CANTX_BMS_STATE_ID         (0x220u)
 #define CANTX_BMS_STATE_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
 #define CANTX_BMS_STATE_PERIOD_ms  (20u)
 #define CANTX_BMS_STATE_PHASE_ms   (0u)
@@ -82,11 +82,11 @@
  *  - Period and phase in ms
  *  - Endianness
  *  - data length @{*/
-#define CANTX_BMS_STATE_DETAILS_ID         (0x221u)
+#define CANTX_BMS_STATE_DETAILS_ID         (0x620u)
 #define CANTX_BMS_STATE_DETAILS_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
 #define CANTX_BMS_STATE_DETAILS_PERIOD_ms  (1000u)
 #define CANTX_BMS_STATE_DETAILS_PHASE_ms   (0u)
-#define CANTX_BMS_STATE_DETAILS_ENDIANNESS (CAN_BIG_ENDIAN)
+#define CANTX_BMS_STATE_DETAILS_ENDIANNESS (CAN_LITTLE_ENDIAN)
 #define CANTX_BMS_STATE_DETAILS_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
 
@@ -96,10 +96,10 @@
  *  - Period and phase in ms
  *  - Endianness
  *  - data length @{*/
-#define CANTX_CELL_VOLTAGES_ID         (0x41u)
+#define CANTX_CELL_VOLTAGES_ID         (0x422u)
 #define CANTX_CELL_VOLTAGES_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
 #define CANTX_CELL_VOLTAGES_PERIOD_ms  (100u)
-#define CANTX_CELL_VOLTAGES_PHASE_ms   (0u)
+#define CANTX_CELL_VOLTAGES_PHASE_ms   (5u)
 #define CANTX_CELL_VOLTAGES_ENDIANNESS (CAN_LITTLE_ENDIAN)
 #define CANTX_CELL_VOLTAGES_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
@@ -110,10 +110,10 @@
  *  - Period and phase in ms
  *  - Endianness
  *  - data length @{*/
-#define CANTX_CELL_TEMPERATURES_ID         (0x26u)
+#define CANTX_CELL_TEMPERATURES_ID         (0x423u)
 #define CANTX_CELL_TEMPERATURES_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
 #define CANTX_CELL_TEMPERATURES_PERIOD_ms  (100u)
-#define CANTX_CELL_TEMPERATURES_PHASE_ms   (10u)
+#define CANTX_CELL_TEMPERATURES_PHASE_ms   (15u)
 #define CANTX_CELL_TEMPERATURES_ENDIANNESS (CAN_LITTLE_ENDIAN)
 #define CANTX_CELL_TEMPERATURES_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
@@ -124,10 +124,10 @@
  *  - Period and phase in ms
  *  - Endianness
  *  - data length @{*/
-#define CANTX_PACK_LIMITS_ID         (0x121u)
+#define CANTX_PACK_LIMITS_ID         (0x120u)
 #define CANTX_PACK_LIMITS_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANTX_PACK_LIMITS_PERIOD_ms  (100u)
-#define CANTX_PACK_LIMITS_PHASE_ms   (20u)
+#define CANTX_PACK_LIMITS_PERIOD_ms  (50u)
+#define CANTX_PACK_LIMITS_PHASE_ms   (0u)
 #define CANTX_PACK_LIMITS_ENDIANNESS (CAN_LITTLE_ENDIAN)
 #define CANTX_PACK_LIMITS_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
@@ -138,10 +138,11 @@
  *  - Period and phase in ms
  *  - Endianness
  *  - data length @{*/
-#define CANTX_PACK_MINIMUM_MAXIMUM_VALUES_ID         (0x21u)
+/* Cellsius: Not transmitted */
+#define CANTX_PACK_MINIMUM_MAXIMUM_VALUES_ID         (0x424u)
 #define CANTX_PACK_MINIMUM_MAXIMUM_VALUES_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANTX_PACK_MINIMUM_MAXIMUM_VALUES_PERIOD_ms  (100u)
-#define CANTX_PACK_MINIMUM_MAXIMUM_VALUES_PHASE_ms   (30u)
+#define CANTX_PACK_MINIMUM_MAXIMUM_VALUES_PERIOD_ms  (1000u)
+#define CANTX_PACK_MINIMUM_MAXIMUM_VALUES_PHASE_ms   (0u)
 #define CANTX_PACK_MINIMUM_MAXIMUM_VALUES_ENDIANNESS (CAN_LITTLE_ENDIAN)
 #define CANTX_PACK_MINIMUM_MAXIMUM_VALUES_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
@@ -152,10 +153,10 @@
  *  - Period and phase in ms
  *  - Endianness
  *  - data length @{*/
-#define CANTX_PACK_STATE_ESTIMATION_ID         (0x450u)
+#define CANTX_PACK_STATE_ESTIMATION_ID         (0x121u)
 #define CANTX_PACK_STATE_ESTIMATION_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANTX_PACK_STATE_ESTIMATION_PERIOD_ms  (100u)
-#define CANTX_PACK_STATE_ESTIMATION_PHASE_ms   (40u)
+#define CANTX_PACK_STATE_ESTIMATION_PERIOD_ms  (50u)
+#define CANTX_PACK_STATE_ESTIMATION_PHASE_ms   (20u)
 #define CANTX_PACK_STATE_ESTIMATION_ENDIANNESS (CAN_LITTLE_ENDIAN)
 #define CANTX_PACK_STATE_ESTIMATION_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
@@ -166,10 +167,10 @@
  *  - Period and phase in ms
  *  - Endianness
  *  - data length @{*/
-#define CANTX_PACK_VALUES_P0_ID         (0x423u)
+#define CANTX_PACK_VALUES_P0_ID         (0x122u)
 #define CANTX_PACK_VALUES_P0_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANTX_PACK_VALUES_P0_PERIOD_ms  (100u)
-#define CANTX_PACK_VALUES_P0_PHASE_ms   (50u)
+#define CANTX_PACK_VALUES_P0_PERIOD_ms  (50u)
+#define CANTX_PACK_VALUES_P0_PHASE_ms   (40u)
 #define CANTX_PACK_VALUES_P0_ENDIANNESS (CAN_LITTLE_ENDIAN)
 #define CANTX_PACK_VALUES_P0_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
@@ -181,9 +182,9 @@
  *  - Endianness
  *  - data length @{*/
 /* Cellsius: Not transmitted */
-#define CANTX_PACK_VALUES_P1_ID         (0x234u)
+#define CANTX_PACK_VALUES_P1_ID         (0x425u)
 #define CANTX_PACK_VALUES_P1_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANTX_PACK_VALUES_P1_PERIOD_ms  (100u)
+#define CANTX_PACK_VALUES_P1_PERIOD_ms  (1000u)
 #define CANTX_PACK_VALUES_P1_PHASE_ms   (0u)
 #define CANTX_PACK_VALUES_P1_ENDIANNESS (CAN_BIG_ENDIAN)
 #define CANTX_PACK_VALUES_P1_DLC        (CAN_DEFAULT_DLC)
@@ -198,9 +199,9 @@
  *  - Endianness
  *  - data length @{*/
 /* Cellsius: Not transmitted */
-#define CANTX_STRING_STATE_ID         (0x240u)
+#define CANTX_STRING_STATE_ID         (0x426u)
 #define CANTX_STRING_STATE_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANTX_STRING_STATE_PERIOD_ms  (100u)
+#define CANTX_STRING_STATE_PERIOD_ms  (1000u)
 #define CANTX_STRING_STATE_PHASE_ms   (0u)
 #define CANTX_STRING_STATE_ENDIANNESS (CAN_BIG_ENDIAN)
 #define CANTX_STRING_STATE_DLC        (CAN_DEFAULT_DLC)
@@ -213,9 +214,9 @@
  *  - Endianness
  *  - data length @{*/
 /* Cellsius: Not transmitted */
-#define CANTX_STRING_VALUES_P0_ID         (0x243u)
+#define CANTX_STRING_VALUES_P0_ID         (0x427u)
 #define CANTX_STRING_VALUES_P0_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANTX_STRING_VALUES_P0_PERIOD_ms  (100u)
+#define CANTX_STRING_VALUES_P0_PERIOD_ms  (1000u)
 #define CANTX_STRING_VALUES_P0_PHASE_ms   (0u)
 #define CANTX_STRING_VALUES_P0_ENDIANNESS (CAN_BIG_ENDIAN)
 #define CANTX_STRING_VALUES_P0_DLC        (CAN_DEFAULT_DLC)
@@ -228,9 +229,9 @@
  *  - Endianness
  *  - data length @{*/
 /* Cellsius: Not transmitted */
-#define CANTX_STRING_VALUES_P1_ID         (0x244u)
+#define CANTX_STRING_VALUES_P1_ID         (0x428u)
 #define CANTX_STRING_VALUES_P1_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANTX_STRING_VALUES_P1_PERIOD_ms  (100u)
+#define CANTX_STRING_VALUES_P1_PERIOD_ms  (1000u)
 #define CANTX_STRING_VALUES_P1_PHASE_ms   (60u)
 #define CANTX_STRING_VALUES_P1_ENDIANNESS (CAN_BIG_ENDIAN)
 #define CANTX_STRING_VALUES_P1_DLC        (CAN_DEFAULT_DLC)
@@ -243,9 +244,9 @@
  *  - Endianness
  *  - data length @{*/
 /* Cellsius: Not transmitted */
-#define CANTX_STRING_MINIMUM_MAXIMUM_VALUES_ID         (0x241u)
+#define CANTX_STRING_MINIMUM_MAXIMUM_VALUES_ID         (0x429u)
 #define CANTX_STRING_MINIMUM_MAXIMUM_VALUES_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANTX_STRING_MINIMUM_MAXIMUM_VALUES_PERIOD_ms  (100u)
+#define CANTX_STRING_MINIMUM_MAXIMUM_VALUES_PERIOD_ms  (1000u)
 #define CANTX_STRING_MINIMUM_MAXIMUM_VALUES_PHASE_ms   (0u)
 #define CANTX_STRING_MINIMUM_MAXIMUM_VALUES_ENDIANNESS (CAN_BIG_ENDIAN)
 #define CANTX_STRING_MINIMUM_MAXIMUM_VALUES_DLC        (CAN_DEFAULT_DLC)
@@ -258,12 +259,42 @@
  *  - Endianness
  *  - data length @{*/
 /* Cellsius: Not transmitted */
-#define CANTX_STRING_STATE_ESTIMATION_ID         (0x245u)
+#define CANTX_STRING_STATE_ESTIMATION_ID         (0x42Au)
 #define CANTX_STRING_STATE_ESTIMATION_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
 #define CANTX_STRING_STATE_ESTIMATION_PERIOD_ms  (1000u)
 #define CANTX_STRING_STATE_ESTIMATION_PHASE_ms   (0u)
 #define CANTX_STRING_STATE_ESTIMATION_ENDIANNESS (CAN_BIG_ENDIAN)
 #define CANTX_STRING_STATE_ESTIMATION_DLC        (CAN_DEFAULT_DLC)
+/**@}*/
+
+/***** Cellsius: Own CAN TX message definitions *****/
+
+/** CAN message properties for voltage min max avg values. Required properties are:
+ *  - ID
+ *  - Identifier type (standard or extended)
+ *  - Period and phase in ms
+ *  - Endianness
+ *  - data length @{*/
+#define CANTX_PACK_VOLTAGE_MIN_MAX_AVG_ID         (0x420u)
+#define CANTX_PACK_VOLTAGE_MIN_MAX_AVG_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
+#define CANTX_PACK_VOLTAGE_MIN_MAX_AVG_PERIOD_ms  (100u)
+#define CANTX_PACK_VOLTAGE_MIN_MAX_AVG_PHASE_ms   (25u)
+#define CANTX_PACK_VOLTAGE_MIN_MAX_AVG_ENDIANNESS (CAN_LITTLE_ENDIAN)
+#define CANTX_PACK_VOLTAGE_MIN_MAX_AVG_DLC        (CAN_DEFAULT_DLC)
+/**@}*/
+
+/** CAN message properties for temp min max avg values. Required properties are:
+ *  - ID
+ *  - Identifier type (standard or extended)
+ *  - Period and phase in ms
+ *  - Endianness
+ *  - data length @{*/
+#define CANTX_PACK_TEMP_MIN_MAX_AVG_ID         (0x421u)
+#define CANTX_PACK_TEMP_MIN_MAX_AVG_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
+#define CANTX_PACK_TEMP_MIN_MAX_AVG_PERIOD_ms  (100u)
+#define CANTX_PACK_TEMP_MIN_MAX_AVG_PHASE_ms   (35u)
+#define CANTX_PACK_TEMP_MIN_MAX_AVG_ENDIANNESS (CAN_LITTLE_ENDIAN)
+#define CANTX_PACK_TEMP_MIN_MAX_AVG_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
 
 /* composed Tx  messages */
@@ -424,6 +455,30 @@
     },                                                                                                     \
     {                                                                                                      \
         .period = CANTX_STRING_STATE_ESTIMATION_PERIOD_ms, .phase = CANTX_STRING_STATE_ESTIMATION_PHASE_ms \
+    }
+
+/***** Cellsius: Own CAN TX message definitions *****/
+
+#define CANTX_PACK_VOLTAGE_MIN_MAX_AVG_MESSAGE                                                               \
+    {                                                                                                        \
+        .id         = CANTX_PACK_VOLTAGE_MIN_MAX_AVG_ID,                                                     \
+        .idType     = CANTX_PACK_VOLTAGE_MIN_MAX_AVG_ID_TYPE,                                                \
+        .dlc        = CANTX_PACK_VOLTAGE_MIN_MAX_AVG_DLC,                                                    \
+        .endianness = CANTX_PACK_VOLTAGE_MIN_MAX_AVG_ENDIANNESS,                                             \
+    },                                                                                                       \
+    {                                                                                                        \
+        .period = CANTX_PACK_VOLTAGE_MIN_MAX_AVG_PERIOD_ms, .phase = CANTX_PACK_VOLTAGE_MIN_MAX_AVG_PHASE_ms \
+    }
+
+#define CANTX_PACK_TEMP_MIN_MAX_AVG_MESSAGE                                                            \
+    {                                                                                                  \
+        .id         = CANTX_PACK_TEMP_MIN_MAX_AVG_ID,                                                  \
+        .idType     = CANTX_PACK_TEMP_MIN_MAX_AVG_ID_TYPE,                                             \
+        .dlc        = CANTX_PACK_TEMP_MIN_MAX_AVG_DLC,                                                 \
+        .endianness = CANTX_PACK_TEMP_MIN_MAX_AVG_ENDIANNESS,                                          \
+    },                                                                                                 \
+    {                                                                                                  \
+        .period = CANTX_PACK_TEMP_MIN_MAX_AVG_PERIOD_ms, .phase = CANTX_PACK_TEMP_MIN_MAX_AVG_PHASE_ms \
     }
 /* AXIVION Enable Style Generic-NoUnsafeMacro */
 

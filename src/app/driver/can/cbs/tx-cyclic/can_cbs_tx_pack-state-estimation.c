@@ -172,22 +172,10 @@ static const CAN_SIGNAL_TYPE_s cantx_signalEnergy = {
 static uint64_t CANTX_CalculateMaximumPackSoc(const CAN_SHIM_s *const kpkCanShim);
 
 /**
- * @brief Gets the highest string SOC percentage from all connected Strings
- * @return Returns the highest string SOC percentage from all connected Strings
- */
-/* static float_t CANTX_GetMaximumStringSoc(const CAN_SHIM_s *const kpkCanShim); */
-
-/**
  * @brief Calculates the return value of the minimum SOC
  * @return Returns the return value of the minimum SOC
  */
 static uint64_t CANTX_CalculateMinimumPackSoc(const CAN_SHIM_s *const kpkCanShim);
-
-/**
- * @brief Gets the lowest string SOC percentage from all connected Strings
- * @return Returns the lowest string SOC percentage from all connected Strings
- */
-/* static float_t CANTX_GetMinimumStringSoc(const CAN_SHIM_s *const kpkCanShim); */
 
 /**
  * @brief Calculates the return value of the maximum SOE
@@ -196,22 +184,10 @@ static uint64_t CANTX_CalculateMinimumPackSoc(const CAN_SHIM_s *const kpkCanShim
 static uint64_t CANTX_CalculateMaximumPackSoe(const CAN_SHIM_s *const kpkCanShim);
 
 /**
- * @brief Gets the highest string SOE percentage from all connected Strings
- * @return Returns the highest string SOE percentage from all connected Strings
- */
-/* static float_t CANTX_GetMaximumStringSoe(const CAN_SHIM_s *const kpkCanShim); */
-
-/**
  * @brief Calculates the return value of the minimum SOE
  * @return Returns the return value of the minimum SOE
  */
 static uint64_t CANTX_CalculateMinimumPackSoe(const CAN_SHIM_s *const kpkCanShim);
-
-/**
- * @brief Gets the lowest string SOE percentage from all connected Strings
- * @return Returns the lowest string SOE percentage from all connected Strings
- */
-/* static float_t CANTX_GetMinimumStringSoe(const CAN_SHIM_s *const kpkCanShim); */
 
 /**
  * @brief Calculates the return value of the SOH
@@ -226,12 +202,6 @@ static uint64_t CANTX_CalculatePackSoh(void);
 static uint64_t CANTX_CalculatePackEnergy(const CAN_SHIM_s *const kpkCanShim);
 
 /**
- * @brief Gets the lowest energy value in Wh from all connected Strings
- * @return Returns the lowest energy value in Wh from all connected Strings
- */
-/* static float_t CANTX_GetStringEnergy(const CAN_SHIM_s *const kpkCanShim); */
-
-/**
  * @brief Builds the CAN message form signal data
  */
 static void CANTX_BuildPackStateEstimationMessage(const CAN_SHIM_s *const kpkCanShim, uint64_t *pMessageData);
@@ -239,13 +209,6 @@ static void CANTX_BuildPackStateEstimationMessage(const CAN_SHIM_s *const kpkCan
 /*========== Static Function Implementations ================================*/
 static uint64_t CANTX_CalculateMaximumPackSoc(const CAN_SHIM_s *const kpkCanShim) {
     FAS_ASSERT(kpkCanShim != NULL_PTR);
-
-    /* Get maximum SOC percentage of the strings and calculate pack value */
-    /* float_t signalData = 0.0f;
-    if (BMS_GetNumberOfConnectedStrings() != 0u) {
-        signalData = ((float_t)BMS_GetNumberOfConnectedStrings() * CANTX_GetMaximumStringSoc(kpkCanShim)) /
-                     (float_t)BS_NR_OF_STRINGS;
-    } */
 
     /* Cellsius: Get maximum SOC percentage, only one string */
     float_t signalData = kpkCanShim->pTableSoc->maximumSoc_perc[BS_STRING0];
@@ -255,28 +218,8 @@ static uint64_t CANTX_CalculateMaximumPackSoc(const CAN_SHIM_s *const kpkCanShim
     return data;
 }
 
-/* static float_t CANTX_GetMaximumStringSoc(const CAN_SHIM_s *const kpkCanShim) {
-    FAS_ASSERT(kpkCanShim != NULL_PTR);
-
-    float_t maximumStringSoc_perc = 0.0f;
-    for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
-        if (BMS_IsStringClosed(s) == true) {
-            if (maximumStringSoc_perc < kpkCanShim->pTableSoc->maximumSoc_perc[s]) {
-                maximumStringSoc_perc = kpkCanShim->pTableSoc->maximumSoc_perc[s];
-            }
-        }
-    }
-    return maximumStringSoc_perc;
-} */
-
 static uint64_t CANTX_CalculateMinimumPackSoc(const CAN_SHIM_s *const kpkCanShim) {
     FAS_ASSERT(kpkCanShim != NULL_PTR);
-
-    /* Get minimum SOC percentage of the strings and calculate pack value */
-    /* float_t signalData = 0.0f;
-    if (BMS_GetNumberOfConnectedStrings() != 0u) {
-        signalData = (BMS_GetNumberOfConnectedStrings() * CANTX_GetMinimumStringSoc(kpkCanShim)) / BS_NR_OF_STRINGS;
-    } */
 
     /* Cellsius: Get minimum SOC percentage, only one string */
     float_t signalData = kpkCanShim->pTableSoc->minimumSoc_perc[BS_STRING0];
@@ -286,28 +229,8 @@ static uint64_t CANTX_CalculateMinimumPackSoc(const CAN_SHIM_s *const kpkCanShim
     return data;
 }
 
-/* static float_t CANTX_GetMinimumStringSoc(const CAN_SHIM_s *const kpkCanShim) {
-    FAS_ASSERT(kpkCanShim != NULL_PTR);
-
-    float_t minimumStringSoc_perc = CANTX_100_PERCENT_FLOAT;
-    for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
-        if (BMS_IsStringClosed(s) == true) {
-            if (minimumStringSoc_perc > kpkCanShim->pTableSoc->minimumSoc_perc[s]) {
-                minimumStringSoc_perc = kpkCanShim->pTableSoc->minimumSoc_perc[s];
-            }
-        }
-    }
-    return minimumStringSoc_perc;
-} */
-
 static uint64_t CANTX_CalculateMaximumPackSoe(const CAN_SHIM_s *const kpkCanShim) {
     FAS_ASSERT(kpkCanShim != NULL_PTR);
-
-    /* Get maximum SOE percentage of the strings and calculate pack value */
-    /* float_t signalData = 0.0f;
-    if (BMS_GetNumberOfConnectedStrings() != 0u) {
-        signalData = (BMS_GetNumberOfConnectedStrings() * CANTX_GetMaximumStringSoe(kpkCanShim)) / BS_NR_OF_STRINGS;
-    } */
 
     /* Cellsius: Get maximum SOE percentage, only one string */
     float_t signalData = kpkCanShim->pTableSoe->maximumSoe_perc[BS_STRING0];
@@ -317,28 +240,8 @@ static uint64_t CANTX_CalculateMaximumPackSoe(const CAN_SHIM_s *const kpkCanShim
     return data;
 }
 
-/* static float_t CANTX_GetMaximumStringSoe(const CAN_SHIM_s *const kpkCanShim) {
-    FAS_ASSERT(kpkCanShim != NULL_PTR);
-
-    float_t maximumStringSoe_perc = 0.0f;
-    for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
-        if (BMS_IsStringClosed(s) == true) {
-            if (maximumStringSoe_perc < kpkCanShim->pTableSoe->maximumSoe_perc[s]) {
-                maximumStringSoe_perc = kpkCanShim->pTableSoe->maximumSoe_perc[s];
-            }
-        }
-    }
-    return maximumStringSoe_perc;
-} */
-
 static uint64_t CANTX_CalculateMinimumPackSoe(const CAN_SHIM_s *const kpkCanShim) {
     FAS_ASSERT(kpkCanShim != NULL_PTR);
-
-    /* Get minimum SOE percentage of the strings and calculate pack value */
-    /* float_t signalData = 0.0f;
-    if (BMS_GetNumberOfConnectedStrings() != 0u) {
-        signalData = (BMS_GetNumberOfConnectedStrings() * CANTX_GetMinimumStringSoe(kpkCanShim)) / BS_NR_OF_STRINGS;
-    } */
 
     /* Cellsius: Get minimum SOE percentage, only one string */
     float_t signalData = kpkCanShim->pTableSoe->minimumSoe_perc[BS_STRING0];
@@ -347,20 +250,6 @@ static uint64_t CANTX_CalculateMinimumPackSoe(const CAN_SHIM_s *const kpkCanShim
     uint64_t data = (uint64_t)signalData;
     return data;
 }
-
-/* static float_t CANTX_GetMinimumStringSoe(const CAN_SHIM_s *const kpkCanShim) {
-    FAS_ASSERT(kpkCanShim != NULL_PTR);
-
-    float_t minimumStringSoe_perc = CANTX_100_PERCENT_FLOAT;
-    for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
-        if (BMS_IsStringClosed(s) == true) {
-            if (minimumStringSoe_perc > kpkCanShim->pTableSoe->minimumSoe_perc[s]) {
-                minimumStringSoe_perc = kpkCanShim->pTableSoe->minimumSoe_perc[s];
-            }
-        }
-    }
-    return minimumStringSoe_perc;
-} */
 
 static uint64_t CANTX_CalculatePackSoh(void) {
     float_t signalData = CANTX_100_PERCENT_FLOAT; /* TODO */
@@ -372,12 +261,6 @@ static uint64_t CANTX_CalculatePackSoh(void) {
 static uint64_t CANTX_CalculatePackEnergy(const CAN_SHIM_s *const kpkCanShim) {
     FAS_ASSERT(kpkCanShim != NULL_PTR);
 
-    /* Get energy in Wh of the strings and calculate pack value */
-    /* float_t signalData = 0.0f;
-    if (BMS_GetNumberOfConnectedStrings() != 0u) {
-        signalData = BMS_GetNumberOfConnectedStrings() * CANTX_GetStringEnergy(kpkCanShim);
-    } */
-
     /* Cellsius: Get energy in Wh, only one string */
     float_t signalData = kpkCanShim->pTableSoe->minimumSoe_Wh[BS_STRING0];
 
@@ -385,18 +268,6 @@ static uint64_t CANTX_CalculatePackEnergy(const CAN_SHIM_s *const kpkCanShim) {
     uint64_t data = (uint64_t)signalData;
     return data;
 }
-
-/* static float_t CANTX_GetStringEnergy(const CAN_SHIM_s *const kpkCanShim) {
-    FAS_ASSERT(kpkCanShim != NULL_PTR);
-
-    float_t minimumStringEnergy_Wh = kpkCanShim->pTableSoe->minimumSoe_Wh[0u];
-    for (uint8_t s = 1u; s < BS_NR_OF_STRINGS; s++) {
-        if (minimumStringEnergy_Wh > kpkCanShim->pTableSoe->minimumSoe_Wh[s]) {
-            minimumStringEnergy_Wh = kpkCanShim->pTableSoe->minimumSoe_Wh[s];
-        }
-    }
-    return minimumStringEnergy_Wh;
-} */
 
 static void CANTX_BuildPackStateEstimationMessage(const CAN_SHIM_s *const kpkCanShim, uint64_t *pMessageData) {
     FAS_ASSERT(kpkCanShim != NULL_PTR);

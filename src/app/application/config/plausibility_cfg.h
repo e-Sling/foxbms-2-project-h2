@@ -92,7 +92,7 @@
  * \par Range:
  * [0, 10000]
  */
-#define PL_CELL_VOLTAGE_SPREAD_TOLERANCE_mV (300)
+#define PL_CELL_VOLTAGE_SPREAD_TOLERANCE_mV (1000) /*Leon: adapt after testing*/
 
 /**
  * @brief   Maximum deviation between a single cell temperature measurement and
@@ -101,7 +101,7 @@
  * \par Range:
  * [0, 100]
  */
-#define PL_CELL_TEMPERATURE_SPREAD_TOLERANCE_dK (100)
+#define PL_CELL_TEMPERATURE_SPREAD_TOLERANCE_dK (300) /*Leon: adapt after testing*/
 
 /*========== Extern Constant and Variable Declarations ======================*/
 

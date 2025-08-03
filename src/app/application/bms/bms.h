@@ -218,6 +218,7 @@ typedef struct {
     uint8_t closedPrechargeContactors[BS_NR_OF_STRINGS]; /*!< strings whose precharge contactors are closed */
     uint8_t closedStrings[BS_NR_OF_STRINGS];             /*!< strings whose contactors are closed */
     uint8_t deactivatedStrings[BS_NR_OF_STRINGS]; /*!< Deactivated strings after error detection, cannot be closed */
+    bool batOnSignal;                             /*!< Cellsius: Bat_On signal from switch in Cockpit */
 } BMS_STATE_s;
 
 /*========== Extern Constant and Variable Declarations ======================*/
@@ -250,6 +251,13 @@ extern BMS_STATEMACH_e BMS_GetState(void);
  * @return  current substate, taken from BMS_STATEMACH_SUB_e
  */
 extern BMS_STATEMACH_SUB_e BMS_GetSubstate(void);
+
+/**
+ * @brief   Returns the current Bat_On signal.
+ * @details This function is used to get the current Bat_On signal state.
+ * @return  true if Bat_On is active, otherwise false
+ */
+extern bool BMS_GetBatOnSignal(void);
 
 /**
  * @brief   Gets the initialization state.
