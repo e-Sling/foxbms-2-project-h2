@@ -122,6 +122,7 @@ static BMS_STATE_s bms_state = {
     .timeAboveContactorBreakCurrent_ms = 0u,
     .stringToBeOpened                  = 0u,
     .contactorToBeOpened               = CONT_UNDEFINED,
+    .batOnSignal                       = false,
 };
 
 /** local copies of database tables */
@@ -638,6 +639,10 @@ extern BMS_STATEMACH_SUB_e BMS_GetSubstate(void) {
     return bms_state.substate;
 }
 
+extern bool BMS_GetBatOnSignal(void) {
+    return bms_state.batOnSignal;
+}
+
 BMS_RETURN_TYPE_e BMS_SetStateRequest(BMS_STATE_REQUEST_e statereq) {
     BMS_RETURN_TYPE_e retVal = BMS_OK;
 
@@ -673,6 +678,8 @@ void BMS_Trigger(void) {
         SOA_CheckSlaveTemperatures();
         BMS_CheckOpenSenseWire();
         CONT_CheckFeedback();
+        /* Cellsius: Check Bat_On Signal */
+        bms_state.batOnSignal = FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor);
     }
     /* Check re-entrance of function */
     if (BMS_CheckReEntrance() > 0u) {
@@ -1009,7 +1016,7 @@ void BMS_Trigger(void) {
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
                 /* Cellsius: Check for Bat_On */
-                if (FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor)) {
+                if (bms_state.batOnSignal) {
                     bms_state.nextState = BMS_STATEMACH_NORMAL;
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_PRECHARGE;
@@ -1120,7 +1127,7 @@ void BMS_Trigger(void) {
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
                 /* Cellsius: Check if Bat_On was lost */
-                if (!(FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor))) {
+                if (!bms_state.batOnSignal) {
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;
@@ -1282,7 +1289,7 @@ void BMS_Trigger(void) {
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
                 /* Cellsius: Check if Bat_On was lost */
-                if (!(FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor))) {
+                if (!(bms_state.batOnSignal)) {
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;

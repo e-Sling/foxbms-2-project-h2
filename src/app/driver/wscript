@@ -84,6 +84,8 @@ def build(bld):
         os.path.join("can", "cbs", "tx-cyclic", "can_cbs_tx_pack-values-p1.c"),
         os.path.join("can", "cbs", "tx-cyclic", "can_cbs_tx_string-values-p0.c"),
         os.path.join("can", "cbs", "tx-cyclic", "can_cbs_tx_string-values-p1.c"),
+        os.path.join("can", "cbs", "tx-cyclic", "can_cbs_tx_pack_voltage_min-max-avg.c"),
+        os.path.join("can", "cbs", "tx-cyclic", "can_cbs_tx_pack_temp_min-max-avg.c"),
         os.path.join("checksum", "checksum.c"),
         os.path.join("crc", "crc.c"),
         os.path.join("config", "contactor_cfg.c"),
