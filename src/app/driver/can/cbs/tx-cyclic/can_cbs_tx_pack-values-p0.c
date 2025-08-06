@@ -86,66 +86,65 @@ static const CAN_SIGNAL_TYPE_s cantx_signalBatteryVoltage = {
 /** @} */
 
 /** @{
- * defines of the bus voltage signal
+ * defines of the average State of Energy (SoE) signal
 */
-#define CANTX_PACK_P0_BUS_VOLTAGE_START_BIT    (16u)
-#define CANTX_PACK_P0_BUS_VOLTAGE_LENGTH       (16u)
-#define CANTX_MINIMUM_VALUE_BUS_VOLTAGE_SIGNAL (-1638400.0f)
-#define CANTX_MAXIMUM_VALUE_BUS_VOLTAGE_SIGNAL (1638300.0f)
+#define CANTX_PACK_P0_AVERAGE_SOE_START_BIT (16u)
+#define CANTX_PACK_P0_AVERAGE_SOE_LENGTH    (10u)
+#define CANTX_MINIMUM_VALUE_PERCENT_SIGNALS (0.0f)
+#define CANTX_MAXIMUM_VALUE_PERCENT_SIGNALS (102.3f)
+
+/** @{
+ * configuration of the average SoE signal
+*/
+static const CAN_SIGNAL_TYPE_s cantx_signalAverageSoe = {
+    CANTX_PACK_P0_AVERAGE_SOE_START_BIT,
+    CANTX_PACK_P0_AVERAGE_SOE_LENGTH,
+    UNIT_CONVERSION_FACTOR_1_10_TH_FLOAT,
+    CAN_SIGNAL_OFFSET_0,
+    CANTX_MINIMUM_VALUE_PERCENT_SIGNALS,
+    CANTX_MAXIMUM_VALUE_PERCENT_SIGNALS};
 /** @} */
 
 /** @{
- * configuration of the bus voltage signal
+ * defines of the maximum discharge power signal
 */
-static const CAN_SIGNAL_TYPE_s cantx_signalBusVoltage = {
-    CANTX_PACK_P0_BUS_VOLTAGE_START_BIT,
-    CANTX_PACK_P0_BUS_VOLTAGE_LENGTH,
+#define CANTX_SIGNAL_MAXIMUM_DISCHARGE_POWER_START_BIT     (26u)
+#define CANTX_SIGNAL_MAXIMUM_DISCHARGE_POWER_LENGTH        (12u)
+#define CANTX_MINIMUM_VALUE_MAXIMUM_DISCHARGE_POWER_SIGNAL (0.0f)
+#define CANTX_MAXIMUM_VALUE_MAXIMUM_DISCHARGE_POWER_SIGNAL (409500.0f)
+/** @} */
+
+/** @{
+ * configuration of the maximum discharge power signal
+*/
+static const CAN_SIGNAL_TYPE_s cantx_signalMaximumDischargePower = {
+    CANTX_SIGNAL_MAXIMUM_DISCHARGE_POWER_START_BIT,
+    CANTX_SIGNAL_MAXIMUM_DISCHARGE_POWER_LENGTH,
     UNIT_CONVERSION_FACTOR_100_FLOAT,
     CAN_SIGNAL_OFFSET_0,
-    CANTX_MINIMUM_VALUE_BUS_VOLTAGE_SIGNAL,
-    CANTX_MAXIMUM_VALUE_BUS_VOLTAGE_SIGNAL};
+    CANTX_MINIMUM_VALUE_MAXIMUM_DISCHARGE_POWER_SIGNAL,
+    CANTX_MAXIMUM_VALUE_MAXIMUM_DISCHARGE_POWER_SIGNAL};
 /** @} */
 
 /** @{
- * defines of the power signal
+ * defines of the maximum charge power signal
 */
-#define CANTX_PACK_P0_POWER_START_BIT    (32u)
-#define CANTX_PACK_P0_POWER_LENGTH       (16u)
-#define CANTX_MINIMUM_VALUE_POWER_SIGNAL (-655360.0f)
-#define CANTX_MAXIMUM_VALUE_POWER_SIGNAL (655350.0f)
+#define CANTX_SIGNAL_MAXIMUM_CHARGE_POWER_START_BIT     (38u)
+#define CANTX_SIGNAL_MAXIMUM_CHARGE_POWER_LENGTH        (12u)
+#define CANTX_MINIMUM_VALUE_MAXIMUM_CHARGE_POWER_SIGNAL (0.0f)
+#define CANTX_MAXIMUM_VALUE_MAXIMUM_CHARGE_POWER_SIGNAL (409500.0f)
 /** @} */
 
 /** @{
- * configuration of the power signal
+ * configuration of the maximum charge power signal
 */
-static const CAN_SIGNAL_TYPE_s cantx_signalPower = {
-    CANTX_PACK_P0_POWER_START_BIT,
-    CANTX_PACK_P0_POWER_LENGTH,
-    UNIT_CONVERSION_FACTOR_10_FLOAT,
+static const CAN_SIGNAL_TYPE_s cantx_signalMaximumChargePower = {
+    CANTX_SIGNAL_MAXIMUM_CHARGE_POWER_START_BIT,
+    CANTX_SIGNAL_MAXIMUM_CHARGE_POWER_LENGTH,
+    UNIT_CONVERSION_FACTOR_100_FLOAT,
     CAN_SIGNAL_OFFSET_0,
-    CANTX_MINIMUM_VALUE_POWER_SIGNAL,
-    CANTX_MAXIMUM_VALUE_POWER_SIGNAL};
-/** @} */
-
-/** @{
- * defines of the current signal
-*/
-#define CANTX_PACK_P0_CURRENT_START_BIT    (48u)
-#define CANTX_PACK_P0_CURRENT_LENGTH       (16u)
-#define CANTX_MINIMUM_VALUE_CURRENT_SIGNAL (-655360.0f)
-#define CANTX_MAXIMUM_VALUE_CURRENT_SIGNAL (655350.0f)
-/** @} */
-
-/** @{
- * configuration of the current signal
-*/
-static const CAN_SIGNAL_TYPE_s cantx_signalCurrent = {
-    CANTX_PACK_P0_CURRENT_START_BIT,
-    CANTX_PACK_P0_CURRENT_LENGTH,
-    UNIT_CONVERSION_FACTOR_10_FLOAT,
-    CAN_SIGNAL_OFFSET_0,
-    CANTX_MINIMUM_VALUE_CURRENT_SIGNAL,
-    CANTX_MAXIMUM_VALUE_CURRENT_SIGNAL};
+    CANTX_MINIMUM_VALUE_MAXIMUM_CHARGE_POWER_SIGNAL,
+    CANTX_MAXIMUM_VALUE_MAXIMUM_CHARGE_POWER_SIGNAL};
 /** @} */
 
 /*========== Static Constant and Variable Definitions =======================*/
@@ -161,25 +160,25 @@ static const CAN_SIGNAL_TYPE_s cantx_signalCurrent = {
 static uint64_t CANTX_CalculateBatteryVoltage(const CAN_SHIM_s *const kpkCanShim);
 
 /**
- * @brief   calculates the return value of the battery voltage
+ * @brief   calculates the average State of Energy (SoE) of the pack
  * @param   kpkCanShim const pointer to CAN shim
- * @return  returns the return value of the battery voltage
+ * @return  returns the return value of average State of Energy (SoE) of the pack
  */
-static uint64_t CANTX_CalculateBusVoltage(const CAN_SHIM_s *const kpkCanShim);
+static uint64_t CANTX_CalculateAverageSoE(const CAN_SHIM_s *const kpkCanShim);
 
 /**
- * @brief   calculates the return value of the battery voltage
+ * @brief   calculates the maximum discharge power of the pack
  * @param   kpkCanShim const pointer to CAN shim
- * @return  returns the return value of the battery voltage
+ * @return  returns the return value of maximum discharge power of the pack
  */
-static uint64_t CANTX_CalculatePower(const CAN_SHIM_s *const kpkCanShim);
+static uint64_t CANTX_CalculateMaxDischargePower(const CAN_SHIM_s *const kpkCanShim);
 
 /**
- * @brief   calculates the return value of the battery voltage
+ * @brief   calculates the maximum charge power of the pack
  * @param   kpkCanShim const pointer to CAN shim
- * @return  returns the return value of the battery voltage
+ * @return  returns the return value of maximum charge power of the pack
  */
-static uint64_t CANTX_CalculateCurrent(const CAN_SHIM_s *const kpkCanShim);
+static uint64_t CANTX_CalculateMaxChargePower(const CAN_SHIM_s *const kpkCanShim);
 
 /**
  * @brief   builds the PackP0 message
@@ -199,33 +198,39 @@ static uint64_t CANTX_CalculateBatteryVoltage(const CAN_SHIM_s *const kpkCanShim
     return data;
 }
 
-static uint64_t CANTX_CalculateBusVoltage(const CAN_SHIM_s *const kpkCanShim) {
+static uint64_t CANTX_CalculateAverageSoE(const CAN_SHIM_s *const kpkCanShim) {
     FAS_ASSERT(kpkCanShim != NULL_PTR);
 
-    /* Bus voltage */
-    float_t signalData = kpkCanShim->pTablePackValues->highVoltageBusVoltage_mV;
-    CAN_TxPrepareSignalData(&signalData, cantx_signalBusVoltage);
+    /* Average SoE */
+    float_t signalData = kpkCanShim->pTableSoe->averageSoe_perc[BS_STRING0];
+    CAN_TxPrepareSignalData(&signalData, cantx_signalAverageSoe);
     uint64_t data = (uint64_t)signalData;
     return data;
 }
 
-static uint64_t CANTX_CalculatePower(const CAN_SHIM_s *const kpkCanShim) {
+static uint64_t CANTX_CalculateMaxDischargePower(const CAN_SHIM_s *const kpkCanShim) {
     FAS_ASSERT(kpkCanShim != NULL_PTR);
 
-    /* System power */
-    float_t signalData = kpkCanShim->pTablePackValues->packPower_W;
-    CAN_TxPrepareSignalData(&signalData, cantx_signalPower);
-    uint64_t data = (int64_t)signalData;
+    /* maximum charge power = discharge_current_A * battery_voltage_V */
+    float_t signalData =
+        ((float_t)kpkCanShim->pTableSof->recommendedContinuousPackDischargeCurrent_mA *
+         UNIT_CONVERSION_FACTOR_1_1000_TH_FLOAT) *
+        ((float_t)kpkCanShim->pTablePackValues->batteryVoltage_mV * UNIT_CONVERSION_FACTOR_1_1000_TH_FLOAT);
+    CAN_TxPrepareSignalData(&signalData, cantx_signalMaximumDischargePower);
+    uint64_t data = (uint64_t)signalData;
     return data;
 }
 
-static uint64_t CANTX_CalculateCurrent(const CAN_SHIM_s *const kpkCanShim) {
+static uint64_t CANTX_CalculateMaxChargePower(const CAN_SHIM_s *const kpkCanShim) {
     FAS_ASSERT(kpkCanShim != NULL_PTR);
 
-    /* System current */
-    float_t signalData = kpkCanShim->pTablePackValues->packCurrent_mA;
-    CAN_TxPrepareSignalData(&signalData, cantx_signalCurrent);
-    uint64_t data = (int64_t)signalData;
+    /* maximum charge power = charge_current_A * battery_voltage_V */
+    float_t signalData =
+        ((float_t)kpkCanShim->pTableSof->recommendedContinuousPackChargeCurrent_mA *
+         UNIT_CONVERSION_FACTOR_1_1000_TH_FLOAT) *
+        ((float_t)kpkCanShim->pTablePackValues->batteryVoltage_mV * UNIT_CONVERSION_FACTOR_1_1000_TH_FLOAT);
+    CAN_TxPrepareSignalData(&signalData, cantx_signalMaximumChargePower);
+    uint64_t data = (uint64_t)signalData;
     return data;
 }
 
@@ -242,20 +247,30 @@ static void CANTX_BuildP0Message(const CAN_SHIM_s *const kpkCanShim, uint64_t *p
         data,
         CAN_LITTLE_ENDIAN);
 
-    /* Bus voltage */
-    data = CANTX_CalculateBusVoltage(kpkCanShim);
+    /* Average SoE */
+    data = CANTX_CalculateAverageSoE(kpkCanShim);
     CAN_TxSetMessageDataWithSignalData(
-        pMessageData, cantx_signalBusVoltage.bitStart, cantx_signalBusVoltage.bitLength, data, CAN_LITTLE_ENDIAN);
+        pMessageData, cantx_signalAverageSoe.bitStart, cantx_signalAverageSoe.bitLength, data, CAN_LITTLE_ENDIAN);
 
-    /* System Power */
-    data = CANTX_CalculatePower(kpkCanShim);
+    /* Maximum discharge power */
+    data = CANTX_CalculateMaxDischargePower(kpkCanShim);
     CAN_TxSetMessageDataWithSignalData(
-        pMessageData, cantx_signalPower.bitStart, cantx_signalPower.bitLength, data, CAN_LITTLE_ENDIAN);
+        pMessageData,
+        cantx_signalMaximumDischargePower.bitStart,
+        cantx_signalMaximumDischargePower.bitLength,
+        data,
+        CAN_LITTLE_ENDIAN);
 
-    /* System current */
-    data = CANTX_CalculateCurrent(kpkCanShim);
+    /* Maximum charge power */
+    data = CANTX_CalculateMaxChargePower(kpkCanShim);
     CAN_TxSetMessageDataWithSignalData(
-        pMessageData, cantx_signalCurrent.bitStart, cantx_signalCurrent.bitLength, data, CAN_LITTLE_ENDIAN);
+        pMessageData,
+        cantx_signalMaximumChargePower.bitStart,
+        cantx_signalMaximumChargePower.bitLength,
+        data,
+        CAN_LITTLE_ENDIAN);
+
+    /* Leon: Lifebit and CRC */
 }
 
 /*========== Extern Function Implementations ================================*/
@@ -276,7 +291,7 @@ extern uint32_t CANTX_PackValuesP0(
     uint64_t messageData = 0u;
 
     /* Read database entry */
-    DATA_READ_DATA(kpkCanShim->pTablePackValues);
+    DATA_READ_DATA(kpkCanShim->pTablePackValues, kpkCanShim->pTableSoe, kpkCanShim->pTableSof);
 
     /* build message from data */
     CANTX_BuildP0Message(kpkCanShim, &messageData);

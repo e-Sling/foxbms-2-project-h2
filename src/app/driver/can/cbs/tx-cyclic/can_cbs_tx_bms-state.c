@@ -85,6 +85,7 @@
 #define CANTX_SIGNAL_BMS_GENERAL_ERROR_LENGTH                  (CAN_BIT)
 #define CANTX_SIGNAL_BMS_BAT_ON_START_BIT                      (22u)
 #define CANTX_SIGNAL_BMS_BAT_ON_LENGTH                         (CAN_BIT)
+/* Leon: Add fatal/general error */
 
 #define CANTX_SIGNAL_BMS_EMERGENCY_SHUTOFF_START_BIT                (23u)
 #define CANTX_SIGNAL_BMS_EMERGENCY_SHUTOFF_LENGTH                   (CAN_BIT)
