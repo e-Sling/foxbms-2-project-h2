@@ -110,92 +110,6 @@ static const CAN_SIGNAL_TYPE_s cantx_signalMaximumChargeCurrent = {
     CANTX_MAXIMUM_VALUE_MAXIMUM_CHARGE_CURRENT_SIGNAL};
 /** @} */
 
-/** @{
- * defines of the maximum discharge power signal
-*/
-#define CANTX_SIGNAL_MAXIMUM_DISCHARGE_POWER_START_BIT     (24u)
-#define CANTX_SIGNAL_MAXIMUM_DISCHARGE_POWER_LENGTH        (12u)
-#define CANTX_MINIMUM_VALUE_MAXIMUM_DISCHARGE_POWER_SIGNAL (0.0f)
-#define CANTX_MAXIMUM_VALUE_MAXIMUM_DISCHARGE_POWER_SIGNAL (409500.0f)
-/** @} */
-
-/** @{
- * configuration of the maximum discharge power signal
-*/
-static const CAN_SIGNAL_TYPE_s cantx_signalMaximumDischargePower = {
-    CANTX_SIGNAL_MAXIMUM_DISCHARGE_POWER_START_BIT,
-    CANTX_SIGNAL_MAXIMUM_DISCHARGE_POWER_LENGTH,
-    UNIT_CONVERSION_FACTOR_100_FLOAT,
-    CAN_SIGNAL_OFFSET_0,
-    CANTX_MINIMUM_VALUE_MAXIMUM_DISCHARGE_POWER_SIGNAL,
-    CANTX_MAXIMUM_VALUE_MAXIMUM_DISCHARGE_POWER_SIGNAL};
-/** @} */
-
-/** @{
- * defines of the maximum charge power signal
-*/
-#define CANTX_SIGNAL_MAXIMUM_CHARGE_POWER_START_BIT     (36u)
-#define CANTX_SIGNAL_MAXIMUM_CHARGE_POWER_LENGTH        (12u)
-#define CANTX_MINIMUM_VALUE_MAXIMUM_CHARGE_POWER_SIGNAL (0.0f)
-#define CANTX_MAXIMUM_VALUE_MAXIMUM_CHARGE_POWER_SIGNAL (409500.0f)
-/** @} */
-
-/** @{
- * configuration of the maximum charge power signal
-*/
-static const CAN_SIGNAL_TYPE_s cantx_signalMaximumChargePower = {
-    CANTX_SIGNAL_MAXIMUM_CHARGE_POWER_START_BIT,
-    CANTX_SIGNAL_MAXIMUM_CHARGE_POWER_LENGTH,
-    UNIT_CONVERSION_FACTOR_100_FLOAT,
-    CAN_SIGNAL_OFFSET_0,
-    CANTX_MINIMUM_VALUE_MAXIMUM_CHARGE_POWER_SIGNAL,
-    CANTX_MAXIMUM_VALUE_MAXIMUM_CHARGE_POWER_SIGNAL};
-/** @} */
-
-/** @{
- * defines of the maximum battery voltage signal
-*/
-#define CANTX_SIGNAL_MAXIMUM_BATTERY_VOLTAGE_START_BIT     (48u)
-#define CANTX_SIGNAL_MAXIMUM_BATTERY_VOLTAGE_LENGTH        (8u)
-#define CANTX_MINIMUM_VALUE_MAXIMUM_BATTERY_VOLTAGE_SIGNAL (0.0f)
-#define CANTX_MAXIMUM_VALUE_MAXIMUM_BATTERY_VOLTAGE_SIGNAL (1020000.0f)
-#define CANTX_FACTOR_MAXIMUM_BATTERY_VOLTAGE               (4000.0f)
-/** @} */
-
-/** @{
- * configuration of the maximum battery voltage signal
-*/
-static const CAN_SIGNAL_TYPE_s cantx_signalMaximumBatteryVoltage = {
-    CANTX_SIGNAL_MAXIMUM_BATTERY_VOLTAGE_START_BIT,
-    CANTX_SIGNAL_MAXIMUM_BATTERY_VOLTAGE_LENGTH,
-    CANTX_FACTOR_MAXIMUM_BATTERY_VOLTAGE,
-    CAN_SIGNAL_OFFSET_0,
-    CANTX_MINIMUM_VALUE_MAXIMUM_BATTERY_VOLTAGE_SIGNAL,
-    CANTX_MAXIMUM_VALUE_MAXIMUM_BATTERY_VOLTAGE_SIGNAL};
-/** @} */
-
-/** @{
- * defines of the minimum battery voltage signal
-*/
-#define CANTX_SIGNAL_MINIMUM_BATTERY_VOLTAGE_START_BIT     (56u)
-#define CANTX_SIGNAL_MINIMUM_BATTERY_VOLTAGE_LENGTH        (8u)
-#define CANTX_MINIMUM_VALUE_MINIMUM_BATTERY_VOLTAGE_SIGNAL (0.0f)
-#define CANTX_MAXIMUM_VALUE_MINIMUM_BATTERY_VOLTAGE_SIGNAL (1020000.0f)
-#define CANTX_FACTOR_MINIMUM_BATTERY_VOLTAGE               (4000.0f)
-/** @} */
-
-/** @{
- * configuration of the minimum battery voltage signal
- */
-static const CAN_SIGNAL_TYPE_s cantx_signalMinimumBatteryVoltage = {
-    CANTX_SIGNAL_MINIMUM_BATTERY_VOLTAGE_START_BIT,
-    CANTX_SIGNAL_MINIMUM_BATTERY_VOLTAGE_LENGTH,
-    CANTX_FACTOR_MINIMUM_BATTERY_VOLTAGE,
-    CAN_SIGNAL_OFFSET_0,
-    CANTX_MINIMUM_VALUE_MINIMUM_BATTERY_VOLTAGE_SIGNAL,
-    CANTX_MAXIMUM_VALUE_MINIMUM_BATTERY_VOLTAGE_SIGNAL};
-/** @} */
-
 /*========== Static Constant and Variable Definitions =======================*/
 /**
  * @brief   Calculates the return value of the maximum discharge current
@@ -210,32 +124,6 @@ static uint64_t CANTX_CalculateMaximumDischargeCurrent(const CAN_SHIM_s *const k
  * @return  Returns the return value of the maximum charge current
  */
 static uint64_t CANTX_CalculateMaximumChargeCurrent(const CAN_SHIM_s *const kpkCanShim);
-
-/**
- * @brief   Calculates the return value of the maximum discharge power
- * @param   kpkCanShim const pointer to CAN shim
- * @return  Returns the return value of the maximum discharge power
- */
-static uint64_t CANTX_CalculateMaximumDischargePower(const CAN_SHIM_s *const kpkCanShim);
-
-/**
- * @brief   Calculates the return value of the maximum charge power
- * @param   kpkCanShim const pointer to CAN shim
- * @return  Returns the return value of the maximum charge power
- */
-static uint64_t CANTX_CalculateMaximumChargePower(const CAN_SHIM_s *const kpkCanShim);
-
-/**
- * @brief   Calculates the return value of the minimum battery voltage
- * @return  Returns the return value of the minimum battery voltage
- */
-static uint64_t CANTX_CalculateMinimumBatteryVoltage(void);
-
-/**
- * @brief   Calculates the return value of the maximum battery voltage
- * @return  Returns the return value of the maximum battery voltage
- */
-static uint64_t CANTX_CalculateMaximumBatteryVoltage(void);
 
 /**
  * @brief   Adds the data to the message
@@ -269,48 +157,6 @@ static uint64_t CANTX_CalculateMaximumChargeCurrent(const CAN_SHIM_s *const kpkC
     return data;
 }
 
-static uint64_t CANTX_CalculateMaximumDischargePower(const CAN_SHIM_s *const kpkCanShim) {
-    FAS_ASSERT(kpkCanShim != NULL_PTR);
-
-    /* maximum charge power = discharge_current_A * battery_voltage_V */
-    float_t signalData =
-        ((float_t)kpkCanShim->pTableSof->recommendedContinuousPackDischargeCurrent_mA *
-         UNIT_CONVERSION_FACTOR_1_1000_TH_FLOAT) *
-        ((float_t)kpkCanShim->pTablePackValues->batteryVoltage_mV * UNIT_CONVERSION_FACTOR_1_1000_TH_FLOAT);
-    CAN_TxPrepareSignalData(&signalData, cantx_signalMaximumDischargePower);
-    uint64_t data = (uint64_t)signalData;
-    return data;
-}
-
-static uint64_t CANTX_CalculateMaximumChargePower(const CAN_SHIM_s *const kpkCanShim) {
-    FAS_ASSERT(kpkCanShim != NULL_PTR);
-
-    /* maximum charge power = charge_current_A * battery_voltage_V */
-    float_t signalData =
-        ((float_t)kpkCanShim->pTableSof->recommendedContinuousPackChargeCurrent_mA *
-         UNIT_CONVERSION_FACTOR_1_1000_TH_FLOAT) *
-        ((float_t)kpkCanShim->pTablePackValues->batteryVoltage_mV * UNIT_CONVERSION_FACTOR_1_1000_TH_FLOAT);
-    CAN_TxPrepareSignalData(&signalData, cantx_signalMaximumChargePower);
-    uint64_t data = (uint64_t)signalData;
-    return data;
-}
-
-static uint64_t CANTX_CalculateMinimumBatteryVoltage(void) {
-    /* minimum battery voltage */
-    float_t signalData = (float_t)(BS_NR_OF_CELL_BLOCKS_PER_STRING * BC_VOLTAGE_MIN_MSL_mV);
-    CAN_TxPrepareSignalData(&signalData, cantx_signalMinimumBatteryVoltage);
-    uint64_t data = (uint64_t)signalData;
-    return data;
-}
-
-static uint64_t CANTX_CalculateMaximumBatteryVoltage(void) {
-    /* maximum battery voltage */
-    float_t signalData = (float_t)(BS_NR_OF_CELL_BLOCKS_PER_STRING * BC_VOLTAGE_MAX_MSL_mV);
-    CAN_TxPrepareSignalData(&signalData, cantx_signalMaximumBatteryVoltage);
-    uint64_t data = (uint64_t)signalData;
-    return data;
-}
-
 static void CANTX_BuildPackLimitsMessage(uint64_t *pMessageData, const CAN_SHIM_s *const kpkCanShim) {
     FAS_ASSERT(pMessageData != NULL_PTR);
     FAS_ASSERT(kpkCanShim != NULL_PTR);
@@ -322,7 +168,7 @@ static void CANTX_BuildPackLimitsMessage(uint64_t *pMessageData, const CAN_SHIM_
         cantx_signalMaximumDischargeCurrent.bitStart,
         cantx_signalMaximumDischargeCurrent.bitLength,
         data,
-        CAN_LITTLE_ENDIAN);
+        CANTX_PACK_LIMITS_ENDIANNESS);
     /* Maximum charge current */
     data = CANTX_CalculateMaximumChargeCurrent(kpkCanShim);
     CAN_TxSetMessageDataWithSignalData(
@@ -330,39 +176,7 @@ static void CANTX_BuildPackLimitsMessage(uint64_t *pMessageData, const CAN_SHIM_
         cantx_signalMaximumChargeCurrent.bitStart,
         cantx_signalMaximumChargeCurrent.bitLength,
         data,
-        CAN_LITTLE_ENDIAN);
-    /* Maximum discharge power */
-    data = CANTX_CalculateMaximumDischargePower(kpkCanShim);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        cantx_signalMaximumDischargePower.bitStart,
-        cantx_signalMaximumDischargePower.bitLength,
-        data,
-        CAN_LITTLE_ENDIAN);
-    /* Maximum charge power */
-    data = CANTX_CalculateMaximumChargePower(kpkCanShim);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        cantx_signalMaximumChargePower.bitStart,
-        cantx_signalMaximumChargePower.bitLength,
-        data,
-        CAN_LITTLE_ENDIAN);
-    /* Minimum battery voltage */
-    data = CANTX_CalculateMinimumBatteryVoltage();
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        cantx_signalMinimumBatteryVoltage.bitStart,
-        cantx_signalMinimumBatteryVoltage.bitLength,
-        data,
-        CAN_LITTLE_ENDIAN);
-    /* Maximum battery voltage */
-    data = CANTX_CalculateMaximumBatteryVoltage();
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        cantx_signalMaximumBatteryVoltage.bitStart,
-        cantx_signalMaximumBatteryVoltage.bitLength,
-        data,
-        CAN_LITTLE_ENDIAN);
+        CANTX_PACK_LIMITS_ENDIANNESS);
 }
 
 /*========== Extern Function Implementations ================================*/

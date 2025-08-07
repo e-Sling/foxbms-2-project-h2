@@ -504,6 +504,19 @@ bool DIAG_IsAnyFatalErrorSet(void) {
     return fatalErrorActive;
 }
 
+/* Cellsius: check for active warnings */
+bool DIAG_IsAnyWarningSet(void) {
+    for (uint16_t entry = 0u; entry < diag_device.nrOfConfiguredDiagnosisEntries; entry++) {
+        if (diag_diagnosisIdConfiguration[entry].severity == DIAG_WARNING) {
+            DIAG_ID_e id = diag_diagnosisIdConfiguration[entry].id;
+            if (DIAG_GetDiagnosisEntryState(id) == STD_NOT_OK) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 /*========== Externalized Static Function Implementations (Unit Test) =======*/
 #ifdef UNITY_UNIT_TEST
 extern void TEST_DIAG_SetDiagerrcnttotal(uint16_t errors) {
