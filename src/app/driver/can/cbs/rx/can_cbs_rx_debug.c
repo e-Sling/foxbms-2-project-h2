@@ -943,7 +943,7 @@ extern uint32_t CANRX_Debug(
     const CAN_SHIM_s *const kpkCanShim) {
     FAS_ASSERT(message.id == CANRX_DEBUG_ID);
     FAS_ASSERT(message.idType == CANRX_DEBUG_ID_TYPE);
-    FAS_ASSERT(message.dlc == CANRX_DEBUG_DLC);
+    FAS_ASSERT(message.dlc == CAN_FOXBMS_MESSAGES_DEFAULT_DLC);
     FAS_ASSERT(kpkCanData != NULL_PTR);
     FAS_ASSERT(kpkCanShim != NULL_PTR);
 

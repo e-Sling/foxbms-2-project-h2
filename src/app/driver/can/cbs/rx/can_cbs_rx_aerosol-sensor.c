@@ -184,7 +184,7 @@ extern uint32_t CANRX_AerosolSensor(
     const CAN_SHIM_s *const kpkCanShim) {
     FAS_ASSERT(message.id == CANRX_BAS_AEROSOL_SENSOR_ID);
     FAS_ASSERT(message.idType == CANRX_BAS_AEROSOL_SENSOR_ID_TYPE);
-    FAS_ASSERT(message.dlc == CANRX_BAS_AEROSOL_SENSOR_DLC);
+    FAS_ASSERT(message.dlc == CAN_DEFAULT_DLC);
     FAS_ASSERT(kpkCanData != NULL_PTR);
     FAS_ASSERT(kpkCanShim != NULL_PTR);
 

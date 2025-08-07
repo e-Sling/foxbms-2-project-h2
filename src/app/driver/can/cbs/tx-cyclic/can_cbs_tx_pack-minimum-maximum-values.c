@@ -337,7 +337,7 @@ extern uint32_t CANTX_PackMinimumMaximumValues(
     const CAN_SHIM_s *const kpkCanShim) {
     FAS_ASSERT(message.id == CANTX_PACK_MINIMUM_MAXIMUM_VALUES_ID);
     FAS_ASSERT(message.idType == CANTX_PACK_MINIMUM_MAXIMUM_VALUES_ID_TYPE);
-    FAS_ASSERT(message.dlc == CANTX_PACK_MINIMUM_MAXIMUM_VALUES_DLC);
+    FAS_ASSERT(message.dlc == CAN_FOXBMS_MESSAGES_DEFAULT_DLC);
     FAS_ASSERT(message.endianness == CANTX_PACK_MINIMUM_MAXIMUM_VALUES_ENDIANNESS);
     FAS_ASSERT(pCanData != NULL_PTR);
     FAS_ASSERT(pMuxId == NULL_PTR); /* pMuxId is not used here, therefore has to be NULL_PTR */
