@@ -622,7 +622,9 @@ void BMS_Trigger(void) {
                  * information at this point */
                 if ((contactorState == CONT_SWITCH_OFF) || (contactorFeedbackValid == false)) {
                     /* Main contactor opened correctly. Reset state variables used for opening */
-                    bms_state.contactorToBeOpened = CONT_UNDEFINED;
+                    bms_state.contactorToBeOpened                       = CONT_UNDEFINED;
+                    bms_state.closedStrings[bms_state.stringToBeOpened] = 0u;
+                    bms_state.numberOfClosedStrings--;
                     /* All contactors opened -> prepare to leave state BMS_STATEMACH_OPEN_CONTACTORS */
                     bms_state.substate = BMS_OPEN_STRINGS_EXIT;
                     bms_state.timer    = BMS_STATEMACH_SHORTTIME;
