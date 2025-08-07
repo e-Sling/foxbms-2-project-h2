@@ -71,47 +71,46 @@
 /**
  * Configuration of the signals
  */
-#define CANTX_SIGNAL_BMS_CONTACTOR_FEEDBACK_START_BIT          (0u)
-#define CANTX_SIGNAL_BMS_CONTACTOR_FEEDBACK_LENGTH             (2u) /* 8 bits for 4 contactors */
-#define CANTX_SIGNAL_BMS_NUMBER_OF_CONNECTED_STRINGS_START_BIT (8u)
-#define CANTX_SIGNAL_BMS_NUMBER_OF_CONNECTED_STRINGS_LENGTH    (2u)
-#define CANTX_SIGNAL_BMS_BMS_SUBSTATE_START_BIT                (10u)
-#define CANTX_SIGNAL_BMS_BMS_SUBSTATE_LENGTH                   (6u)
-#define CANTX_SIGNAL_BMS_BMS_STATE_START_BIT                   (16u)
-#define CANTX_SIGNAL_BMS_BMS_STATE_LENGTH                      (4u)
-#define CANTX_SIGNAL_BMS_BALANCING_ALGORITHM_STATE_START_BIT   (17u)
-#define CANTX_SIGNAL_BMS_BALANCING_ALGORITHM_STATE_LENGTH      (CAN_BIT)
-#define CANTX_SIGNAL_BMS_WARNING_START_BIT                     (18u)
-#define CANTX_SIGNAL_BMS_WARNING_LENGTH                        (CAN_BIT)
-#define CANTX_SIGNAL_BMS_FATAL_ERROR_START_BIT                 (19u)
-#define CANTX_SIGNAL_BMS_FATAL_ERROR_LENGTH                    (CAN_BIT)
-#define CANTX_SIGNAL_BMS_BAT_ON_START_BIT                      (23u)
-#define CANTX_SIGNAL_BMS_BAT_ON_LENGTH                         (CAN_BIT)
-#define CANTX_SIGNAL_BMS_CRC_START_BIT                         (24u)
-#define CANTX_SIGNAL_BMS_CRC_LENGTH                            (8u)
-
-#define CANTX_SIGNAL_BMS_EMERGENCY_SHUTOFF_START_BIT                (32u)
+#define CANTX_SIGNAL_BMS_CONTACTOR_FEEDBACK_START_BIT               (0u)
+#define CANTX_SIGNAL_BMS_CONTACTOR_FEEDBACK_LENGTH                  (2u) /* 8 bits for 4 contactors */
+#define CANTX_SIGNAL_BMS_NUMBER_OF_CONNECTED_STRINGS_START_BIT      (8u)
+#define CANTX_SIGNAL_BMS_NUMBER_OF_CONNECTED_STRINGS_LENGTH         (2u)
+#define CANTX_SIGNAL_BMS_BMS_SUBSTATE_START_BIT                     (10u)
+#define CANTX_SIGNAL_BMS_BMS_SUBSTATE_LENGTH                        (6u)
+#define CANTX_SIGNAL_BMS_BMS_STATE_START_BIT                        (16u)
+#define CANTX_SIGNAL_BMS_BMS_STATE_LENGTH                           (4u)
+#define CANTX_SIGNAL_BMS_BALANCING_ALGORITHM_STATE_START_BIT        (20u)
+#define CANTX_SIGNAL_BMS_BALANCING_ALGORITHM_STATE_LENGTH           (CAN_BIT)
+#define CANTX_SIGNAL_BMS_WARNING_START_BIT                          (21u)
+#define CANTX_SIGNAL_BMS_WARNING_LENGTH                             (CAN_BIT)
+#define CANTX_SIGNAL_BMS_FATAL_ERROR_START_BIT                      (22u)
+#define CANTX_SIGNAL_BMS_FATAL_ERROR_LENGTH                         (CAN_BIT)
+#define CANTX_SIGNAL_BMS_BAT_ON_START_BIT                           (23u)
+#define CANTX_SIGNAL_BMS_BAT_ON_LENGTH                              (CAN_BIT)
+#define CANTX_SIGNAL_BMS_EMERGENCY_SHUTOFF_START_BIT                (24u)
 #define CANTX_SIGNAL_BMS_EMERGENCY_SHUTOFF_LENGTH                   (CAN_BIT)
-#define CANTX_SIGNAL_BMS_SYSTEM_MONITORING_ERROR_START_BIT          (33u)
+#define CANTX_SIGNAL_BMS_SYSTEM_MONITORING_ERROR_START_BIT          (25u)
 #define CANTX_SIGNAL_BMS_SYSTEM_MONITORING_ERROR_LENGTH             (CAN_BIT)
-#define CANTX_SIGNAL_BMS_PRECHARGE_VOLTAGE_ERROR_START_BIT          (34u)
+#define CANTX_SIGNAL_BMS_PRECHARGE_VOLTAGE_ERROR_START_BIT          (26u)
 #define CANTX_SIGNAL_BMS_PRECHARGE_VOLTAGE_ERROR_LENGTH             (CAN_BIT)
-#define CANTX_SIGNAL_BMS_PRECHARGE_CURRENT_ERROR_START_BIT          (35u)
+#define CANTX_SIGNAL_BMS_PRECHARGE_CURRENT_ERROR_START_BIT          (27u)
 #define CANTX_SIGNAL_BMS_PRECHARGE_CURRENT_ERROR_LENGTH             (CAN_BIT)
-#define CANTX_SIGNAL_BMS_MCU_DIE_TEMPERATURE_ERROR_START_BIT        (36u)
+#define CANTX_SIGNAL_BMS_MCU_DIE_TEMPERATURE_ERROR_START_BIT        (28u)
 #define CANTX_SIGNAL_BMS_MCU_DIE_TEMPERATURE_ERROR_LENGTH           (CAN_BIT)
-#define CANTX_SIGNAL_BMS_CAN_TIMING_ERROR_START_BIT                 (37u)
+#define CANTX_SIGNAL_BMS_CAN_TIMING_ERROR_START_BIT                 (29u)
 #define CANTX_SIGNAL_BMS_CAN_TIMING_ERROR_LENGTH                    (CAN_BIT)
-#define CANTX_SIGNAL_BMS_PACK_OVERCURRENT_CHARGE_ERROR_START_BIT    (38u)
+#define CANTX_SIGNAL_BMS_PACK_OVERCURRENT_CHARGE_ERROR_START_BIT    (30u)
 #define CANTX_SIGNAL_BMS_PACK_OVERCURRENT_CHARGE_ERROR_LENGTH       (CAN_BIT)
-#define CANTX_SIGNAL_BMS_PACK_OVERCURRENT_DISCHARGE_ERROR_START_BIT (39u)
+#define CANTX_SIGNAL_BMS_PACK_OVERCURRENT_DISCHARGE_ERROR_START_BIT (31u)
 #define CANTX_SIGNAL_BMS_PACK_OVERCURRENT_DISCHARGE_ERROR_LENGTH    (CAN_BIT)
-#define CANTX_SIGNAL_BMS_ALERT_FLAG_START_BIT                       (40u)
+#define CANTX_SIGNAL_BMS_ALERT_FLAG_START_BIT                       (32u)
 #define CANTX_SIGNAL_BMS_ALERT_FLAG_LENGTH                          (CAN_BIT)
-#define CANTX_SIGNAL_BMS_NVRAM_CRC_ERROR_START_BIT                  (41u)
+#define CANTX_SIGNAL_BMS_NVRAM_CRC_ERROR_START_BIT                  (33u)
 #define CANTX_SIGNAL_BMS_NVRAM_CRC_ERROR_LENGTH                     (CAN_BIT)
-#define CANTX_SIGNAL_BMS_CLAMP_30C_ERROR_START_BIT                  (42u)
+#define CANTX_SIGNAL_BMS_CLAMP_30C_ERROR_START_BIT                  (34u)
 #define CANTX_SIGNAL_BMS_CLAMP_30C_ERROR_LENGTH                     (CAN_BIT)
+#define CANTX_SIGNAL_BMS_CRC_START_BIT                              (40u)
+#define CANTX_SIGNAL_BMS_CRC_LENGTH                                 (8u)
 
 /*========== Static Constant and Variable Definitions =======================*/
 
@@ -203,7 +202,7 @@ static void CANTX_BuildBmsStateMessage(uint64_t *pMessageData, const CAN_SHIM_s 
         data,
         CANTX_BMS_STATE_ENDIANNESS);
 
-    /* Warning */
+    /* Warning -> Cellsius: Master Caution */
     data = CAN_ConvertBooleanToInteger(DIAG_IsAnyWarningSet());
     CAN_TxSetMessageDataWithSignalData(
         pMessageData,
@@ -212,7 +211,7 @@ static void CANTX_BuildBmsStateMessage(uint64_t *pMessageData, const CAN_SHIM_s 
         data,
         CANTX_BMS_STATE_ENDIANNESS);
 
-    /* Fatal error  */
+    /* Fatal error - Cellsius: Master Warning */
     data = CAN_ConvertBooleanToInteger(DIAG_IsAnyFatalErrorSet());
     CAN_TxSetMessageDataWithSignalData(
         pMessageData,
@@ -382,7 +381,7 @@ extern STD_RETURN_TYPE_e CANTX_TransmitBmsState(void) {
         .endianness = CANTX_BMS_STATE_ENDIANNESS,
     };
 
-    uint8_t canData[CANTX_BMS_STATE_DLC] = {0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u};
+    uint8_t canData[CANTX_BMS_STATE_DLC] = {0u, 0u, 0u, 0u, 0u, 0u};
 
     CANTX_BmsState(message, canData, NULL_PTR, &can_kShim);
 
