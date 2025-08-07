@@ -234,7 +234,7 @@ extern uint32_t CANTX_CellVoltages(
     const CAN_SHIM_s *const kpkCanShim) {
     FAS_ASSERT(message.id == CANTX_CELL_VOLTAGES_ID);
     FAS_ASSERT(message.idType == CANTX_CELL_VOLTAGES_ID_TYPE);
-    FAS_ASSERT(message.dlc == CAN_FOXBMS_MESSAGES_DEFAULT_DLC);
+    FAS_ASSERT(message.dlc == CANTX_CELL_VOLTAGES_DLC);
     FAS_ASSERT(message.endianness == CANTX_CELL_VOLTAGES_ENDIANNESS);
     FAS_ASSERT(pCanData != NULL_PTR);
     FAS_ASSERT(pMuxId != NULL_PTR);

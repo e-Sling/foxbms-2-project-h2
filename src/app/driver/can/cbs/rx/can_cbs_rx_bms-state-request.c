@@ -245,7 +245,7 @@ extern uint32_t CANRX_BmsStateRequest(
     const CAN_SHIM_s *const kpkCanShim) {
     FAS_ASSERT(message.id == CANRX_BMS_STATE_REQUEST_ID);
     FAS_ASSERT(message.idType == CANRX_BMS_STATE_REQUEST_ID_TYPE);
-    FAS_ASSERT(message.dlc == CAN_FOXBMS_MESSAGES_DEFAULT_DLC);
+    FAS_ASSERT(message.dlc == CANRX_BMS_STATE_REQUEST_DLC);
     FAS_ASSERT(message.endianness == CANRX_BMS_STATE_REQUEST_ENDIANNESS);
     FAS_ASSERT(kpkCanData != NULL_PTR);
     FAS_ASSERT(kpkCanShim != NULL_PTR);

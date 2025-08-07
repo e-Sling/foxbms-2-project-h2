@@ -298,7 +298,7 @@ extern uint32_t CANTX_PackValuesP0(
 
     FAS_ASSERT(message.id == CANTX_PACK_VALUES_P0_ID);
     FAS_ASSERT(message.idType == CANTX_PACK_VALUES_P0_ID_TYPE);
-    FAS_ASSERT(message.dlc == CAN_FOXBMS_MESSAGES_DEFAULT_DLC);
+    FAS_ASSERT(message.dlc == CANTX_PACK_VALUES_P0_DLC);
     FAS_ASSERT(message.endianness == CANTX_PACK_VALUES_P0_ENDIANNESS);
     FAS_ASSERT(pCanData != NULL_PTR);
     FAS_ASSERT(kpkCanShim != NULL_PTR);
