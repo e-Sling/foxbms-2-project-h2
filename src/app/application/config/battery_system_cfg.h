@@ -266,7 +266,7 @@ typedef enum {
  * @brief   Wait time in 10ms before battery system is at rest. Balancing for
  *          example only starts if battery system is at rest.
  */
-#define BS_RELAXATION_PERIOD_10ms (1000u)
+#define BS_RELAXATION_PERIOD_10ms (60000u)
 
 /**
  * @brief   current sensor threshold for 0 current in mA as the sensor has a
