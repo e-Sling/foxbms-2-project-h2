@@ -202,7 +202,7 @@ static void CANTX_BuildBmsStateMessage(uint64_t *pMessageData, const CAN_SHIM_s 
         CANTX_BMS_STATE_ENDIANNESS);
 
     /* Warning */
-    data = CAN_ConvertBooleanToInteger(BMS_IsWarningSet());
+    data = CAN_ConvertBooleanToInteger(DIAG_IsAnyWarningSet());
     CAN_TxSetMessageDataWithSignalData(
         pMessageData,
         CANTX_SIGNAL_BMS_WARNING_START_BIT,
