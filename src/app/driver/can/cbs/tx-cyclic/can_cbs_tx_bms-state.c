@@ -109,7 +109,7 @@
 #define CANTX_SIGNAL_BMS_NVRAM_CRC_ERROR_LENGTH                     (CAN_BIT)
 #define CANTX_SIGNAL_BMS_CLAMP_30C_ERROR_START_BIT                  (34u)
 #define CANTX_SIGNAL_BMS_CLAMP_30C_ERROR_LENGTH                     (CAN_BIT)
-#define CANTX_SIGNAL_BMS_CRC_START_BIT                              (40u)
+#define CANTX_SIGNAL_BMS_CRC_START_BIT                              (56u)
 #define CANTX_SIGNAL_BMS_CRC_LENGTH                                 (8u)
 
 /*========== Static Constant and Variable Definitions =======================*/
@@ -229,11 +229,6 @@ static void CANTX_BuildBmsStateMessage(uint64_t *pMessageData, const CAN_SHIM_s 
         data,
         CANTX_BMS_STATE_ENDIANNESS);
 
-    /* Cellsius: CRC */
-    data = Compute_CRC8H2F((uint8_t *)pMessageData, CANTX_SIGNAL_BMS_CRC_START_BIT / 8u, CRC8H2F_INITIAL_VALUE);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData, CANTX_SIGNAL_BMS_CRC_START_BIT, CANTX_SIGNAL_BMS_CRC_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
-
     /* Emergency shutoff */
     data = CAN_ConvertBooleanToInteger(BMS_IsTransitionToErrorStateActive());
     CAN_TxSetMessageDataWithSignalData(
@@ -342,6 +337,11 @@ static void CANTX_BuildBmsStateMessage(uint64_t *pMessageData, const CAN_SHIM_s 
         CANTX_SIGNAL_BMS_CLAMP_30C_ERROR_LENGTH,
         data,
         CANTX_BMS_STATE_ENDIANNESS);
+
+    /* Cellsius: CRC */
+    data = Compute_CRC8H2F((uint8_t *)pMessageData, CANTX_SIGNAL_BMS_CRC_START_BIT / 8u, CRC8H2F_INITIAL_VALUE);
+    CAN_TxSetMessageDataWithSignalData(
+        pMessageData, CANTX_SIGNAL_BMS_CRC_START_BIT, CANTX_SIGNAL_BMS_CRC_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
 }
 
 /*========== Extern Function Implementations ================================*/
