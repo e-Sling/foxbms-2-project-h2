@@ -167,7 +167,7 @@
  *  - Period and phase in ms
  *  - Endianness
  *  - data length @{*/
-#define CANTX_PACK_VALUES_P0_ID         (0x120u)
+#define CANTX_PACK_VALUES_P0_ID         (0x221u)
 #define CANTX_PACK_VALUES_P0_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
 #define CANTX_PACK_VALUES_P0_PERIOD_ms  (50u)
 #define CANTX_PACK_VALUES_P0_PHASE_ms   (40u)
