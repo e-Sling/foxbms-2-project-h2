@@ -72,21 +72,15 @@
 #define CANTX_SIGNAL_MINIMUM_SOC_LENGTH    (10u)
 #define CANTX_SIGNAL_MAXIMUM_SOC_START_BIT (10u)
 #define CANTX_SIGNAL_MAXIMUM_SOC_LENGTH    (10u)
-#define CANTX_SIGNAL_MINIMUM_SOE_START_BIT (20u)
+#define CANTX_SIGNAL_AVERAGE_SOC_START_BIT (20u)
+#define CANTX_SIGNAL_AVERAGE_SOC_LENGTH    (10u)
+#define CANTX_SIGNAL_MINIMUM_SOE_START_BIT (30u)
 #define CANTX_SIGNAL_MINIMUM_SOE_LENGTH    (10u)
-#define CANTX_SIGNAL_MAXIMUM_SOE_START_BIT (30u)
+#define CANTX_SIGNAL_MAXIMUM_SOE_START_BIT (40u)
 #define CANTX_SIGNAL_MAXIMUM_SOE_LENGTH    (10u)
-#define CANTX_SIGNAL_SOH_START_BIT         (40u)
-#define CANTX_SIGNAL_SOH_LENGTH            (8u)
-#define CANTX_SIGNAL_ENERGY_START_BIT      (48u)
-#define CANTX_SIGNAL_ENERGY_LENGTH         (16u)
 
 #define CANTX_MINIMUM_VALUE_PERCENT_SIGNALS (0.0f)
 #define CANTX_MAXIMUM_VALUE_PERCENT_SIGNALS (102.3f)
-#define CANTX_MINIMUM_ENERGY_VALUE          (0.0f)
-#define CANTX_MAXIMUM_ENERGY_VALUE          (6553500.0f)
-#define CANTX_FACTOR_SOH                    (0.5f)
-#define CANTX_MAXIMUM_VALUE_SOH_SIGNAL      (127.5f)
 
 /** @{
  * configuration of the minimum soc signal
@@ -106,6 +100,18 @@ static const CAN_SIGNAL_TYPE_s cantx_signalMinimumSoc = {
 static const CAN_SIGNAL_TYPE_s cantx_signalMaximumSoc = {
     CANTX_SIGNAL_MAXIMUM_SOC_START_BIT,
     CANTX_SIGNAL_MAXIMUM_SOC_LENGTH,
+    UNIT_CONVERSION_FACTOR_1_10_TH_FLOAT,
+    CAN_SIGNAL_OFFSET_0,
+    CANTX_MINIMUM_VALUE_PERCENT_SIGNALS,
+    CANTX_MAXIMUM_VALUE_PERCENT_SIGNALS};
+/** @} */
+
+/** @{
+ * configuration of the average soc signal
+*/
+static const CAN_SIGNAL_TYPE_s cantx_signalAverageSoc = {
+    CANTX_SIGNAL_AVERAGE_SOC_START_BIT,
+    CANTX_SIGNAL_AVERAGE_SOC_LENGTH,
     UNIT_CONVERSION_FACTOR_1_10_TH_FLOAT,
     CAN_SIGNAL_OFFSET_0,
     CANTX_MINIMUM_VALUE_PERCENT_SIGNALS,
@@ -136,30 +142,6 @@ static const CAN_SIGNAL_TYPE_s cantx_signalMaximumSoe = {
     CANTX_MAXIMUM_VALUE_PERCENT_SIGNALS};
 /** @} */
 
-/** @{
- * configuration of the soh signal
-*/
-static const CAN_SIGNAL_TYPE_s cantx_signalSoh = {
-    CANTX_SIGNAL_SOH_START_BIT,
-    CANTX_SIGNAL_SOH_LENGTH,
-    CANTX_FACTOR_SOH,
-    CAN_SIGNAL_OFFSET_0,
-    CANTX_MINIMUM_VALUE_PERCENT_SIGNALS,
-    CANTX_MAXIMUM_VALUE_SOH_SIGNAL};
-/** @} */
-
-/** @{
- * configuration of the energy signal
-*/
-static const CAN_SIGNAL_TYPE_s cantx_signalEnergy = {
-    CANTX_SIGNAL_ENERGY_START_BIT,
-    CANTX_SIGNAL_ENERGY_LENGTH,
-    UNIT_CONVERSION_FACTOR_100_FLOAT,
-    CAN_SIGNAL_OFFSET_0,
-    CANTX_MINIMUM_ENERGY_VALUE,
-    CANTX_MAXIMUM_ENERGY_VALUE};
-/** @} */
-
 /*========== Static Constant and Variable Definitions =======================*/
 
 /*========== Extern Constant and Variable Definitions =======================*/
@@ -178,6 +160,12 @@ static uint64_t CANTX_CalculateMaximumPackSoc(const CAN_SHIM_s *const kpkCanShim
 static uint64_t CANTX_CalculateMinimumPackSoc(const CAN_SHIM_s *const kpkCanShim);
 
 /**
+ * @brief Calculates the return value of the average SOC
+ * @return Returns the return value of the average SOC
+ */
+static uint64_t CANTX_CalculateAveragePackSoc(const CAN_SHIM_s *const kpkCanShim);
+
+/**
  * @brief Calculates the return value of the maximum SOE
  * @return Returns the return value of the maximum SOE
  */
@@ -188,18 +176,6 @@ static uint64_t CANTX_CalculateMaximumPackSoe(const CAN_SHIM_s *const kpkCanShim
  * @return Returns the return value of the minimum SOE
  */
 static uint64_t CANTX_CalculateMinimumPackSoe(const CAN_SHIM_s *const kpkCanShim);
-
-/**
- * @brief Calculates the return value of the SOH
- * @return Returns the return value of the SOH
- */
-static uint64_t CANTX_CalculatePackSoh(void);
-
-/**
- * @brief Calculates the return value of the stored Energy
- * @return Returns the return value of the stored Energy
- */
-static uint64_t CANTX_CalculatePackEnergy(const CAN_SHIM_s *const kpkCanShim);
 
 /**
  * @brief Builds the CAN message form signal data
@@ -229,6 +205,17 @@ static uint64_t CANTX_CalculateMinimumPackSoc(const CAN_SHIM_s *const kpkCanShim
     return data;
 }
 
+static uint64_t CANTX_CalculateAveragePackSoc(const CAN_SHIM_s *const kpkCanShim) {
+    FAS_ASSERT(kpkCanShim != NULL_PTR);
+
+    /* Cellsius: Get average SOC percentage, only one string */
+    float_t signalData = kpkCanShim->pTableSoc->averageSoc_perc[BS_STRING0];
+
+    CAN_TxPrepareSignalData(&signalData, cantx_signalAverageSoc);
+    uint64_t data = (uint64_t)signalData;
+    return data;
+}
+
 static uint64_t CANTX_CalculateMaximumPackSoe(const CAN_SHIM_s *const kpkCanShim) {
     FAS_ASSERT(kpkCanShim != NULL_PTR);
 
@@ -247,24 +234,6 @@ static uint64_t CANTX_CalculateMinimumPackSoe(const CAN_SHIM_s *const kpkCanShim
     float_t signalData = kpkCanShim->pTableSoe->minimumSoe_perc[BS_STRING0];
 
     CAN_TxPrepareSignalData(&signalData, cantx_signalMinimumSoe);
-    uint64_t data = (uint64_t)signalData;
-    return data;
-}
-
-static uint64_t CANTX_CalculatePackSoh(void) {
-    float_t signalData = CANTX_100_PERCENT_FLOAT; /* TODO */
-    CAN_TxPrepareSignalData(&signalData, cantx_signalSoh);
-    uint64_t data = (uint64_t)signalData;
-    return data;
-}
-
-static uint64_t CANTX_CalculatePackEnergy(const CAN_SHIM_s *const kpkCanShim) {
-    FAS_ASSERT(kpkCanShim != NULL_PTR);
-
-    /* Cellsius: Get energy in Wh, only one string */
-    float_t signalData = kpkCanShim->pTableSoe->minimumSoe_Wh[BS_STRING0];
-
-    CAN_TxPrepareSignalData(&signalData, cantx_signalEnergy);
     uint64_t data = (uint64_t)signalData;
     return data;
 }
@@ -289,6 +258,14 @@ static void CANTX_BuildPackStateEstimationMessage(const CAN_SHIM_s *const kpkCan
         cantx_signalMaximumSoc.bitLength,
         data,
         CANTX_PACK_STATE_ESTIMATION_ENDIANNESS);
+    /* average SOC */
+    data = CANTX_CalculateAveragePackSoc(kpkCanShim);
+    CAN_TxSetMessageDataWithSignalData(
+        pMessageData,
+        cantx_signalAverageSoc.bitStart,
+        cantx_signalAverageSoc.bitLength,
+        data,
+        CANTX_PACK_STATE_ESTIMATION_ENDIANNESS);
     /* minimum SOE*/
     data = CANTX_CalculateMinimumPackSoe(kpkCanShim);
     CAN_TxSetMessageDataWithSignalData(
@@ -303,22 +280,6 @@ static void CANTX_BuildPackStateEstimationMessage(const CAN_SHIM_s *const kpkCan
         pMessageData,
         cantx_signalMaximumSoe.bitStart,
         cantx_signalMaximumSoe.bitLength,
-        data,
-        CANTX_PACK_STATE_ESTIMATION_ENDIANNESS);
-    /* SOH */
-    data = CANTX_CalculatePackSoh();
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        cantx_signalSoh.bitStart,
-        cantx_signalSoh.bitLength,
-        data,
-        CANTX_PACK_STATE_ESTIMATION_ENDIANNESS);
-    /* Pack energy */
-    data = CANTX_CalculatePackEnergy(kpkCanShim);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        cantx_signalEnergy.bitStart,
-        cantx_signalEnergy.bitLength,
         data,
         CANTX_PACK_STATE_ESTIMATION_ENDIANNESS);
 }

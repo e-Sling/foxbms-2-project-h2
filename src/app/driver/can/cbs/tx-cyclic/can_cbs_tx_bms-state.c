@@ -81,33 +81,34 @@
 #define CANTX_SIGNAL_BMS_CONTACTOR_FEEDBACK_LENGTH             (2u) /* 8 bits for 4 contactors */
 #define CANTX_SIGNAL_BMS_BALANCING_ALGORITHM_STATE_START_BIT   (20u)
 #define CANTX_SIGNAL_BMS_BALANCING_ALGORITHM_STATE_LENGTH      (CAN_BIT)
-#define CANTX_SIGNAL_BMS_GENERAL_ERROR_START_BIT               (21u)
-#define CANTX_SIGNAL_BMS_GENERAL_ERROR_LENGTH                  (CAN_BIT)
-#define CANTX_SIGNAL_BMS_BAT_ON_START_BIT                      (22u)
+#define CANTX_SIGNAL_BMS_WARNING_START_BIT                     (21u)
+#define CANTX_SIGNAL_BMS_WARNING_LENGTH                        (1u)
+#define CANTX_SIGNAL_BMS_FATAL_ERROR_START_BIT                 (22u)
+#define CANTX_SIGNAL_BMS_FATAL_ERROR_LENGTH                    (CAN_BIT)
+#define CANTX_SIGNAL_BMS_BAT_ON_START_BIT                      (23u)
 #define CANTX_SIGNAL_BMS_BAT_ON_LENGTH                         (CAN_BIT)
-/* Leon: Add fatal/general error */
 
-#define CANTX_SIGNAL_BMS_EMERGENCY_SHUTOFF_START_BIT                (23u)
+#define CANTX_SIGNAL_BMS_EMERGENCY_SHUTOFF_START_BIT                (24u)
 #define CANTX_SIGNAL_BMS_EMERGENCY_SHUTOFF_LENGTH                   (CAN_BIT)
-#define CANTX_SIGNAL_BMS_SYSTEM_MONITORING_ERROR_START_BIT          (24u)
+#define CANTX_SIGNAL_BMS_SYSTEM_MONITORING_ERROR_START_BIT          (25u)
 #define CANTX_SIGNAL_BMS_SYSTEM_MONITORING_ERROR_LENGTH             (CAN_BIT)
-#define CANTX_SIGNAL_BMS_PRECHARGE_VOLTAGE_ERROR_START_BIT          (25u)
+#define CANTX_SIGNAL_BMS_PRECHARGE_VOLTAGE_ERROR_START_BIT          (26u)
 #define CANTX_SIGNAL_BMS_PRECHARGE_VOLTAGE_ERROR_LENGTH             (CAN_BIT)
-#define CANTX_SIGNAL_BMS_PRECHARGE_CURRENT_ERROR_START_BIT          (26u)
+#define CANTX_SIGNAL_BMS_PRECHARGE_CURRENT_ERROR_START_BIT          (27u)
 #define CANTX_SIGNAL_BMS_PRECHARGE_CURRENT_ERROR_LENGTH             (CAN_BIT)
-#define CANTX_SIGNAL_BMS_MCU_DIE_TEMPERATURE_ERROR_START_BIT        (27u)
+#define CANTX_SIGNAL_BMS_MCU_DIE_TEMPERATURE_ERROR_START_BIT        (28u)
 #define CANTX_SIGNAL_BMS_MCU_DIE_TEMPERATURE_ERROR_LENGTH           (CAN_BIT)
-#define CANTX_SIGNAL_BMS_CAN_TIMING_ERROR_START_BIT                 (28u)
+#define CANTX_SIGNAL_BMS_CAN_TIMING_ERROR_START_BIT                 (29u)
 #define CANTX_SIGNAL_BMS_CAN_TIMING_ERROR_LENGTH                    (CAN_BIT)
-#define CANTX_SIGNAL_BMS_PACK_OVERCURRENT_CHARGE_ERROR_START_BIT    (29u)
+#define CANTX_SIGNAL_BMS_PACK_OVERCURRENT_CHARGE_ERROR_START_BIT    (30u)
 #define CANTX_SIGNAL_BMS_PACK_OVERCURRENT_CHARGE_ERROR_LENGTH       (CAN_BIT)
-#define CANTX_SIGNAL_BMS_PACK_OVERCURRENT_DISCHARGE_ERROR_START_BIT (30u)
+#define CANTX_SIGNAL_BMS_PACK_OVERCURRENT_DISCHARGE_ERROR_START_BIT (31u)
 #define CANTX_SIGNAL_BMS_PACK_OVERCURRENT_DISCHARGE_ERROR_LENGTH    (CAN_BIT)
-#define CANTX_SIGNAL_BMS_ALERT_FLAG_START_BIT                       (31u)
+#define CANTX_SIGNAL_BMS_ALERT_FLAG_START_BIT                       (32u)
 #define CANTX_SIGNAL_BMS_ALERT_FLAG_LENGTH                          (CAN_BIT)
-#define CANTX_SIGNAL_BMS_NVRAM_CRC_ERROR_START_BIT                  (32u)
+#define CANTX_SIGNAL_BMS_NVRAM_CRC_ERROR_START_BIT                  (33u)
 #define CANTX_SIGNAL_BMS_NVRAM_CRC_ERROR_LENGTH                     (CAN_BIT)
-#define CANTX_SIGNAL_BMS_CLAMP_30C_ERROR_START_BIT                  (33u)
+#define CANTX_SIGNAL_BMS_CLAMP_30C_ERROR_START_BIT                  (34u)
 #define CANTX_SIGNAL_BMS_CLAMP_30C_ERROR_LENGTH                     (CAN_BIT)
 
 /*========== Static Constant and Variable Definitions =======================*/
@@ -200,12 +201,21 @@ static void CANTX_BuildBmsStateMessage(uint64_t *pMessageData, const CAN_SHIM_s 
         data,
         CANTX_BMS_STATE_ENDIANNESS);
 
-    /* General/Fatal error  */
+    /* Warning */
+    data = CAN_ConvertBooleanToInteger(BMS_IsWarningSet());
+    CAN_TxSetMessageDataWithSignalData(
+        pMessageData,
+        CANTX_SIGNAL_BMS_WARNING_START_BIT,
+        CANTX_SIGNAL_BMS_WARNING_LENGTH,
+        data,
+        CANTX_BMS_STATE_ENDIANNESS);
+
+    /* Fatal error  */
     data = CAN_ConvertBooleanToInteger(DIAG_IsAnyFatalErrorSet());
     CAN_TxSetMessageDataWithSignalData(
         pMessageData,
-        CANTX_SIGNAL_BMS_GENERAL_ERROR_START_BIT,
-        CANTX_SIGNAL_BMS_GENERAL_ERROR_LENGTH,
+        CANTX_SIGNAL_BMS_FATAL_ERROR_START_BIT,
+        CANTX_SIGNAL_BMS_FATAL_ERROR_LENGTH,
         data,
         CANTX_BMS_STATE_ENDIANNESS);
 
