@@ -469,8 +469,6 @@ void BMS_Trigger(void) {
         SOA_CheckSlaveTemperatures();
         BMS_CheckOpenSenseWire(); */
         CONT_CheckFeedback();
-        /* Cellsius: Check Bat_On Signal */
-        bms_state.batOnSignal = FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor);
     }
     /* Check re-entrance of function */
     if (BMS_CheckReEntrance() > 0u) {
