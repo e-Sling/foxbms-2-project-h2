@@ -89,6 +89,8 @@ typedef struct {
     float_t max;       /*!< maximum allowed value for signal */
 } CAN_SIGNAL_TYPE_s;
 
+#define CRC8H2F_INITIAL_VALUE (uint8_t)0xFFu
+
 /*========== Extern Constant and Variable Declarations ======================*/
 
 /*========== Extern Function Prototypes =====================================*/
@@ -182,6 +184,11 @@ extern void CAN_RxGetMessageDataFromCanData(
  * @return  unsigned integer indicating the state of the input
  */
 extern uint8_t CAN_ConvertBooleanToInteger(bool input);
+
+/**
+ * @brief Compute CRC
+ */
+extern uint8_t Compute_CRC8H2F(const uint8_t *Crc_DataPtr, uint32_t Crc_Length, uint8_t Crc_StartValue8H2F);
 
 /*========== Externalized Static Functions Prototypes (Unit Test) ===========*/
 #ifdef UNITY_UNIT_TEST

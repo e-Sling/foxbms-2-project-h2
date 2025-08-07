@@ -147,6 +147,9 @@ static const CAN_SIGNAL_TYPE_s cantx_signalMaximumChargePower = {
     CANTX_MAXIMUM_VALUE_MAXIMUM_CHARGE_POWER_SIGNAL};
 /** @} */
 
+#define CANTX_SIGNAL_PACK_VALUES_CRC_START_BIT (56u)
+#define CANTX_SIGNAL_PACK_VALUES_CRC_LENGTH    (8u)
+
 /*========== Static Constant and Variable Definitions =======================*/
 
 /*========== Extern Constant and Variable Definitions =======================*/
@@ -245,12 +248,16 @@ static void CANTX_BuildP0Message(const CAN_SHIM_s *const kpkCanShim, uint64_t *p
         cantx_signalBatteryVoltage.bitStart,
         cantx_signalBatteryVoltage.bitLength,
         data,
-        CAN_LITTLE_ENDIAN);
+        CANTX_PACK_VALUES_P0_ENDIANNESS);
 
     /* Average SoE */
     data = CANTX_CalculateAverageSoE(kpkCanShim);
     CAN_TxSetMessageDataWithSignalData(
-        pMessageData, cantx_signalAverageSoe.bitStart, cantx_signalAverageSoe.bitLength, data, CAN_LITTLE_ENDIAN);
+        pMessageData,
+        cantx_signalAverageSoe.bitStart,
+        cantx_signalAverageSoe.bitLength,
+        data,
+        CANTX_PACK_VALUES_P0_ENDIANNESS);
 
     /* Maximum discharge power */
     data = CANTX_CalculateMaxDischargePower(kpkCanShim);
@@ -259,7 +266,7 @@ static void CANTX_BuildP0Message(const CAN_SHIM_s *const kpkCanShim, uint64_t *p
         cantx_signalMaximumDischargePower.bitStart,
         cantx_signalMaximumDischargePower.bitLength,
         data,
-        CAN_LITTLE_ENDIAN);
+        CANTX_PACK_VALUES_P0_ENDIANNESS);
 
     /* Maximum charge power */
     data = CANTX_CalculateMaxChargePower(kpkCanShim);
@@ -268,9 +275,16 @@ static void CANTX_BuildP0Message(const CAN_SHIM_s *const kpkCanShim, uint64_t *p
         cantx_signalMaximumChargePower.bitStart,
         cantx_signalMaximumChargePower.bitLength,
         data,
-        CAN_LITTLE_ENDIAN);
+        CANTX_PACK_VALUES_P0_ENDIANNESS);
 
-    /* Leon: Lifebit and CRC */
+    /* Cellsius: CRC */
+    data = Compute_CRC8H2F((uint8_t *)pMessageData, CANTX_SIGNAL_PACK_VALUES_CRC_START_BIT / 8u, CRC8H2F_INITIAL_VALUE);
+    CAN_TxSetMessageDataWithSignalData(
+        pMessageData,
+        CANTX_SIGNAL_PACK_VALUES_CRC_START_BIT,
+        CANTX_SIGNAL_PACK_VALUES_CRC_LENGTH,
+        data,
+        CANTX_PACK_VALUES_P0_ENDIANNESS);
 }
 
 /*========== Extern Function Implementations ================================*/
