@@ -73,7 +73,7 @@
 #define CANTX_BMS_STATE_PERIOD_ms  (20u)
 #define CANTX_BMS_STATE_PHASE_ms   (0u)
 #define CANTX_BMS_STATE_ENDIANNESS (CAN_LITTLE_ENDIAN)
-#define CANTX_BMS_STATE_DLC        (6u)
+#define CANTX_BMS_STATE_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
 
 /** CAN message properties for BMS detail state. Required properties are:
@@ -87,7 +87,7 @@
 #define CANTX_BMS_STATE_DETAILS_PERIOD_ms  (1000u)
 #define CANTX_BMS_STATE_DETAILS_PHASE_ms   (0u)
 #define CANTX_BMS_STATE_DETAILS_ENDIANNESS (CAN_LITTLE_ENDIAN)
-#define CANTX_BMS_STATE_DETAILS_DLC        (2u)
+#define CANTX_BMS_STATE_DETAILS_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
 
 /** CAN message properties for BMS cell voltages. Required properties are:
@@ -129,7 +129,7 @@
 #define CANTX_PACK_LIMITS_PERIOD_ms  (100u)
 #define CANTX_PACK_LIMITS_PHASE_ms   (30u)
 #define CANTX_PACK_LIMITS_ENDIANNESS (CAN_LITTLE_ENDIAN)
-#define CANTX_PACK_LIMITS_DLC        (4u)
+#define CANTX_PACK_LIMITS_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
 
 /** CAN message properties for pack state estimation values. Required properties are:
@@ -143,7 +143,7 @@
 #define CANTX_PACK_STATE_ESTIMATION_PERIOD_ms  (100u)
 #define CANTX_PACK_STATE_ESTIMATION_PHASE_ms   (40u)
 #define CANTX_PACK_STATE_ESTIMATION_ENDIANNESS (CAN_LITTLE_ENDIAN)
-#define CANTX_PACK_STATE_ESTIMATION_DLC        (7u)
+#define CANTX_PACK_STATE_ESTIMATION_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
 
 /** CAN message properties for pack values. Required properties are:
@@ -173,7 +173,7 @@
 #define CANTX_PACK_VOLTAGE_MIN_MAX_AVG_PERIOD_ms  (100u)
 #define CANTX_PACK_VOLTAGE_MIN_MAX_AVG_PHASE_ms   (60u)
 #define CANTX_PACK_VOLTAGE_MIN_MAX_AVG_ENDIANNESS (CAN_LITTLE_ENDIAN)
-#define CANTX_PACK_VOLTAGE_MIN_MAX_AVG_DLC        (6u)
+#define CANTX_PACK_VOLTAGE_MIN_MAX_AVG_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
 
 /** CAN message properties for temp min max avg values. Required properties are:
@@ -187,7 +187,7 @@
 #define CANTX_PACK_TEMP_MIN_MAX_AVG_PERIOD_ms  (100u)
 #define CANTX_PACK_TEMP_MIN_MAX_AVG_PHASE_ms   (70u)
 #define CANTX_PACK_TEMP_MIN_MAX_AVG_ENDIANNESS (CAN_LITTLE_ENDIAN)
-#define CANTX_PACK_TEMP_MIN_MAX_AVG_DLC        (6u)
+#define CANTX_PACK_TEMP_MIN_MAX_AVG_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
 
 /* composed Tx  messages */
