@@ -82,12 +82,6 @@
 /** @{
  * defines for the state request signal data
  */
-/* #define CANRX_STATE_REQUEST_DISABLE_INSULATION_MONITORING_START_BIT (5u)
-#define CANRX_STATE_REQUEST_DISABLE_INSULATION_MONITORING_LENGTH    (CAN_BIT)
-#define CANRX_STATE_REQUEST_CHARGER_CONNECTED_START_BIT             (4u)
-#define CANRX_STATE_REQUEST_CHARGER_CONNECTED_LENGTH                (CAN_BIT)
-#define CANRX_STATE_REQUEST_INDICATE_PRECHARGE_TYPE_START_BIT       (3u)
-#define CANRX_STATE_REQUEST_INDICATE_PRECHARGE_TYPE_LENGTH          (CAN_BIT) */
 #define CANRX_STATE_REQUEST_REQUEST_BMS_MODE_START_BIT        (0u)
 #define CANRX_STATE_REQUEST_REQUEST_BMS_MODE_LENGTH           (4u)
 #define CANRX_STATE_REQUEST_ACTIVATE_BALANCING_START_BIT      (8u)
@@ -164,9 +158,9 @@ static void CANRX_HandleModeRequest(uint64_t messageData, const CAN_SHIM_s *cons
         &signalData,
         CANRX_BMS_STATE_REQUEST_ENDIANNESS);
 
-    /** 0x00: Disconnect strings from HV bus
-     *  0x01: Connect strings to HV bus to start discharge
-     *  0x02: Connect strings to HV bus to start charging
+    /** 0x01: Disconnect strings from HV bus
+     *  0x02: Connect strings to HV bus to start discharge
+     *  0x03: Connect strings to HV bus to start charging
      */
     uint8_t stateRequest = BMS_REQ_ID_NOREQ;
 

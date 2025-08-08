@@ -219,6 +219,9 @@ typedef struct {
     uint8_t closedStrings[BS_NR_OF_STRINGS];             /*!< strings whose contactors are closed */
     uint8_t deactivatedStrings[BS_NR_OF_STRINGS]; /*!< Deactivated strings after error detection, cannot be closed */
     bool batOnSignal;                             /*!< Cellsius: Bat_On signal from switch in Cockpit */
+    bool batOnSignalPrev;                         /*!< Cellsius: Previous Bat_On signal */
+    bool faultDisarmFlag;                         /*!< Cellsius: Fault_Disarm signal from ECU */
+    bool faultDisarmOnEntry;                      /*!< Cellsius: Fault_Disarm signal on entry to error state */
 } BMS_STATE_s;
 
 /*========== Extern Constant and Variable Declarations ======================*/
@@ -258,6 +261,12 @@ extern BMS_STATEMACH_SUB_e BMS_GetSubstate(void);
  * @return  true if Bat_On is active, otherwise false
  */
 extern bool BMS_GetBatOnSignal(void);
+
+/**
+ * @brief   Sets the Fault Disarm Flag
+ * @param   faultDisarmFlag    Value transmitted by ECU
+ */
+extern void BMS_SetFaultDisarmFlag(bool faultDisarmFlag);
 
 /**
  * @brief   Gets the initialization state.
