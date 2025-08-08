@@ -40,7 +40,7 @@
  */
 
 /**
- * @file    can_cbs_tx_pack_voltage_min-max-avg.c
+ * @file    can_cbs_tx_temp_min-max-avg.c
  * @author  foxBMS Team
  * @date    2021-04-20 (date of creation)
  * @updated 2025-03-31 (date of last update)
@@ -68,12 +68,12 @@
 /**
  * Configuration of the signals
  */
-#define CANTX_SIGNAL_MAXIMUM_CELL_VOLTAGE_START_BIT (0u)
-#define CANTX_SIGNAL_MAXIMUM_CELL_VOLTAGE_LENGTH    (16u)
-#define CANTX_SIGNAL_MINIMUM_CELL_VOLTAGE_START_BIT (16u)
-#define CANTX_SIGNAL_MINIMUM_CELL_VOLTAGE_LENGTH    (16u)
-#define CANTX_SIGNAL_AVERAGE_CELL_VOLTAGE_START_BIT (32u)
-#define CANTX_SIGNAL_AVERAGE_CELL_VOLTAGE_LENGTH    (16u)
+#define CANTX_SIGNAL_MAXIMUM_CELL_TEMPERATURE_START_BIT (0u)
+#define CANTX_SIGNAL_MAXIMUM_CELL_TEMPERATURE_LENGTH    (16u)
+#define CANTX_SIGNAL_MINIMUM_CELL_TEMPERATURE_START_BIT (16u)
+#define CANTX_SIGNAL_MINIMUM_CELL_TEMPERATURE_LENGTH    (16u)
+#define CANTX_SIGNAL_AVERAGE_CELL_TEMPERATURE_START_BIT (32u)
+#define CANTX_SIGNAL_AVERAGE_CELL_TEMPERATURE_LENGTH    (16u)
 
 /*========== Static Constant and Variable Definitions =======================*/
 
@@ -85,49 +85,49 @@
  * @param   kpkCanShim const pointer to CAN shim
  * @param   pMessageData message data of the CAN message
  */
-static void CANTX_BuildVoltageMinMaxAvgMessage(const CAN_SHIM_s *const kpkCanShim, uint64_t *pMessageData);
+static void CANTX_BuildTempMinMaxAvgMessage(const CAN_SHIM_s *const kpkCanShim, uint64_t *pMessageData);
 
 /*========== Static Function Implementations ================================*/
-static void CANTX_BuildVoltageMinMaxAvgMessage(const CAN_SHIM_s *const kpkCanShim, uint64_t *pMessageData) {
+static void CANTX_BuildTempMinMaxAvgMessage(const CAN_SHIM_s *const kpkCanShim, uint64_t *pMessageData) {
     FAS_ASSERT(kpkCanShim != NULL_PTR);
     FAS_ASSERT(pMessageData != NULL_PTR);
 
-    /* maximum cell voltage */
-    uint64_t signalData = (uint64_t)kpkCanShim->pTableMinMax->maximumCellVoltage_mV[BS_STRING0];
+    /* maximum temperature*/
+    uint64_t signalData = (uint64_t)kpkCanShim->pTableMinMax->maximumTemperature_ddegC[BS_STRING0];
     CAN_TxSetMessageDataWithSignalData(
         pMessageData,
-        CANTX_SIGNAL_MAXIMUM_CELL_VOLTAGE_START_BIT,
-        CANTX_SIGNAL_MAXIMUM_CELL_VOLTAGE_LENGTH,
+        CANTX_SIGNAL_MAXIMUM_CELL_TEMPERATURE_START_BIT,
+        CANTX_SIGNAL_MAXIMUM_CELL_TEMPERATURE_LENGTH,
         signalData,
-        CANTX_PACK_VOLTAGE_MIN_MAX_AVG_ENDIANNESS);
-    /* minimum cell voltage */
-    signalData = (uint64_t)kpkCanShim->pTableMinMax->minimumCellVoltage_mV[BS_STRING0];
+        CANTX_PACK_TEMP_MIN_MAX_AVG_ENDIANNESS);
+    /* minimum temperature*/
+    signalData = (uint64_t)kpkCanShim->pTableMinMax->minimumTemperature_ddegC[BS_STRING0];
     CAN_TxSetMessageDataWithSignalData(
         pMessageData,
-        CANTX_SIGNAL_MINIMUM_CELL_VOLTAGE_START_BIT,
-        CANTX_SIGNAL_MINIMUM_CELL_VOLTAGE_LENGTH,
+        CANTX_SIGNAL_MINIMUM_CELL_TEMPERATURE_START_BIT,
+        CANTX_SIGNAL_MINIMUM_CELL_TEMPERATURE_LENGTH,
         signalData,
-        CANTX_PACK_VOLTAGE_MIN_MAX_AVG_ENDIANNESS);
-    /* average cell voltage */
-    signalData = (uint64_t)kpkCanShim->pTableMinMax->averageCellVoltage_mV[BS_STRING0];
+        CANTX_PACK_TEMP_MIN_MAX_AVG_ENDIANNESS);
+    /* average temperature */
+    signalData = (uint64_t)kpkCanShim->pTableMinMax->averageTemperature_ddegC[BS_STRING0];
     CAN_TxSetMessageDataWithSignalData(
         pMessageData,
-        CANTX_SIGNAL_AVERAGE_CELL_VOLTAGE_START_BIT,
-        CANTX_SIGNAL_AVERAGE_CELL_VOLTAGE_LENGTH,
+        CANTX_SIGNAL_AVERAGE_CELL_TEMPERATURE_START_BIT,
+        CANTX_SIGNAL_AVERAGE_CELL_TEMPERATURE_LENGTH,
         signalData,
-        CANTX_PACK_VOLTAGE_MIN_MAX_AVG_ENDIANNESS);
+        CANTX_PACK_TEMP_MIN_MAX_AVG_ENDIANNESS);
 }
 
 /*========== Extern Function Implementations ================================*/
-extern uint32_t CANTX_VoltageMinMaxAvgValues(
+extern uint32_t CANTX_TempMinMaxAvgValues(
     CAN_MESSAGE_PROPERTIES_s message,
     uint8_t *pCanData,
     uint8_t *pMuxId,
     const CAN_SHIM_s *const kpkCanShim) {
-    FAS_ASSERT(message.id == CANTX_PACK_VOLTAGE_MIN_MAX_AVG_ID);
-    FAS_ASSERT(message.idType == CANTX_PACK_VOLTAGE_MIN_MAX_AVG_ID_TYPE);
+    FAS_ASSERT(message.id == CANTX_PACK_TEMP_MIN_MAX_AVG_ID);
+    FAS_ASSERT(message.idType == CANTX_PACK_TEMP_MIN_MAX_AVG_ID_TYPE);
     FAS_ASSERT(message.dlc == CAN_FOXBMS_MESSAGES_DEFAULT_DLC);
-    FAS_ASSERT(message.endianness == CANTX_PACK_VOLTAGE_MIN_MAX_AVG_ENDIANNESS);
+    FAS_ASSERT(message.endianness == CANTX_PACK_TEMP_MIN_MAX_AVG_ENDIANNESS);
     FAS_ASSERT(pCanData != NULL_PTR);
     FAS_ASSERT(pMuxId == NULL_PTR); /* pMuxId is not used here, therefore has to be NULL_PTR */
     FAS_ASSERT(kpkCanShim != NULL_PTR);
@@ -135,7 +135,7 @@ extern uint32_t CANTX_VoltageMinMaxAvgValues(
 
     DATA_READ_DATA(kpkCanShim->pTableMinMax);
 
-    CANTX_BuildVoltageMinMaxAvgMessage(kpkCanShim, &messageData);
+    CANTX_BuildTempMinMaxAvgMessage(kpkCanShim, &messageData);
 
     /* now copy data in the buffer that will be used to send data */
     CAN_TxSetCanDataWithMessageData(messageData, pCanData, message.endianness);
