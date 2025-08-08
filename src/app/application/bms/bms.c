@@ -122,6 +122,10 @@ static BMS_STATE_s bms_state = {
     .stringToBeOpened                  = 0u,
     .contactorToBeOpened               = CONT_UNDEFINED,
     .batOnSignal                       = false,
+    .batOnSignalPrev                   = false,
+    .faultDisarmFlag                   = false,
+    .faultDisarmOnEntry                = false,
+
 };
 
 /** local copies of database tables */
@@ -434,6 +438,10 @@ extern bool BMS_GetBatOnSignal(void) {
     return bms_state.batOnSignal;
 }
 
+extern void BMS_SetFaultDisarmFlag(bool faultDisarmFlag) {
+    bms_state.faultDisarmFlag = faultDisarmFlag;
+}
+
 BMS_RETURN_TYPE_e BMS_SetStateRequest(BMS_STATE_REQUEST_e statereq) {
     BMS_RETURN_TYPE_e retVal = BMS_OK;
 
@@ -469,6 +477,9 @@ void BMS_Trigger(void) {
         SOA_CheckSlaveTemperatures();
         BMS_CheckOpenSenseWire(); */
         CONT_CheckFeedback();
+        /* Cellsius: Check Bat_On Signal and save last value */
+        bms_state.batOnSignalPrev = bms_state.batOnSignal;
+        bms_state.batOnSignal     = FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor);
     }
     /* Check re-entrance of function */
     if (BMS_CheckReEntrance() > 0u) {
@@ -977,6 +988,8 @@ void BMS_Trigger(void) {
                 LED_SetToggleTime(LED_ERROR_OPERATION_ON_OFF_TIME_ms);
                 /* Set timer for next open wire check */
                 nextOpenWireCheck = timestamp + AFE_ERROR_OPEN_WIRE_PERIOD_ms;
+                /* Cellsius: Save fault disarm status */
+                bms_state.faultDisarmOnEntry = bms_state.faultDisarmFlag;
                 /* Switch to next substate */
                 bms_state.timer    = BMS_STATEMACH_SHORTTIME;
                 bms_state.substate = BMS_CHECK_ERROR_FLAGS;
@@ -1000,8 +1013,9 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                /* Cellsius: Go to standby without request */
-                if (true) {
+                /* Cellsius: Go to standby with Fault Disarm or Bat_On rising edge */
+                if ((bms_state.faultDisarmOnEntry == false) && (bms_state.faultDisarmFlag == true) ||
+                    (bms_state.batOnSignalPrev == false && bms_state.batOnSignal == true) /* || inverter_override */) {
                     /* Activate balancing again */
                     BAL_SetStateRequest(BAL_STATE_ALLOW_BALANCING_REQUEST);
                     /* Set LED frequency to normal operation as we leave error

@@ -89,65 +89,6 @@
 #define CANRX_DEBUG_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
 
-/** CAN message properties for CAN AFE_CellTemperatures message. Required properties are:
- *  - ID
- *  - Identifier type (standard or extended)
- *  - Period in ms
- *  - Endianness
- *  - Data length @{*/
-#define CANRX_AFE_CELL_TEMPERATURES_ID         (0x888u)
-#define CANRX_AFE_CELL_TEMPERATURES_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANRX_AFE_CELL_TEMPERATURES_PERIOD_ms  (CANRX_NOT_PERIODIC)
-#define CANRX_AFE_CELL_TEMPERATURES_ENDIANNESS (CAN_BIG_ENDIAN)
-#define CANRX_AFE_CELL_TEMPERATURES_DLC        (CAN_DEFAULT_DLC)
-/**@}*/
-
-/** CAN message properties for CAN AFE_CellVoltages message. Required properties are:
- *  - ID
- *  - Identifier type (standard or extended)
- *  - Period in ms
- *  - Endianness
- *  - Data length @{*/
-#define CANRX_AFE_CELL_VOLTAGES_ID         (0x888u)
-#define CANRX_AFE_CELL_VOLTAGES_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANRX_AFE_CELL_VOLTAGES_PERIOD_ms  (CANRX_NOT_PERIODIC)
-#define CANRX_AFE_CELL_VOLTAGES_ENDIANNESS (CAN_BIG_ENDIAN)
-#define CANRX_AFE_CELL_VOLTAGES_DLC        (CAN_DEFAULT_DLC)
-/**@}*/
-
-/** CAN message properties for aerosol sensor. Required properties are:
- *  - ID
- *  - Identifier type (standard or extended)
- *  - Period in ms
- *  - Endianness
- *  - Data length @{*/
-#define CANRX_BAS_AEROSOL_SENSOR_ID         (0x888u)
-#define CANRX_BAS_AEROSOL_SENSOR_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANRX_BAS_AEROSOL_SENSOR_PERIOD_ms  (1000u)
-#define CANRX_BAS_AEROSOL_SENSOR_ENDIANNESS (CAN_BIG_ENDIAN)
-#define CANRX_BAS_AEROSOL_SENSOR_DLC        (CAN_DEFAULT_DLC)
-/**@}*/
-
-/**
- * -------------------------CAUTION-------------------------
- * The following defines are used by the insulation monitoring device (IMD).
- * If they are changed, the IMD will not work anymore
- * -------------------------CAUTION-------------------------
- */
-/** CAN message ID for info message from iso165c */
-#define CANRX_IMD_INFO_ID         (0x37u)
-#define CANRX_IMD_INFO_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANRX_IMD_INFO_PERIOD_ms  (CANRX_NOT_PERIODIC)
-#define CANRX_IMD_INFO_ENDIANNESS (CAN_LITTLE_ENDIAN)
-#define CANRX_IMD_INFO_DLC        (6u)
-
-/** CAN message ID for response message from iso165c */
-#define CANRX_IMD_RESPONSE_ID         (0x23u)
-#define CANRX_IMD_RESPONSE_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANRX_IMD_RESPONSE_PERIOD_ms  (CANRX_NOT_PERIODIC)
-#define CANRX_IMD_RESPONSE_ENDIANNESS (CAN_LITTLE_ENDIAN)
-#define CANRX_IMD_RESPONSE_DLC        (5u)
-
 /** CAN message properties for Isabellenhuette current sensor messages. @{*/
 #define CANRX_CURRENT_SENSOR_MESSAGES_DLC        (6u)
 #define CANRX_CURRENT_SENSOR_MESSAGES_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
@@ -260,6 +201,20 @@
 #define CANRX_IVT_STRING0_ENERGY_COUNTER_DLC        (CANRX_CURRENT_SENSOR_MESSAGES_DLC)
 /**@} */
 
+/***** Cellsius: Own CAN TX message definitions *****/
+/** CAN message properties for ECU state request message.
+ *  - ID
+ *  - Identifier type (standard or extended)
+ *  - Period in ms
+ *  - data length
+ *  - Endianness @{*/
+#define CANRX_ECU_STATE_REQUEST_ID         (0x100u)
+#define CANRX_ECU_STATE_REQUEST_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
+#define CANRX_ECU_STATE_REQUEST_PERIOD_ms  (CANRX_NOT_PERIODIC)
+#define CANRX_ECU_STATE_REQUEST_ENDIANNESS (CAN_LITTLE_ENDIAN)
+#define CANRX_ECU_STATE_REQUEST_DLC        (7u)
+/**@} */
+
 /* composed Rx  messages */
 
 /* AXIVION Disable Style Generic-NoUnsafeMacro: These macros MUST only be used
@@ -281,61 +236,6 @@
     },                                        \
     {                                         \
         .period = CANRX_DEBUG_PERIOD_ms       \
-    }
-
-#define CANRX_BAS_AEROSOL_SENSOR_MESSAGE                   \
-    {                                                      \
-        .id         = CANRX_BAS_AEROSOL_SENSOR_ID,         \
-        .idType     = CANRX_BAS_AEROSOL_SENSOR_ID_TYPE,    \
-        .dlc        = CANRX_BAS_AEROSOL_SENSOR_DLC,        \
-        .endianness = CANRX_BAS_AEROSOL_SENSOR_ENDIANNESS, \
-    },                                                     \
-    {                                                      \
-        .period = CANRX_BAS_AEROSOL_SENSOR_PERIOD_ms       \
-    }
-
-#define CANRX_AFE_CELL_VOLTAGES_MESSAGE                   \
-    {                                                     \
-        .id         = CANRX_AFE_CELL_VOLTAGES_ID,         \
-        .idType     = CANRX_AFE_CELL_VOLTAGES_ID_TYPE,    \
-        .dlc        = CANRX_AFE_CELL_VOLTAGES_DLC,        \
-        .endianness = CANRX_AFE_CELL_VOLTAGES_ENDIANNESS, \
-    },                                                    \
-    {                                                     \
-        .period = CANRX_AFE_CELL_VOLTAGES_PERIOD_ms       \
-    }
-
-#define CANRX_AFE_CELL_TEMPERATURES_MESSAGE                   \
-    {                                                         \
-        .id         = CANRX_AFE_CELL_TEMPERATURES_ID,         \
-        .idType     = CANRX_AFE_CELL_TEMPERATURES_ID_TYPE,    \
-        .dlc        = CANRX_AFE_CELL_TEMPERATURES_DLC,        \
-        .endianness = CANRX_AFE_CELL_TEMPERATURES_ENDIANNESS, \
-    },                                                        \
-    {                                                         \
-        .period = CANRX_AFE_CELL_TEMPERATURES_PERIOD_ms       \
-    }
-
-#define CANRX_IMD_INFO_MESSAGE                   \
-    {                                            \
-        .id         = CANRX_IMD_INFO_ID,         \
-        .idType     = CANRX_IMD_INFO_ID_TYPE,    \
-        .dlc        = CANRX_IMD_INFO_DLC,        \
-        .endianness = CANRX_IMD_INFO_ENDIANNESS, \
-    },                                           \
-    {                                            \
-        .period = CANRX_IMD_INFO_PERIOD_ms       \
-    }
-
-#define CANRX_IMD_RESPONSE_MESSAGE                   \
-    {                                                \
-        .id         = CANRX_IMD_RESPONSE_ID,         \
-        .idType     = CANRX_IMD_RESPONSE_ID_TYPE,    \
-        .dlc        = CANRX_IMD_RESPONSE_DLC,        \
-        .endianness = CANRX_IMD_RESPONSE_ENDIANNESS, \
-    },                                               \
-    {                                                \
-        .period = CANRX_IMD_RESPONSE_PERIOD_ms       \
     }
 
 #define CANRX_BMS_STATE_REQUEST_MESSAGE                   \
@@ -435,6 +335,18 @@
     },                                                             \
     {                                                              \
         .period = CANRX_IVT_STRING0_ENERGY_COUNTER_PERIOD_ms       \
+    }
+
+/***** Cellsius: Own CAN TX message definitions *****/
+#define CANRX_ECU_STATE_REQUEST_MESSAGE                   \
+    {                                                     \
+        .id         = CANRX_ECU_STATE_REQUEST_ID,         \
+        .idType     = CANRX_ECU_STATE_REQUEST_ID_TYPE,    \
+        .dlc        = CANRX_ECU_STATE_REQUEST_DLC,        \
+        .endianness = CANRX_ECU_STATE_REQUEST_ENDIANNESS, \
+    },                                                    \
+    {                                                     \
+        .period = CANRX_ECU_STATE_REQUEST_PERIOD_ms       \
     }
 /* AXIVION Enable Style Generic-NoUnsafeMacro */
 

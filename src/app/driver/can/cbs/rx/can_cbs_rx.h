@@ -69,28 +69,6 @@
 
 /** RX callback functions @{ */
 /**
- * @brief   CAN Rx callback function for IMD info messages
- * @param[in] message     contains the message ID, DLC and endianness
- * @param[in] kpkCanData  payload of can frame
- * @param[in] kpkCanShim  shim to the database entries
- */
-extern uint32_t CANRX_ImdInfo(
-    CAN_MESSAGE_PROPERTIES_s message,
-    const uint8_t *const kpkCanData,
-    const CAN_SHIM_s *const kpkCanShim);
-
-/**
- * @brief   CAN Rx callback function for IMD response messages
- * @param[in] message     contains the message ID, DLC and endianness
- * @param[in] kpkCanData  payload of can frame
- * @param[in] kpkCanShim  shim to the database entries
- */
-extern uint32_t CANRX_ImdResponse(
-    CAN_MESSAGE_PROPERTIES_s message,
-    const uint8_t *const kpkCanData,
-    const CAN_SHIM_s *const kpkCanShim);
-
-/**
  * @brief   CAN Rx callback function for state requests
  * @param[in] message     contains the message ID, DLC and endianness
  * @param[in] kpkCanData  payload of can frame
@@ -123,97 +101,18 @@ extern uint32_t CANRX_Debug(
     const uint8_t *const kpkCanData,
     const CAN_SHIM_s *const kpkCanShim);
 
+/***** Cellsius: Own CAN TX message definitions *****/
+
 /**
- * @brief   CAN Rx callback function for aerosol sensor messages
+ * @brief   CAN Rx callback function for ECU state requests
  * @param[in] message     contains the message ID, DLC and endianness
  * @param[in] kpkCanData  payload of can frame
  * @param[in] kpkCanShim  shim to the database entries
  */
-extern uint32_t CANRX_AerosolSensor(
+extern uint32_t CANRX_EcuStateRequest(
     CAN_MESSAGE_PROPERTIES_s message,
     const uint8_t *const kpkCanData,
     const CAN_SHIM_s *const kpkCanShim);
-
-/**
- * @brief   CAN Rx callback function to handle cell-temperatures message
- * @param[in] message     contains the message ID, DLC and endianness
- * @param[in] kpkCanData  payload of can frame
- * @param[in] kpkCanShim  shim to the database entries
- */
-extern uint32_t CANRX_CellTemperatures(
-    CAN_MESSAGE_PROPERTIES_s message,
-    const uint8_t *const kpkCanData,
-    const CAN_SHIM_s *const kpkCanShim);
-
-/**
- * @brief   CAN Rx callback function to handle cell-voltages message
- * @param[in] message     contains the message ID, DLC and endianness
- * @param[in] kpkCanData  payload of can frame
- * @param[in] kpkCanShim  shim to the database entries
- */
-extern uint32_t CANRX_CellVoltages(
-    CAN_MESSAGE_PROPERTIES_s message,
-    const uint8_t *const kpkCanData,
-    const CAN_SHIM_s *const kpkCanShim);
-/**@}*/
-
-/**
- * @brief   Gets data from IMD Info message and stores it in data table
- * @param   kpkCanData Can data from the IMD Info message
- * @param   pTableInsulationMonitoring Pointer to the data table where data will be written
- */
-void CANRX_ImdInfoGetDataFromMessage(
-    const uint8_t *const kpkCanData,
-    DATA_BLOCK_INSULATION_MONITORING_s *pTableInsulationMonitoring);
-
-/**
- * @brief   Checks the current measurement mode
- * @param   kpkCanData Can data from the IMD Info message
- * @param   mode Mode that the actual value is compared to
- * @return  True if mode from can data and mode are equal
- */
-bool CANRX_ImdInfoCheckMeasurementMode(const uint8_t *const kpkCanData, uint8_t mode);
-
-/**
- * @brief   Checks if self test has been executed
- * @param   kpkCanData Can data from the IMD Info message
- * @return  true if self test has been executed
- */
-bool CANRX_ImdInfoHasSelfTestBeenExecuted(const uint8_t *const kpkCanData);
-
-/**
- * @brief   Checks if self test has finished
- * @param   kpkCanData Can data from the IMD Info message
- * @return  true if self test has finished
- */
-bool CANRX_ImdInfoIsSelfTestFinished(const uint8_t *const kpkCanData);
-
-/**
- * @brief   Gets insulation resistance from IMD response message and stores it in the data table
- * @param   kpkCanData Can data from the IMD Info message
- * @param   pTableInsulationMonitoring Pointer to the data table where data will be written
- */
-void CANRX_ImdResponseReadInsulationResistance(
-    const uint8_t *const kpkCanData,
-    DATA_BLOCK_INSULATION_MONITORING_s *pTableInsulationMonitoring);
-
-/**
- * @brief   Gets tendency of the insulation fault from IMD response message and stores it in the data table
- * @param   kpkCanData Can data from the IMD Info message
- * @param   pTableInsulationMonitoring Pointer to the data table where data will be written
- */
-void CANRX_ImdResponseCheckInsulationFaultTendency(
-    const uint8_t *const kpkCanData,
-    DATA_BLOCK_INSULATION_MONITORING_s *pTableInsulationMonitoring);
-
-/**
- * @brief   Checks the current relay state of one relay
- * @param   kpkCanData Can data from the IMD Info message
- * @param   relay Relay that the actual value is compared to
- * @param   relayState Relay state that the actual value is compared to
- * @return  True if relay state from can data and relay are equal
- */
-bool CANRX_ImdResponseCheckRelayState(const uint8_t *const kpkCanData, uint8_t relay, uint8_t relayState);
 
 /*========== Externalized Static Functions Prototypes (Unit Test) ===========*/
 #ifdef UNITY_UNIT_TEST
