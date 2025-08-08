@@ -119,23 +119,6 @@
 #define CANTX_BMS_FATAL_ERROR_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
 
-/**
- * -------------------------CAUTION-------------------------
- * The following defines are used by the insulation monitoring device (IMD).
- * If they are changed, the IMD will not work anymore
- * -------------------------CAUTION-------------------------
- */
-/** CAN message properties for imd request. Required properties are:
- *  - ID
- *  - Identifier type (standard or extended)
- *  - data length
- *  - Endianness @{*/
-#define CANTX_IMD_REQUEST_ID         (0x022u)
-#define CANTX_IMD_REQUEST_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANTX_IMD_REQUEST_ENDIANNESS (CAN_LITTLE_ENDIAN)
-#define CANTX_IMD_REQUEST_DLC        (5u)
-/**@}*/
-
 /*========== Extern Constant and Variable Declarations ======================*/
 
 /*========== Extern Function Prototypes =====================================*/

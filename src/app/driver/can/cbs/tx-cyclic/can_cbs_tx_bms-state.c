@@ -351,7 +351,7 @@ extern uint32_t CANTX_BmsState(
     uint8_t *pMuxId,
     const CAN_SHIM_s *const kpkCanShim) {
     FAS_ASSERT(message.id == CANTX_BMS_STATE_ID);
-    FAS_ASSERT(message.dlc == CANTX_BMS_STATE_DLC);
+    FAS_ASSERT(message.dlc == CAN_FOXBMS_MESSAGES_DEFAULT_DLC);
     FAS_ASSERT(message.idType == CANTX_BMS_STATE_ID_TYPE);
     FAS_ASSERT(message.endianness == CANTX_BMS_STATE_ENDIANNESS);
     FAS_ASSERT(pCanData != NULL_PTR);
