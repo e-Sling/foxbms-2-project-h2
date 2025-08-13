@@ -99,7 +99,7 @@ static void CANTX_BuildTempMinMaxAvgMessage(const CAN_SHIM_s *const kpkCanShim, 
         CANTX_SIGNAL_MAXIMUM_CELL_TEMPERATURE_START_BIT,
         CANTX_SIGNAL_MAXIMUM_CELL_TEMPERATURE_LENGTH,
         signalData,
-        CANTX_PACK_TEMP_MIN_MAX_AVG_ENDIANNESS);
+        CANTX_TEMP_MIN_MAX_AVG_ENDIANNESS);
     /* minimum temperature*/
     signalData = (uint64_t)kpkCanShim->pTableMinMax->minimumTemperature_ddegC[BS_STRING0];
     CAN_TxSetMessageDataWithSignalData(
@@ -107,7 +107,7 @@ static void CANTX_BuildTempMinMaxAvgMessage(const CAN_SHIM_s *const kpkCanShim, 
         CANTX_SIGNAL_MINIMUM_CELL_TEMPERATURE_START_BIT,
         CANTX_SIGNAL_MINIMUM_CELL_TEMPERATURE_LENGTH,
         signalData,
-        CANTX_PACK_TEMP_MIN_MAX_AVG_ENDIANNESS);
+        CANTX_TEMP_MIN_MAX_AVG_ENDIANNESS);
     /* average temperature */
     signalData = (uint64_t)kpkCanShim->pTableMinMax->averageTemperature_ddegC[BS_STRING0];
     CAN_TxSetMessageDataWithSignalData(
@@ -115,7 +115,7 @@ static void CANTX_BuildTempMinMaxAvgMessage(const CAN_SHIM_s *const kpkCanShim, 
         CANTX_SIGNAL_AVERAGE_CELL_TEMPERATURE_START_BIT,
         CANTX_SIGNAL_AVERAGE_CELL_TEMPERATURE_LENGTH,
         signalData,
-        CANTX_PACK_TEMP_MIN_MAX_AVG_ENDIANNESS);
+        CANTX_TEMP_MIN_MAX_AVG_ENDIANNESS);
 }
 
 /*========== Extern Function Implementations ================================*/
@@ -124,10 +124,10 @@ extern uint32_t CANTX_TempMinMaxAvgValues(
     uint8_t *pCanData,
     uint8_t *pMuxId,
     const CAN_SHIM_s *const kpkCanShim) {
-    FAS_ASSERT(message.id == CANTX_PACK_TEMP_MIN_MAX_AVG_ID);
-    FAS_ASSERT(message.idType == CANTX_PACK_TEMP_MIN_MAX_AVG_ID_TYPE);
+    FAS_ASSERT(message.id == CANTX_TEMP_MIN_MAX_AVG_ID);
+    FAS_ASSERT(message.idType == CANTX_TEMP_MIN_MAX_AVG_ID_TYPE);
     FAS_ASSERT(message.dlc == CAN_FOXBMS_MESSAGES_DEFAULT_DLC);
-    FAS_ASSERT(message.endianness == CANTX_PACK_TEMP_MIN_MAX_AVG_ENDIANNESS);
+    FAS_ASSERT(message.endianness == CANTX_TEMP_MIN_MAX_AVG_ENDIANNESS);
     FAS_ASSERT(pCanData != NULL_PTR);
     FAS_ASSERT(pMuxId == NULL_PTR); /* pMuxId is not used here, therefore has to be NULL_PTR */
     FAS_ASSERT(kpkCanShim != NULL_PTR);
@@ -145,27 +145,4 @@ extern uint32_t CANTX_TempMinMaxAvgValues(
 
 /*========== Externalized Static Function Implementations (Unit Test) =======*/
 #ifdef UNITY_UNIT_TEST
-extern int16_t TEST_CANTX_GetPackMaximumVoltage(const CAN_SHIM_s *const kpkCanShim) {
-    return CANTX_GetPackMaximumVoltage(kpkCanShim);
-}
-extern int16_t TEST_CANTX_GetPackMinimumVoltage(const CAN_SHIM_s *const kpkCanShim) {
-    return CANTX_GetPackMinimumVoltage(kpkCanShim);
-}
-extern int16_t TEST_CANTX_GetPackMaximumTemperature(const CAN_SHIM_s *const kpkCanShim) {
-    return CANTX_GetPackMaximumTemperature(kpkCanShim);
-}
-extern int16_t TEST_CANTX_GetPackMinimumTemperature(const CAN_SHIM_s *const kpkCanShim) {
-    return CANTX_GetPackMinimumTemperature(kpkCanShim);
-}
-extern uint64_t TEST_CANTX_CalculatePackMaximumTemperature(const CAN_SHIM_s *const kpkCanShim) {
-    return CANTX_CalculatePackMaximumTemperature(kpkCanShim);
-}
-extern uint64_t TEST_CANTX_CalculatePackMinimumTemperature(const CAN_SHIM_s *const kpkCanShim) {
-    return CANTX_CalculatePackMinimumTemperature(kpkCanShim);
-}
-extern void TEST_CANTX_BuildPackMinimumMaximumValuesMessage(
-    const CAN_SHIM_s *const kpkCanShim,
-    uint64_t *pMessageData) {
-    CANTX_BuildPackMinimumMaximumValuesMessage(kpkCanShim, pMessageData);
-}
 #endif

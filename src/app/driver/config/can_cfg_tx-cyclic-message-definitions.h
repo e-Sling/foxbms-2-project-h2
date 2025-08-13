@@ -168,12 +168,12 @@
  *  - Period and phase in ms
  *  - Endianness
  *  - data length @{*/
-#define CANTX_PACK_VOLTAGE_MIN_MAX_AVG_ID         (0x420u)
-#define CANTX_PACK_VOLTAGE_MIN_MAX_AVG_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANTX_PACK_VOLTAGE_MIN_MAX_AVG_PERIOD_ms  (100u)
-#define CANTX_PACK_VOLTAGE_MIN_MAX_AVG_PHASE_ms   (60u)
-#define CANTX_PACK_VOLTAGE_MIN_MAX_AVG_ENDIANNESS (CAN_LITTLE_ENDIAN)
-#define CANTX_PACK_VOLTAGE_MIN_MAX_AVG_DLC        (CAN_DEFAULT_DLC)
+#define CANTX_VOLTAGE_MIN_MAX_AVG_ID         (0x420u)
+#define CANTX_VOLTAGE_MIN_MAX_AVG_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
+#define CANTX_VOLTAGE_MIN_MAX_AVG_PERIOD_ms  (100u)
+#define CANTX_VOLTAGE_MIN_MAX_AVG_PHASE_ms   (60u)
+#define CANTX_VOLTAGE_MIN_MAX_AVG_ENDIANNESS (CAN_LITTLE_ENDIAN)
+#define CANTX_VOLTAGE_MIN_MAX_AVG_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
 
 /** CAN message properties for temp min max avg values. Required properties are:
@@ -182,12 +182,26 @@
  *  - Period and phase in ms
  *  - Endianness
  *  - data length @{*/
-#define CANTX_PACK_TEMP_MIN_MAX_AVG_ID         (0x421u)
-#define CANTX_PACK_TEMP_MIN_MAX_AVG_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANTX_PACK_TEMP_MIN_MAX_AVG_PERIOD_ms  (100u)
-#define CANTX_PACK_TEMP_MIN_MAX_AVG_PHASE_ms   (70u)
-#define CANTX_PACK_TEMP_MIN_MAX_AVG_ENDIANNESS (CAN_LITTLE_ENDIAN)
-#define CANTX_PACK_TEMP_MIN_MAX_AVG_DLC        (CAN_DEFAULT_DLC)
+#define CANTX_TEMP_MIN_MAX_AVG_ID         (0x421u)
+#define CANTX_TEMP_MIN_MAX_AVG_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
+#define CANTX_TEMP_MIN_MAX_AVG_PERIOD_ms  (100u)
+#define CANTX_TEMP_MIN_MAX_AVG_PHASE_ms   (70u)
+#define CANTX_TEMP_MIN_MAX_AVG_ENDIANNESS (CAN_LITTLE_ENDIAN)
+#define CANTX_TEMP_MIN_MAX_AVG_DLC        (CAN_DEFAULT_DLC)
+/**@}*/
+
+/** CAN message properties for diagnostic messages. Required properties are:
+ *  - ID
+ *  - Identifier type (standard or extended)
+ *  - Period and phase in ms
+ *  - Endianness
+ *  - data length @{*/
+#define CANTX_DIAGNOSTIC_ID         (0x520u)
+#define CANTX_DIAGNOSTIC_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
+#define CANTX_DIAGNOSTIC_PERIOD_ms  (100u)
+#define CANTX_DIAGNOSTIC_PHASE_ms   (80u)
+#define CANTX_DIAGNOSTIC_ENDIANNESS (CAN_LITTLE_ENDIAN)
+#define CANTX_DIAGNOSTIC_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
 
 /* composed Tx  messages */
@@ -275,27 +289,39 @@
 
 /***** Cellsius: Own CAN TX message definitions *****/
 
-#define CANTX_PACK_VOLTAGE_MIN_MAX_AVG_MESSAGE                                                               \
-    {                                                                                                        \
-        .id         = CANTX_PACK_VOLTAGE_MIN_MAX_AVG_ID,                                                     \
-        .idType     = CANTX_PACK_VOLTAGE_MIN_MAX_AVG_ID_TYPE,                                                \
-        .dlc        = CANTX_PACK_VOLTAGE_MIN_MAX_AVG_DLC,                                                    \
-        .endianness = CANTX_PACK_VOLTAGE_MIN_MAX_AVG_ENDIANNESS,                                             \
-    },                                                                                                       \
-    {                                                                                                        \
-        .period = CANTX_PACK_VOLTAGE_MIN_MAX_AVG_PERIOD_ms, .phase = CANTX_PACK_VOLTAGE_MIN_MAX_AVG_PHASE_ms \
+#define CANTX_VOLTAGE_MIN_MAX_AVG_MESSAGE                                                          \
+    {                                                                                              \
+        .id         = CANTX_VOLTAGE_MIN_MAX_AVG_ID,                                                \
+        .idType     = CANTX_VOLTAGE_MIN_MAX_AVG_ID_TYPE,                                           \
+        .dlc        = CANTX_VOLTAGE_MIN_MAX_AVG_DLC,                                               \
+        .endianness = CANTX_VOLTAGE_MIN_MAX_AVG_ENDIANNESS,                                        \
+    },                                                                                             \
+    {                                                                                              \
+        .period = CANTX_VOLTAGE_MIN_MAX_AVG_PERIOD_ms, .phase = CANTX_VOLTAGE_MIN_MAX_AVG_PHASE_ms \
     }
 
-#define CANTX_PACK_TEMP_MIN_MAX_AVG_MESSAGE                                                            \
-    {                                                                                                  \
-        .id         = CANTX_PACK_TEMP_MIN_MAX_AVG_ID,                                                  \
-        .idType     = CANTX_PACK_TEMP_MIN_MAX_AVG_ID_TYPE,                                             \
-        .dlc        = CANTX_PACK_TEMP_MIN_MAX_AVG_DLC,                                                 \
-        .endianness = CANTX_PACK_TEMP_MIN_MAX_AVG_ENDIANNESS,                                          \
-    },                                                                                                 \
-    {                                                                                                  \
-        .period = CANTX_PACK_TEMP_MIN_MAX_AVG_PERIOD_ms, .phase = CANTX_PACK_TEMP_MIN_MAX_AVG_PHASE_ms \
+#define CANTX_TEMP_MIN_MAX_AVG_MESSAGE                                                       \
+    {                                                                                        \
+        .id         = CANTX_TEMP_MIN_MAX_AVG_ID,                                             \
+        .idType     = CANTX_TEMP_MIN_MAX_AVG_ID_TYPE,                                        \
+        .dlc        = CANTX_TEMP_MIN_MAX_AVG_DLC,                                            \
+        .endianness = CANTX_TEMP_MIN_MAX_AVG_ENDIANNESS,                                     \
+    },                                                                                       \
+    {                                                                                        \
+        .period = CANTX_TEMP_MIN_MAX_AVG_PERIOD_ms, .phase = CANTX_TEMP_MIN_MAX_AVG_PHASE_ms \
     }
+
+#define CANTX_DIAGNOSTIC_MESSAGE                                                 \
+    {                                                                            \
+        .id         = CANTX_DIAGNOSTIC_ID,                                       \
+        .idType     = CANTX_DIAGNOSTIC_ID_TYPE,                                  \
+        .dlc        = CANTX_DIAGNOSTIC_DLC,                                      \
+        .endianness = CANTX_DIAGNOSTIC_ENDIANNESS,                               \
+    },                                                                           \
+    {                                                                            \
+        .period = CANTX_DIAGNOSTIC_PERIOD_ms, .phase = CANTX_DIAGNOSTIC_PHASE_ms \
+    }
+
 /* AXIVION Enable Style Generic-NoUnsafeMacro */
 
 /*========== Extern Constant and Variable Declarations ======================*/

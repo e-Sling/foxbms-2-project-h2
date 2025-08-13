@@ -71,59 +71,30 @@
 /**
  * Configuration of the signals
  */
-#define CANTX_SIGNAL_BMS_CONTACTOR_FEEDBACK_START_BIT               (0u)
-#define CANTX_SIGNAL_BMS_CONTACTOR_FEEDBACK_LENGTH                  (2u) /* 8 bits for 4 contactors */
-#define CANTX_SIGNAL_BMS_NUMBER_OF_CONNECTED_STRINGS_START_BIT      (8u)
-#define CANTX_SIGNAL_BMS_NUMBER_OF_CONNECTED_STRINGS_LENGTH         (2u)
-#define CANTX_SIGNAL_BMS_BMS_SUBSTATE_START_BIT                     (10u)
-#define CANTX_SIGNAL_BMS_BMS_SUBSTATE_LENGTH                        (6u)
-#define CANTX_SIGNAL_BMS_BMS_STATE_START_BIT                        (16u)
-#define CANTX_SIGNAL_BMS_BMS_STATE_LENGTH                           (4u)
-#define CANTX_SIGNAL_BMS_BALANCING_ALGORITHM_STATE_START_BIT        (20u)
-#define CANTX_SIGNAL_BMS_BALANCING_ALGORITHM_STATE_LENGTH           (CAN_BIT)
-#define CANTX_SIGNAL_BMS_WARNING_START_BIT                          (21u)
-#define CANTX_SIGNAL_BMS_WARNING_LENGTH                             (CAN_BIT)
-#define CANTX_SIGNAL_BMS_FATAL_ERROR_START_BIT                      (22u)
-#define CANTX_SIGNAL_BMS_FATAL_ERROR_LENGTH                         (CAN_BIT)
-#define CANTX_SIGNAL_BMS_BAT_ON_START_BIT                           (23u)
-#define CANTX_SIGNAL_BMS_BAT_ON_LENGTH                              (CAN_BIT)
-#define CANTX_SIGNAL_BMS_EMERGENCY_SHUTOFF_START_BIT                (24u)
-#define CANTX_SIGNAL_BMS_EMERGENCY_SHUTOFF_LENGTH                   (CAN_BIT)
-#define CANTX_SIGNAL_BMS_SYSTEM_MONITORING_ERROR_START_BIT          (25u)
-#define CANTX_SIGNAL_BMS_SYSTEM_MONITORING_ERROR_LENGTH             (CAN_BIT)
-#define CANTX_SIGNAL_BMS_PRECHARGE_VOLTAGE_ERROR_START_BIT          (26u)
-#define CANTX_SIGNAL_BMS_PRECHARGE_VOLTAGE_ERROR_LENGTH             (CAN_BIT)
-#define CANTX_SIGNAL_BMS_PRECHARGE_CURRENT_ERROR_START_BIT          (27u)
-#define CANTX_SIGNAL_BMS_PRECHARGE_CURRENT_ERROR_LENGTH             (CAN_BIT)
-#define CANTX_SIGNAL_BMS_MCU_DIE_TEMPERATURE_ERROR_START_BIT        (28u)
-#define CANTX_SIGNAL_BMS_MCU_DIE_TEMPERATURE_ERROR_LENGTH           (CAN_BIT)
-#define CANTX_SIGNAL_BMS_CAN_TIMING_ERROR_START_BIT                 (29u)
-#define CANTX_SIGNAL_BMS_CAN_TIMING_ERROR_LENGTH                    (CAN_BIT)
-#define CANTX_SIGNAL_BMS_PACK_OVERCURRENT_CHARGE_ERROR_START_BIT    (30u)
-#define CANTX_SIGNAL_BMS_PACK_OVERCURRENT_CHARGE_ERROR_LENGTH       (CAN_BIT)
-#define CANTX_SIGNAL_BMS_PACK_OVERCURRENT_DISCHARGE_ERROR_START_BIT (31u)
-#define CANTX_SIGNAL_BMS_PACK_OVERCURRENT_DISCHARGE_ERROR_LENGTH    (CAN_BIT)
-#define CANTX_SIGNAL_BMS_ALERT_FLAG_START_BIT                       (32u)
-#define CANTX_SIGNAL_BMS_ALERT_FLAG_LENGTH                          (CAN_BIT)
-#define CANTX_SIGNAL_BMS_NVRAM_CRC_ERROR_START_BIT                  (33u)
-#define CANTX_SIGNAL_BMS_NVRAM_CRC_ERROR_LENGTH                     (CAN_BIT)
-#define CANTX_SIGNAL_BMS_CLAMP_30C_ERROR_START_BIT                  (34u)
-#define CANTX_SIGNAL_BMS_CLAMP_30C_ERROR_LENGTH                     (CAN_BIT)
-#define CANTX_SIGNAL_BMS_CRC_START_BIT                              (56u)
-#define CANTX_SIGNAL_BMS_CRC_LENGTH                                 (8u)
+#define CANTX_SIGNAL_BMS_CONTACTOR_FEEDBACK_START_BIT          (0u)
+#define CANTX_SIGNAL_BMS_CONTACTOR_FEEDBACK_LENGTH             (2u) /* 8 bits for 4 contactors */
+#define CANTX_SIGNAL_BMS_NUMBER_OF_CONNECTED_STRINGS_START_BIT (8u)
+#define CANTX_SIGNAL_BMS_NUMBER_OF_CONNECTED_STRINGS_LENGTH    (2u)
+#define CANTX_SIGNAL_BMS_BMS_SUBSTATE_START_BIT                (10u)
+#define CANTX_SIGNAL_BMS_BMS_SUBSTATE_LENGTH                   (6u)
+#define CANTX_SIGNAL_BMS_BMS_STATE_START_BIT                   (16u)
+#define CANTX_SIGNAL_BMS_BMS_STATE_LENGTH                      (4u)
+#define CANTX_SIGNAL_BMS_BALANCING_ALGORITHM_STATE_START_BIT   (20u)
+#define CANTX_SIGNAL_BMS_BALANCING_ALGORITHM_STATE_LENGTH      (CAN_BIT)
+#define CANTX_SIGNAL_BMS_WARNING_START_BIT                     (21u)
+#define CANTX_SIGNAL_BMS_WARNING_LENGTH                        (CAN_BIT)
+#define CANTX_SIGNAL_BMS_FATAL_ERROR_START_BIT                 (22u)
+#define CANTX_SIGNAL_BMS_FATAL_ERROR_LENGTH                    (CAN_BIT)
+#define CANTX_SIGNAL_BMS_BAT_ON_START_BIT                      (23u)
+#define CANTX_SIGNAL_BMS_BAT_ON_LENGTH                         (CAN_BIT)
+#define CANTX_SIGNAL_BMS_CRC_START_BIT                         (56u)
+#define CANTX_SIGNAL_BMS_CRC_LENGTH                            (8u)
 
 /*========== Static Constant and Variable Definitions =======================*/
 
 /*========== Extern Constant and Variable Definitions =======================*/
 
 /*========== Static Function Prototypes =====================================*/
-/**
- * @brief   get a boolean for if any timing error (current or recorded) occurred
- * @param   kpkCanShim  const pointer to CAN shim
- * @return  returns if there has been any timing violations
- */
-static bool CANTX_AnySysMonTimingIssueDetected(const CAN_SHIM_s *const kpkCanShim);
-
 /**
  * @brief   Set the message data with the signal data
  * @param   pMessageData  pointer to message data
@@ -132,22 +103,6 @@ static bool CANTX_AnySysMonTimingIssueDetected(const CAN_SHIM_s *const kpkCanShi
 static void CANTX_BuildBmsStateMessage(uint64_t *pMessageData, const CAN_SHIM_s *const kpkCanShim);
 
 /*========== Static Function Implementations ================================*/
-static bool CANTX_AnySysMonTimingIssueDetected(const CAN_SHIM_s *const kpkCanShim) {
-    FAS_ASSERT(kpkCanShim != NULL_PTR);
-    SYSM_TIMING_VIOLATION_RESPONSE_s recordedTimingViolations = {false, false, false, false, false, false};
-    SYSM_GetRecordedTimingViolations(&recordedTimingViolations);
-
-    const bool anyTimingViolation =
-        (recordedTimingViolations.recordedViolationAny ||
-         kpkCanShim->pTableErrorState->taskEngineTimingViolationError ||
-         kpkCanShim->pTableErrorState->task1msTimingViolationError ||
-         kpkCanShim->pTableErrorState->task10msTimingViolationError ||
-         kpkCanShim->pTableErrorState->task100msTimingViolationError ||
-         kpkCanShim->pTableErrorState->task100msAlgoTimingViolationError);
-
-    return anyTimingViolation;
-}
-
 static void CANTX_BuildBmsStateMessage(uint64_t *pMessageData, const CAN_SHIM_s *const kpkCanShim) {
     FAS_ASSERT(pMessageData != NULL_PTR);
     FAS_ASSERT(kpkCanShim != NULL_PTR);
@@ -229,115 +184,6 @@ static void CANTX_BuildBmsStateMessage(uint64_t *pMessageData, const CAN_SHIM_s 
         data,
         CANTX_BMS_STATE_ENDIANNESS);
 
-    /* Emergency shutoff */
-    data = CAN_ConvertBooleanToInteger(BMS_IsTransitionToErrorStateActive());
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        CANTX_SIGNAL_BMS_EMERGENCY_SHUTOFF_START_BIT,
-        CANTX_SIGNAL_BMS_EMERGENCY_SHUTOFF_LENGTH,
-        data,
-        CANTX_BMS_STATE_ENDIANNESS);
-
-    /* sys mon error */
-    data = CAN_ConvertBooleanToInteger(CANTX_AnySysMonTimingIssueDetected(kpkCanShim));
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        CANTX_SIGNAL_BMS_SYSTEM_MONITORING_ERROR_START_BIT,
-        CANTX_SIGNAL_BMS_SYSTEM_MONITORING_ERROR_LENGTH,
-        data,
-        CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Error: Precharge voltage */
-    data = 0u; /* No precharge error detected */
-    for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
-        if (kpkCanShim->pTableErrorState->prechargeAbortedDueToVoltage[s] == true) {
-            data = 1u;
-        }
-    }
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        CANTX_SIGNAL_BMS_PRECHARGE_VOLTAGE_ERROR_START_BIT,
-        CANTX_SIGNAL_BMS_PRECHARGE_VOLTAGE_ERROR_LENGTH,
-        data,
-        CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Error: Precharge current */
-    data = 0u; /* No precharge error detected */
-    for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
-        if (kpkCanShim->pTableErrorState->prechargeAbortedDueToCurrent[s] == true) {
-            data = 1u;
-        }
-    }
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        CANTX_SIGNAL_BMS_PRECHARGE_CURRENT_ERROR_START_BIT,
-        CANTX_SIGNAL_BMS_PRECHARGE_CURRENT_ERROR_LENGTH,
-        data,
-        CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Error: MCU die temperature */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->mcuDieTemperatureViolationError);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        CANTX_SIGNAL_BMS_MCU_DIE_TEMPERATURE_ERROR_START_BIT,
-        CANTX_SIGNAL_BMS_MCU_DIE_TEMPERATURE_ERROR_LENGTH,
-        data,
-        CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Error: Can timing */
-    data = kpkCanShim->pTableErrorState->stateRequestTimingViolationError;
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        CANTX_SIGNAL_BMS_CAN_TIMING_ERROR_START_BIT,
-        CANTX_SIGNAL_BMS_CAN_TIMING_ERROR_LENGTH,
-        data,
-        CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Error: Overcurrent pack charge */
-    data = kpkCanShim->pTableMsl->packChargeOvercurrent;
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        CANTX_SIGNAL_BMS_PACK_OVERCURRENT_CHARGE_ERROR_START_BIT,
-        CANTX_SIGNAL_BMS_PACK_OVERCURRENT_CHARGE_ERROR_LENGTH,
-        data,
-        CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Error: Overcurrent pack discharge */
-    data = kpkCanShim->pTableMsl->packDischargeOvercurrent;
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        CANTX_SIGNAL_BMS_PACK_OVERCURRENT_DISCHARGE_ERROR_START_BIT,
-        CANTX_SIGNAL_BMS_PACK_OVERCURRENT_DISCHARGE_ERROR_LENGTH,
-        data,
-        CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Error: Alert flag */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->alertFlagSetError);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        CANTX_SIGNAL_BMS_ALERT_FLAG_START_BIT,
-        CANTX_SIGNAL_BMS_ALERT_FLAG_LENGTH,
-        data,
-        CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Error: NVRAM CRC */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->framReadCrcError);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        CANTX_SIGNAL_BMS_NVRAM_CRC_ERROR_START_BIT,
-        CANTX_SIGNAL_BMS_NVRAM_CRC_ERROR_LENGTH,
-        data,
-        CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Error: Clamp 30C */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->supplyVoltageClamp30cError);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        CANTX_SIGNAL_BMS_CLAMP_30C_ERROR_START_BIT,
-        CANTX_SIGNAL_BMS_CLAMP_30C_ERROR_LENGTH,
-        data,
-        CANTX_BMS_STATE_ENDIANNESS);
-
     /* Cellsius: CRC */
     data = Compute_CRC8H2F((uint8_t *)pMessageData, CANTX_SIGNAL_BMS_CRC_START_BIT / 8u, CRC8H2F_INITIAL_VALUE);
     CAN_TxSetMessageDataWithSignalData(
@@ -359,11 +205,7 @@ extern uint32_t CANTX_BmsState(
     FAS_ASSERT(kpkCanShim != NULL_PTR);
     uint64_t messageData = 0u;
 
-    DATA_READ_DATA(
-        kpkCanShim->pTableErrorState,
-        kpkCanShim->pTableInsulation,
-        kpkCanShim->pTableMsl,
-        kpkCanShim->pTableBalancingControl);
+    DATA_READ_DATA(kpkCanShim->pTableBalancingControl);
 
     CANTX_BuildBmsStateMessage(&messageData, kpkCanShim);
 
