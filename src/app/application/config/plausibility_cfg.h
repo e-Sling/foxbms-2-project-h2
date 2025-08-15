@@ -66,7 +66,7 @@
  * \par Range:
  * [0, 10000]
  */
-#define PL_STRING_VOLTAGE_TOLERANCE_mV (3000)
+#define PL_STRING_VOLTAGE_TOLERANCE_mV (500)
 
 /**
  * @brief   Maximum difference between redundant cell voltage measurement

@@ -142,6 +142,7 @@ static void MRC_ValidateCurrentMeasurement(DATA_BLOCK_CURRENT_SENSOR_s *pTableCu
  * @brief Function to validate results of string voltage measurement
  * @param[in] pTableCurrentSensor   pointer current sensor high voltage measurements
  * @param[in] pTableCellVoltage     pointer to cell voltage measurements
+ * @details Cellsius: changed ISA measurement to U2, take string voltage from AFE when both are valid
  */
 static void MRC_ValidateStringVoltageMeasurement(
     DATA_BLOCK_CURRENT_SENSOR_s *pTableCurrentSensor,
@@ -156,6 +157,7 @@ static void MRC_ValidateBatteryVoltageMeasurement(void);
  * @brief Function to validate results of high voltage measurement and calculate
  *        battery voltage and high voltage bus voltage.
  * @param[in] pTableCurrentSensor   pointer current sensor high voltage measurements
+ * @details Cellsius: changed ISA measurement to U1
  */
 static void MRC_ValidateHighVoltageBusMeasurement(DATA_BLOCK_CURRENT_SENSOR_s *pTableCurrentSensor);
 
@@ -589,21 +591,20 @@ static void MRC_ValidateStringVoltageMeasurement(
     for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
         /* Check timeout of current sensor measurement */
         STD_RETURN_TYPE_e updatedMeasurement = MRC_MeasurementUpdatedRecently(
-            pTableCurrentSensor->timestampHighVoltage[s][0u],
-            pTableCurrentSensor->previousTimestampHighVoltage[s][0u],
+            pTableCurrentSensor->timestampHighVoltage[s][1u],
+            pTableCurrentSensor->previousTimestampHighVoltage[s][1u],
             MRC_CURRENT_SENSOR_MEASUREMENT_TIMEOUT_ms);
         DIAG_CheckEvent(updatedMeasurement, DIAG_ID_CURRENT_SENSOR_V1_MEASUREMENT_TIMEOUT, DIAG_STRING, s);
 
         /* Perform plausibility check if AFE and new current sensor measurement is valid */
-        if ((updatedMeasurement == STD_OK) && (pTableCurrentSensor->invalidHighVoltageMeasurement[s][0u] == 0u) &&
+        if ((updatedMeasurement == STD_OK) && (pTableCurrentSensor->invalidHighVoltageMeasurement[s][1u] == 0u) &&
             (pTableCellVoltage->nrValidCellVoltages[s] == BS_NR_OF_CELL_BLOCKS_PER_STRING)) {
             STD_RETURN_TYPE_e voltagePlausible = PL_CheckStringVoltage(
-                pTableCellVoltage->stringVoltage_mV[s], pTableCurrentSensor->highVoltage_mV[s][0u]);
+                pTableCellVoltage->stringVoltage_mV[s], pTableCurrentSensor->highVoltage_mV[s][1u]);
             (void)DIAG_CheckEvent(voltagePlausible, DIAG_ID_PLAUSIBILITY_PACK_VOLTAGE, DIAG_STRING, s);
 
-            /* Use current sensor measurement */ /* TODO: use really current sensor? Average of both? AFE measurement?
-                                                  */
-            mrc_tablePackValues.stringVoltage_mV[s] = pTableCurrentSensor->highVoltage_mV[s][0u];
+            /* Use AFE measurement when both are valid */
+            mrc_tablePackValues.stringVoltage_mV[s] = pTableCellVoltage->stringVoltage_mV[s];
 
             if (voltagePlausible == STD_OK) {
                 mrc_tablePackValues.invalidStringVoltage[s] = 0u;
@@ -615,9 +616,9 @@ static void MRC_ValidateStringVoltageMeasurement(
              * values from AFE and current sensor measurement */
             (void)DIAG_CheckEvent(STD_NOT_OK, DIAG_ID_PLAUSIBILITY_PACK_VOLTAGE, DIAG_STRING, s);
 
-            if ((updatedMeasurement == STD_OK) && (pTableCurrentSensor->invalidHighVoltageMeasurement[s][0u] == 0u)) {
+            if ((updatedMeasurement == STD_OK) && (pTableCurrentSensor->invalidHighVoltageMeasurement[s][1u] == 0u)) {
                 /* Current sensor measurement valid -> use this measurement */
-                mrc_tablePackValues.stringVoltage_mV[s]     = pTableCurrentSensor->highVoltage_mV[s][0u];
+                mrc_tablePackValues.stringVoltage_mV[s]     = pTableCurrentSensor->highVoltage_mV[s][1u];
                 mrc_tablePackValues.invalidStringVoltage[s] = 0u;
             } else if (pTableCellVoltage->nrValidCellVoltages[s] == BS_NR_OF_CELL_BLOCKS_PER_STRING) {
                 /* AFE measurement valid -> use this measurement */
@@ -695,8 +696,8 @@ static void MRC_ValidateHighVoltageBusMeasurement(DATA_BLOCK_CURRENT_SENSOR_s *p
     for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
         /* Check timeout of current sensor measurement */
         STD_RETURN_TYPE_e updatedMeasurement = MRC_MeasurementUpdatedRecently(
-            pTableCurrentSensor->timestampHighVoltage[s][2u],
-            pTableCurrentSensor->previousTimestampHighVoltage[s][2u],
+            pTableCurrentSensor->timestampHighVoltage[s][0u],
+            pTableCurrentSensor->previousTimestampHighVoltage[s][0u],
             MRC_CURRENT_SENSOR_MEASUREMENT_TIMEOUT_ms);
         DIAG_CheckEvent(updatedMeasurement, DIAG_ID_CURRENT_SENSOR_V3_MEASUREMENT_TIMEOUT, DIAG_STRING, s);
 
@@ -704,10 +705,10 @@ static void MRC_ValidateHighVoltageBusMeasurement(DATA_BLOCK_CURRENT_SENSOR_s *p
         const bool stringPrecharging = BMS_IsStringPrecharging(s);
         if (((stringPrecharging == true) || (stringClosed == true)) && (updatedMeasurement == STD_OK)) {
             /* Only voltages of connected strings can be used */
-            if (pTableCurrentSensor->invalidHighVoltageMeasurement[s][2] == 0u) {
+            if (pTableCurrentSensor->invalidHighVoltageMeasurement[s][0u] == 0u) {
                 /* Measured high voltage is valid */
                 validVoltages++;
-                sum_mV += pTableCurrentSensor->highVoltage_mV[s][2];
+                sum_mV += pTableCurrentSensor->highVoltage_mV[s][0u];
             }
         }
     }
