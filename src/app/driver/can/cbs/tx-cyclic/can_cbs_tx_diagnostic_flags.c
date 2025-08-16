@@ -87,6 +87,7 @@
 #define CANTX_DIAG_BASE_CELL_TEMP_MEAS_TIMEOUT_START_BIT (11u)
 #define CANTX_DIAG_AFE_CELL_TEMP_MEAS_START_BIT          (12u)
 #define CANTX_DIAG_AFE_CELL_VOLTAGE_MEAS_START_BIT       (13u)
+#define CANTX_DIAG_PLAUSIBILITY_PACK_VOLTAGE_START_BIT   (14u)
 
 /*========== Static Constant and Variable Definitions =======================*/
 
@@ -240,6 +241,15 @@ static void CANTX_BuildDiagnosticFlagsMessage(const CAN_SHIM_s *const kpkCanShim
     CAN_TxSetMessageDataWithSignalData(
         pMessageData,
         CANTX_DIAG_AFE_CELL_VOLTAGE_MEAS_START_BIT,
+        CANTX_DIAG_FLAG_LENGTH,
+        data,
+        CANTX_BMS_STATE_ENDIANNESS);
+
+    /* Error: Plausibility Pack Voltage */
+    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->plausibilityCheckPackVoltageError[BS_STRING0]);
+    CAN_TxSetMessageDataWithSignalData(
+        pMessageData,
+        CANTX_DIAG_PLAUSIBILITY_PACK_VOLTAGE_START_BIT,
         CANTX_DIAG_FLAG_LENGTH,
         data,
         CANTX_BMS_STATE_ENDIANNESS);

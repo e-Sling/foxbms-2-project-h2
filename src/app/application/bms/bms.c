@@ -1410,11 +1410,6 @@ void BMS_Trigger(void) {
             break;
     } /* end switch (bms_state.state) */
 
-    /* Send an asynchronous bms state message if the state or substate changed*/
-    if ((bms_state.state != bms_state.lastState) || (bms_state.substate != bms_state.lastSubstate)) {
-        CANTX_TransmitBmsState();
-    }
-
     bms_state.triggerentry--;
     bms_state.counter++;
 }

@@ -84,12 +84,6 @@ extern uint32_t CANTX_BmsState(
     uint8_t *pCanData,
     uint8_t *pMuxId,
     const CAN_SHIM_s *const kpkCanShim);
-/**
- * @brief   CAN Tx callback function for state, used to send asynchronous
- *          bms state messages, for example when changing the state
- * @return  STD_OK if message has been sent successfully
- */
-extern STD_RETURN_TYPE_e CANTX_TransmitBmsState(void);
 
 /**
  * @brief   CAN Tx callback function for detail state

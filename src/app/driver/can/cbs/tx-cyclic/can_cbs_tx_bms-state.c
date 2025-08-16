@@ -215,21 +215,6 @@ extern uint32_t CANTX_BmsState(
     return 0u;
 }
 
-extern STD_RETURN_TYPE_e CANTX_TransmitBmsState(void) {
-    CAN_MESSAGE_PROPERTIES_s message = {
-        .id         = CANTX_BMS_STATE_ID,
-        .idType     = CANTX_BMS_STATE_ID_TYPE,
-        .dlc        = CANTX_BMS_STATE_DLC,
-        .endianness = CANTX_BMS_STATE_ENDIANNESS,
-    };
-
-    uint8_t canData[CANTX_BMS_STATE_DLC] = {0u, 0u, 0u, 0u, 0u, 0u};
-
-    CANTX_BmsState(message, canData, NULL_PTR, &can_kShim);
-
-    return CAN_DataSend(CAN_NODE, message.id, message.idType, canData);
-}
-
 /*========== Externalized Static Function Implementations (Unit Test) =======*/
 #ifdef UNITY_UNIT_TEST
 extern bool TEST_CANTX_AnySysMonTimingIssueDetected(const CAN_SHIM_s *const kpkCanShim) {
