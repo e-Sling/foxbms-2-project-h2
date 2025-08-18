@@ -1040,7 +1040,7 @@ void BMS_Trigger(void) {
                 } else {
 #if BS_STANDBY_PERIODIC_OPEN_WIRE_CHECK == TRUE
                     if (nextOpenWireCheck <= timestamp) {
-                        MEAS_RequestOpenWireCheck();
+                        MEAS_RequestOpenWireCheck(BS_STRING0);
                         nextOpenWireCheck = timestamp + BS_STANDBY_OPEN_WIRE_PERIOD_ms;
                     }
 #endif /* BS_STANDBY_PERIODIC_OPEN_WIRE_CHECK == TRUE */
@@ -1307,7 +1307,7 @@ void BMS_Trigger(void) {
                 } else {
 #if BS_NORMAL_PERIODIC_OPEN_WIRE_CHECK == TRUE
                     if (nextOpenWireCheck <= timestamp) {
-                        MEAS_RequestOpenWireCheck();
+                        MEAS_RequestOpenWireCheck(BS_STRING0);
                         nextOpenWireCheck = timestamp + BS_NORMAL_OPEN_WIRE_PERIOD_ms;
                     }
 #endif /* BS_NORMAL_PERIODIC_OPEN_WIRE_CHECK == TRUE */
@@ -1335,8 +1335,10 @@ void BMS_Trigger(void) {
                 BAL_SetStateRequest(BAL_STATE_NO_BALANCING_REQUEST);
                 /* Change LED toggle frequency to indicate an error */
                 LED_SetToggleTime(LED_ERROR_OPERATION_ON_OFF_TIME_ms);
+#if BS_ERROR_PERIODIC_OPEN_WIRE_CHECK == TRUE
                 /* Set timer for next open wire check */
-                nextOpenWireCheck = timestamp + AFE_ERROR_OPEN_WIRE_PERIOD_ms;
+                nextOpenWireCheck = timestamp + BS_ERROR_OPEN_WIRE_PERIOD_ms;
+#endif /* BS_ERROR_PERIODIC_OPEN_WIRE_CHECK == TRUE */
                 /* Cellsius: Save fault disarm status */
                 bms_state.faultDisarmOnEntry = bms_state.faultDisarmFlag;
                 /* Switch to next substate */
@@ -1346,14 +1348,15 @@ void BMS_Trigger(void) {
             } else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS) {
                 if (DIAG_IsAnyFatalErrorSet() == true) {
                     /* we stay already in requested state */
+#if BS_ERROR_PERIODIC_OPEN_WIRE_CHECK == TRUE
                     if (nextOpenWireCheck <= timestamp) {
-                        /* Perform open-wire check periodically */
-                        /* MEAS_RequestOpenWireCheck(); */ /*TODO: check with strings */
-                        nextOpenWireCheck = timestamp + AFE_ERROR_OPEN_WIRE_PERIOD_ms;
+                        MEAS_RequestOpenWireCheck(BS_STRING0);
+                        nextOpenWireCheck = timestamp + BS_ERROR_OPEN_WIRE_PERIOD_ms;
                     }
+#endif /* BS_ERROR_PERIODIC_OPEN_WIRE_CHECK == TRUE */
                 } else {
                     /* No error detected anymore - reset fatal error related variables */
-                    bms_state.minimumActiveDelay_ms  = BMS_NO_ACTIVE_DELAY_TIME_ms;
+                    bms_state.remainingDelay_ms      = BMS_NO_ACTIVE_DELAY_TIME_ms;
                     bms_state.minimumActiveDelay_ms  = BMS_NO_ACTIVE_DELAY_TIME_ms;
                     bms_state.transitionToErrorState = false;
                     /* Check for STANDBY request */

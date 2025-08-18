@@ -324,7 +324,7 @@ typedef enum {
  * @{
  */
 /** enable open-wire checks during standby */
-#define BS_STANDBY_PERIODIC_OPEN_WIRE_CHECK (false)
+#define BS_STANDBY_PERIODIC_OPEN_WIRE_CHECK (true)
 
 /** Periodic open-wire check time in STANDBY state in ms */
 #define BS_STANDBY_OPEN_WIRE_PERIOD_ms (600000)
