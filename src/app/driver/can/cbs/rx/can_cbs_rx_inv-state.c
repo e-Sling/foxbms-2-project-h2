@@ -97,5 +97,8 @@ extern uint32_t CANRX_InverterStateRequest(
     /* Set Direct Connect Flag */
     CANRX_SetDirectConnectFlag(messageData);
 
+    /* Save tick from this message */
+    BMS_SetLastInverterTick();
+
     return 0u;
 }

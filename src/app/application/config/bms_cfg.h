@@ -190,6 +190,12 @@
  */
 #define BMS_PRECHARGE_OPEN_TIMEOUT (500u)
 
+/**
+ * @details Timeout of inverter CAN message. If no message is received,
+ *          precharge shall be started anyways.
+ */
+#define BMS_INVERTER_MESSAGE_TIMEOUT (5000u)
+
 /*========== Extern Constant and Variable Declarations ======================*/
 
 /*========== Extern Function Prototypes =====================================*/

@@ -124,7 +124,8 @@ static BMS_STATE_s bms_state = {
     .faultDisarmFlag                   = false,
     .faultDisarmOnEntry                = false,
     .prechargeAllowedFlag              = false,
-    .directConnectFlag                 = false
+    .directConnectFlag                 = false,
+    .last_inverter_tick                = 0u
 
 };
 
@@ -658,6 +659,10 @@ extern void BMS_SetDirectConnectFlag(bool directConnectFlag) {
     bms_state.directConnectFlag = directConnectFlag;
 }
 
+extern void BMS_SetLastInverterTick() {
+    bms_state.last_inverter_tick = OS_GetTickCount();
+}
+
 BMS_RETURN_TYPE_e BMS_SetStateRequest(BMS_STATE_REQUEST_e statereq) {
     BMS_RETURN_TYPE_e retVal = BMS_OK;
 
@@ -1012,7 +1017,9 @@ void BMS_Trigger(void) {
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
                 /* Cellsius: Check for Bat_On and Inverter command */
-                if (bms_state.batOnSignal && (bms_state.prechargeAllowedFlag || bms_state.directConnectFlag)) {
+                if (bms_state.batOnSignal &&
+                    (bms_state.prechargeAllowedFlag || bms_state.directConnectFlag ||
+                     (timestamp - bms_state.last_inverter_tick > BMS_INVERTER_MESSAGE_TIMEOUT))) {
                     bms_state.nextState = BMS_STATEMACH_NORMAL;
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_PRECHARGE;

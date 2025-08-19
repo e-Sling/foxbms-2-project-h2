@@ -182,6 +182,7 @@ typedef struct {
     bool faultDisarmOnEntry;                             /*!< Cellsius: Fault_Disarm signal on entry to error state */
     bool prechargeAllowedFlag;                           /*!< Cellsius: Precharge_Allowed signal from Inverter */
     bool directConnectFlag;                              /*!< Cellsius: Direct_Connect signal from Inverter */
+    uint32_t last_inverter_tick;                         /*!< Cellsius: Last tick from Inverter */
 } BMS_STATE_s;
 
 /*========== Extern Constant and Variable Declarations ======================*/
@@ -239,6 +240,11 @@ extern void BMS_SetPrechargeAllowedFlag(bool prechargeAllowedFlag);
  * @param   directConnectFlag    Value transmitted by Inverter
  */
 extern void BMS_SetDirectConnectFlag(bool directConnectFlag);
+
+/**
+ * @brief   Saves the current tick when Inverter message is received
+ */
+extern void BMS_SetLastInverterTick();
 
 /**
  * @brief   Gets the initialization state.
