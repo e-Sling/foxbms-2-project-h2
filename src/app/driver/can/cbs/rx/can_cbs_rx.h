@@ -114,6 +114,17 @@ extern uint32_t CANRX_EcuStateRequest(
     const uint8_t *const kpkCanData,
     const CAN_SHIM_s *const kpkCanShim);
 
+/**
+ * @brief   CAN Rx callback function for Inverter state requests
+ * @param[in] message     contains the message ID, DLC and endianness
+ * @param[in] kpkCanData  payload of can frame
+ * @param[in] kpkCanShim  shim to the database entries
+ */
+extern uint32_t CANRX_InverterStateRequest(
+    CAN_MESSAGE_PROPERTIES_s message,
+    const uint8_t *const kpkCanData,
+    const CAN_SHIM_s *const kpkCanShim);
+
 /*========== Externalized Static Functions Prototypes (Unit Test) ===========*/
 #ifdef UNITY_UNIT_TEST
 /* externalized functions from src/app/driver/can/cbs/rx/can_cbs_rx_current-sensor.c */

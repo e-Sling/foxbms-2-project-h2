@@ -104,14 +104,11 @@ static BMS_STATE_s bms_state = {
     .counter                           = 0u,
     .OscillationTimeout                = 0u,
     .prechargeTryCounter               = 0u,
-    .powerPath                         = BMS_POWER_PATH_OPEN,
     .closedStrings                     = {0u},
     .closedPrechargeContactors         = {0u},
     .numberOfClosedStrings             = 0u,
-    .deactivatedStrings                = {0},
     .firstClosedString                 = 0u,
     .stringOpenTimeout                 = 0u,
-    .nextStringClosedTimer             = 0u,
     .stringCloseTimeout                = 0u,
     .nextState                         = BMS_STATEMACH_STANDBY,
     .restTimer_10ms                    = BS_RELAXATION_PERIOD_10ms,
@@ -126,6 +123,8 @@ static BMS_STATE_s bms_state = {
     .batOnSignalPrev                   = false,
     .faultDisarmFlag                   = false,
     .faultDisarmOnEntry                = false,
+    .prechargeAllowedFlag              = false,
+    .directConnectFlag                 = false
 
 };
 
@@ -651,6 +650,14 @@ extern void BMS_SetFaultDisarmFlag(bool faultDisarmFlag) {
     bms_state.faultDisarmFlag = faultDisarmFlag;
 }
 
+extern void BMS_SetPrechargeAllowedFlag(bool prechargeAllowedFlag) {
+    bms_state.prechargeAllowedFlag = prechargeAllowedFlag;
+}
+
+extern void BMS_SetDirectConnectFlag(bool directConnectFlag) {
+    bms_state.directConnectFlag = directConnectFlag;
+}
+
 BMS_RETURN_TYPE_e BMS_SetStateRequest(BMS_STATE_REQUEST_e statereq) {
     BMS_RETURN_TYPE_e retVal = BMS_OK;
 
@@ -666,13 +673,12 @@ BMS_RETURN_TYPE_e BMS_SetStateRequest(BMS_STATE_REQUEST_e statereq) {
 }
 
 void BMS_Trigger(void) {
-    BMS_STATE_REQUEST_e statereq          = BMS_STATE_NO_REQUEST;
-    DATA_BLOCK_SYSTEM_STATE_s systemState = {.header.uniqueId = DATA_BLOCK_ID_SYSTEM_STATE};
-    uint32_t timestamp                    = OS_GetTickCount();
-    static uint32_t nextOpenWireCheck     = 0;
-    STD_RETURN_TYPE_e retVal              = STD_NOT_OK;
-    static uint8_t stringNumber           = 0u;
-    /*     static uint8_t nextStringNumber             = 0u; */
+    BMS_STATE_REQUEST_e statereq                = BMS_STATE_NO_REQUEST;
+    DATA_BLOCK_SYSTEM_STATE_s systemState       = {.header.uniqueId = DATA_BLOCK_ID_SYSTEM_STATE};
+    uint32_t timestamp                          = OS_GetTickCount();
+    static uint32_t nextOpenWireCheck           = 0;
+    STD_RETURN_TYPE_e retVal                    = STD_NOT_OK;
+    static uint8_t stringNumber                 = 0u;
     CONT_ELECTRICAL_STATE_TYPE_e contactorState = CONT_SWITCH_UNDEFINED;
     bool contactorFeedbackValid                 = false;
     STD_RETURN_TYPE_e contRetVal                = STD_NOT_OK;
@@ -695,9 +701,6 @@ void BMS_Trigger(void) {
         return;
     }
 
-    if (bms_state.nextStringClosedTimer > 0u) {
-        bms_state.nextStringClosedTimer--;
-    }
     if (bms_state.stringOpenTimeout > 0u) {
         bms_state.stringOpenTimeout--;
     }
@@ -990,26 +993,10 @@ void BMS_Trigger(void) {
                 nextOpenWireCheck = timestamp + BS_STANDBY_OPEN_WIRE_PERIOD_ms;
 #endif /* BS_STANDBY_PERIODIC_OPEN_WIRE_CHECK == TRUE */
                 bms_state.timer    = BMS_STATEMACH_MEDIUM_TIME;
-                bms_state.substate = BMS_CHECK_ERROR_FLAGS_INTERLOCK;
+                bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                 DATA_READ_DATA(&systemState);
                 systemState.bmsCanState = BMS_CAN_STATE_STANDBY;
                 DATA_WRITE_DATA(&systemState);
-                break;
-            } else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS_INTERLOCK) {
-                if (BMS_IsBatterySystemStateOkay() == STD_NOT_OK) {
-                    bms_state.timer     = BMS_STATEMACH_SHORTTIME;
-                    bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
-                    bms_state.nextState = BMS_STATEMACH_ERROR;
-                    bms_state.substate  = BMS_ENTRY;
-                    break;
-                } else {
-                    bms_state.timer    = BMS_STATEMACH_SHORTTIME;
-                    bms_state.substate = BMS_INTERLOCK_CHECKED;
-                    break;
-                }
-            } else if (bms_state.substate == BMS_INTERLOCK_CHECKED) {
-                bms_state.timer    = BMS_STATEMACH_SHORTTIME;
-                bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                 break;
             } else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS) {
                 if (BMS_IsBatterySystemStateOkay() == STD_NOT_OK) {
@@ -1024,8 +1011,8 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                /* Cellsius: Check for Bat_On */
-                if (bms_state.batOnSignal) {
+                /* Cellsius: Check for Bat_On and Inverter command */
+                if (bms_state.batOnSignal && (bms_state.prechargeAllowedFlag || bms_state.directConnectFlag)) {
                     bms_state.nextState = BMS_STATEMACH_NORMAL;
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_PRECHARGE;
@@ -1135,8 +1122,8 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                /* Cellsius: Check if Bat_On was lost */
-                if (!bms_state.batOnSignal) {
+                /* Cellsius: Check if Bat_On or Inverter command was lost */
+                if (!bms_state.batOnSignal || !(bms_state.prechargeAllowedFlag && bms_state.directConnectFlag)) {
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;
@@ -1280,9 +1267,8 @@ void BMS_Trigger(void) {
                 DATA_READ_DATA(&systemState);
                 systemState.bmsCanState = BMS_CAN_STATE_NORMAL;
                 DATA_WRITE_DATA(&systemState);
-                bms_state.timer                 = BMS_STATEMACH_SHORTTIME;
-                bms_state.substate              = BMS_CHECK_ERROR_FLAGS;
-                bms_state.nextStringClosedTimer = 0u;
+                bms_state.timer    = BMS_STATEMACH_SHORTTIME;
+                bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                 break;
             } else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS) {
                 if (BMS_IsBatterySystemStateOkay() == STD_NOT_OK) {
@@ -1297,8 +1283,8 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                /* Cellsius: Check if Bat_On was lost */
-                if (!(bms_state.batOnSignal)) {
+                /* Cellsius: Check if Bat_On or Inverter command was lost */
+                if (!bms_state.batOnSignal || !(bms_state.prechargeAllowedFlag && bms_state.directConnectFlag)) {
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;
