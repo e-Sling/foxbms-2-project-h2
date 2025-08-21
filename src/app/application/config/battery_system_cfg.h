@@ -82,10 +82,7 @@ typedef enum {
 
 /** Symbolic identifiers for strings. */
 typedef enum {
-    BS_STRING0    = 0u,
-    BS_STRING1    = 1u,
-    BS_STRING2    = 2u,
-    BS_STRING_MAX = 3u,
+    BS_STRING0 = 0u,
 } BS_STRING_ID_e;
 
 /** Define if discharge current is seen as positive or negative */
@@ -189,7 +186,7 @@ typedef enum {
  *          above this value. The fuse should trigger to interrupt current
  *          flows above this value.
  */
-#define BS_MAIN_CONTACTORS_MAXIMUM_BREAK_CURRENT_mA (500000)
+#define BS_MAIN_CONTACTORS_MAXIMUM_BREAK_CURRENT_mA (175000)
 
 /**
  * @brief   Maximum fuse trigger duration
@@ -215,7 +212,7 @@ typedef enum {
  * @details When maximum safety limit (MSL) is violated, error state is
  *          requested and contactors will open.
  */
-#define BS_MAXIMUM_PACK_CURRENT_mA (80000u * BS_NR_OF_STRINGS)
+#define BS_MAXIMUM_PACK_CURRENT_mA (BS_MAXIMUM_STRING_CURRENT_mA * BS_NR_OF_STRINGS)
 
 /**
  * @brief   Define if interlock feedback should be discarded or not
