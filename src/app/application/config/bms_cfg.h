@@ -120,9 +120,6 @@
 /** Time in #BMS_Trigger() calls to wait after opening any string minus or string plus contactor */
 #define BMS_WAIT_TIME_AFTER_OPENING_STRING_CONTACTOR (10u)
 
-/** Time in #BMS_Trigger() calls to wait between closing complete strings */
-#define BMS_WAIT_TIME_BETWEEN_CLOSING_STRINGS (10u)
-
 /**
  * @brief   Timeout in #BMS_Trigger() calls when closing a string after which
  *          the state machines goes to error if the string still has not closed
@@ -134,15 +131,6 @@
  *          the state machines goes to error if the string still has not opened
  */
 #define BMS_STRING_OPEN_TIMEOUT (1000u)
-
-/**
- * @brief   Max voltage difference in mV between two strings to allow
- * closing the next string
- */
-#define BMS_NEXT_STRING_VOLTAGE_LIMIT_MV (3000)
-
-/** Max average string current to allow closing next string */
-#define BMS_AVERAGE_STRING_CURRENT_LIMIT_MA (20000)
 
 /** Delay after closing precharge in #BMS_Trigger() calls */
 #define BMS_TIME_WAIT_AFTER_CLOSING_PRECHARGE (200u)
@@ -166,34 +154,16 @@
 /** Number of allowed tries to close contactors */
 #define BMS_PRECHARGE_TRIES (3u)
 
-/** Precharge threshold limit on voltage (in mV) */
-#define BMS_PRECHARGE_VOLTAGE_THRESHOLD_mV (1000LL) /* mV */
+/* Precharge threshold limit on voltage (in mV) */
+#define BMS_PRECHARGE_VOLTAGE_THRESHOLD_mV (1000LL)
 
-/** Precharge threshold limit on current (in mA) */
-#define BMS_PRECHARGE_CURRENT_THRESHOLD_mA (50) /* mA */
+/* Precharge threshold limit on current (in mA) */
+#define BMS_PRECHARGE_CURRENT_THRESHOLD_mA (50)
 
-/**
- * @details Time to wait after contactors opened because precharge failed in
- *          #BMS_Trigger() calls
- */
-#define BMS_STATEMACH_TIME_UNTIL_PRECHARGE_FAIL (100u)
+/* Direct Connect threshold limit on voltage (in mV) */
+#define BMS_DIRECT_CONNECT_VOLTAGE_THRESHOLD_mV (5000LL)
 
-/**
- * @details Timeout in #BMS_Trigger() calls when closing precharge after which
- *          the state machines goes to error if precharge still has not closed
- */
-#define BMS_PRECHARGE_CLOSE_TIMEOUT (500u)
-
-/**
- * @details Timeout in #BMS_Trigger() calls when opening precharge after which
- *          the state machines goes to error if precharge still has not opened
- */
-#define BMS_PRECHARGE_OPEN_TIMEOUT (500u)
-
-/**
- * @details Timeout of inverter CAN message. If no message is received,
- *          precharge shall be started anyways.
- */
+/* Timeout of inverter CAN message. If no message is received, precharge shall be started anyways */
 #define BMS_INVERTER_MESSAGE_TIMEOUT (5000u)
 
 /*========== Extern Constant and Variable Declarations ======================*/

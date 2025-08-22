@@ -85,25 +85,11 @@ typedef enum {
     BMS_STATEMACH_OPEN_CONTACTORS,
     BMS_STATEMACH_STANDBY,
     BMS_STATEMACH_PRECHARGE,
+    BMS_STATEMACH_DIRECTCONNECT,
     BMS_STATEMACH_NORMAL,
     BMS_STATEMACH_CHARGE,
     BMS_STATEMACH_ERROR,
 } BMS_STATEMACH_e;
-
-/** CAN states of the BMS state machine */
-typedef enum {
-    /* Init-Sequence */
-    BMS_CAN_STATE_UNINITIALIZED,
-    BMS_CAN_STATE_INITIALIZATION,
-    BMS_CAN_STATE_INITIALIZED,
-    BMS_CAN_STATE_IDLE,
-    BMS_CAN_STATE_OPEN_CONTACTORS,
-    BMS_CAN_STATE_STANDBY,
-    BMS_CAN_STATE_PRECHARGE,
-    BMS_CAN_STATE_NORMAL,
-    BMS_CAN_STATE_CHARGE,
-    BMS_CAN_STATE_ERROR,
-} BMS_CAN_STATE_e;
 
 /** Substates of the BMS state machine */
 typedef enum {
@@ -114,6 +100,10 @@ typedef enum {
     BMS_PRECHARGE_CHECK_VOLTAGES,
     BMS_PRECHARGE_OPEN_PRECHARGE,
     BMS_PRECHARGE_CHECK_OPEN_PRECHARGE,
+    BMS_DIRECTCONNECT_CHECK_VOLTAGES,           /*!< Cellsisus: check voltages before direct connection */
+    BMS_DIRECTCONNECT_CHECK_MAIN_CONTACTOR,     /*!< Cellsisus: check if main contactor is closed */
+    BMS_DIRECTCONNECT_CHECK_ERROR_FLAGS,        /*!< Cellsisus: check if any error flag is set */
+    BMS_DIRECTCONNECT_CHECK_ERROR_FLAGS_CLOSED, /*!< Cellsisus: check if any error flag is set when Main is closed */
     BMS_CHECK_CLOSE_MAIN_CONTACTOR_PRECHARGE_STATE,
     BMS_CHECK_ERROR_FLAGS_PRECHARGE_FIRST_STRING,
     BMS_CHECK_ERROR_FLAGS_PRECHARGE_CLOSING_STRINGS,
