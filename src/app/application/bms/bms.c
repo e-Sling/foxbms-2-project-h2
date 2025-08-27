@@ -408,14 +408,12 @@ static STD_RETURN_TYPE_e BMS_CheckDirectConnect(uint8_t stringNumber, const DATA
         /* Check if voltages are within acceptable range */
         if (cont_VoltDiff_mV < BMS_DIRECT_CONNECT_VOLTAGE_THRESHOLD_mV) {
             retVal = STD_OK;
-            /* TODO error handler */
-            /* (void)DIAG_Handler(DIAG_ID_PRECHARGE_ABORT_REASON_VOLTAGE, DIAG_EVENT_OK, DIAG_STRING, stringNumber);
-            (void)DIAG_Handler(DIAG_ID_PRECHARGE_ABORT_REASON_CURRENT, DIAG_EVENT_OK, DIAG_STRING, stringNumber); */
+            (void)DIAG_Handler(DIAG_ID_PRECHARGE_ABORT_REASON_VOLTAGE, DIAG_EVENT_OK, DIAG_STRING, stringNumber);
+            (void)DIAG_Handler(DIAG_ID_PRECHARGE_ABORT_REASON_CURRENT, DIAG_EVENT_OK, DIAG_STRING, stringNumber);
         } else {
             /* Voltage difference too large */
-            /* TODO error handler */
-            /* (void)DIAG_Handler(DIAG_ID_PRECHARGE_ABORT_REASON_VOLTAGE, DIAG_EVENT_NOT_OK, DIAG_STRING, stringNumber);
-                (void)DIAG_Handler(DIAG_ID_PRECHARGE_ABORT_REASON_CURRENT, DIAG_EVENT_OK, DIAG_STRING, stringNumber); */
+            (void)DIAG_Handler(DIAG_ID_PRECHARGE_ABORT_REASON_VOLTAGE, DIAG_EVENT_NOT_OK, DIAG_STRING, stringNumber);
+            (void)DIAG_Handler(DIAG_ID_PRECHARGE_ABORT_REASON_CURRENT, DIAG_EVENT_OK, DIAG_STRING, stringNumber);
         }
     }
     return retVal;
@@ -707,6 +705,7 @@ BMS_RETURN_TYPE_e BMS_SetStateRequest(BMS_STATE_REQUEST_e statereq) {
 
 void BMS_Trigger(void) {
     BMS_STATE_REQUEST_e statereq                 = BMS_STATE_NO_REQUEST;
+    DATA_BLOCK_SYSTEM_STATE_s systemState        = {.header.uniqueId = DATA_BLOCK_ID_SYSTEM_STATE};
     uint32_t timestamp                           = OS_GetTickCount();
     static uint32_t nextOpenWireCheck            = 0;
     STD_RETURN_TYPE_e retVal                     = STD_NOT_OK;
@@ -800,6 +799,9 @@ void BMS_Trigger(void) {
             BMS_SAVE_LAST_STATES();
 
             if (bms_state.substate == BMS_ENTRY) {
+                DATA_READ_DATA(&systemState);
+                systemState.bmsCanState = BMS_CAN_STATE_IDLE;
+                DATA_WRITE_DATA(&systemState);
                 bms_state.timer    = BMS_STATEMACH_SHORTTIME;
                 bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                 break;
@@ -1024,6 +1026,9 @@ void BMS_Trigger(void) {
 #endif /* BS_STANDBY_PERIODIC_OPEN_WIRE_CHECK == TRUE */
                 bms_state.timer    = BMS_STATEMACH_MEDIUM_TIME;
                 bms_state.substate = BMS_CHECK_ERROR_FLAGS;
+                DATA_READ_DATA(&systemState);
+                systemState.bmsCanState = BMS_CAN_STATE_STANDBY;
+                DATA_WRITE_DATA(&systemState);
                 break;
             } else if (bms_state.substate == BMS_CHECK_ERROR_FLAGS) {
                 if (BMS_IsBatterySystemStateOkay() == STD_NOT_OK) {
@@ -1085,6 +1090,9 @@ void BMS_Trigger(void) {
 
             if (bms_state.substate == BMS_ENTRY) {
                 BAL_SetStateRequest(BAL_STATE_NO_BALANCING_REQUEST);
+                DATA_READ_DATA(&systemState);
+                systemState.bmsCanState = BMS_CAN_STATE_PRECHARGE;
+                DATA_WRITE_DATA(&systemState);
                 /* Cellsius: Only one string with index 0 */
                 stringNumber                  = BS_STRING0;
                 bms_state.prechargeTryCounter = 0u;
@@ -1295,6 +1303,9 @@ void BMS_Trigger(void) {
 
             if (bms_state.substate == BMS_ENTRY) {
                 BAL_SetStateRequest(BAL_STATE_NO_BALANCING_REQUEST);
+                DATA_READ_DATA(&systemState);
+                systemState.bmsCanState = BMS_CAN_STATE_DIRECTCONNECT;
+                DATA_WRITE_DATA(&systemState);
                 /* Cellsius: Only one string with index 0 */
                 stringNumber                = BS_STRING0;
                 bms_state.firstClosedString = stringNumber;
@@ -1333,8 +1344,14 @@ void BMS_Trigger(void) {
                         bms_state.stringCloseTimeout = BMS_STRING_CLOSE_TIMEOUT;
                         bms_state.timer              = BMS_WAIT_TIME_AFTER_CLOSING_STRING_CONTACTOR;
                         bms_state.substate           = BMS_DIRECTCONNECT_CHECK_ERROR_FLAGS;
-                    } else {
-                        /* Voltagespread too high. Maybe add timeout to go to error */
+                    }
+                    /* Voltage spread too high. Check for errors. Failing CheckDirectConnect also triggers error state */
+                    else if (BMS_IsBatterySystemStateOkay() == STD_NOT_OK) {
+                        bms_state.timer     = BMS_STATEMACH_SHORTTIME;
+                        bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
+                        bms_state.nextState = BMS_STATEMACH_ERROR;
+                        bms_state.substate  = BMS_ENTRY;
+                        break;
                     }
                 } else if (bms_state.stringCloseTimeout == 0u) {
                     /* String takes too long to close */
@@ -1421,6 +1438,9 @@ void BMS_Trigger(void) {
 #if BS_NORMAL_PERIODIC_OPEN_WIRE_CHECK == TRUE
                 nextOpenWireCheck = timestamp + BS_NORMAL_OPEN_WIRE_PERIOD_ms;
 #endif /* BS_NORMAL_PERIODIC_OPEN_WIRE_CHECK == TRUE */
+                DATA_READ_DATA(&systemState);
+                systemState.bmsCanState = BMS_CAN_STATE_NORMAL;
+                DATA_WRITE_DATA(&systemState);
                 bms_state.timer    = BMS_STATEMACH_SHORTTIME;
                 bms_state.substate = BMS_CHECK_ERROR_FLAGS;
                 break;
@@ -1467,6 +1487,10 @@ void BMS_Trigger(void) {
             BMS_SAVE_LAST_STATES();
 
             if (bms_state.substate == BMS_ENTRY) {
+                /* Set BMS System state to error */
+                DATA_READ_DATA(&systemState);
+                systemState.bmsCanState = BMS_CAN_STATE_ERROR;
+                DATA_WRITE_DATA(&systemState);
                 /* Deactivate balancing */
                 BAL_SetStateRequest(BAL_STATE_NO_BALANCING_REQUEST);
                 /* Change LED toggle frequency to indicate an error */
@@ -1535,6 +1559,10 @@ void BMS_Trigger(void) {
 
             if (bms_state.substate == BMS_ENTRY) {
                 BAL_SetStateRequest(BAL_STATE_NO_BALANCING_REQUEST);
+                DATA_READ_DATA(&systemState);
+                systemState.bmsCanState = BMS_CAN_STATE_CHARGE;
+                DATA_WRITE_DATA(&systemState);
+
                 break;
             }
 

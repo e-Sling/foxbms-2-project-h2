@@ -91,6 +91,22 @@ typedef enum {
     BMS_STATEMACH_ERROR,
 } BMS_STATEMACH_e;
 
+/** CAN states of the BMS state machine */
+typedef enum {
+    /* Init-Sequence */
+    BMS_CAN_STATE_UNINITIALIZED,
+    BMS_CAN_STATE_INITIALIZATION,
+    BMS_CAN_STATE_INITIALIZED,
+    BMS_CAN_STATE_IDLE,
+    BMS_CAN_STATE_OPEN_CONTACTORS,
+    BMS_CAN_STATE_STANDBY,
+    BMS_CAN_STATE_PRECHARGE,
+    BMS_CAN_STATE_DIRECTCONNECT,
+    BMS_CAN_STATE_NORMAL,
+    BMS_CAN_STATE_CHARGE,
+    BMS_CAN_STATE_ERROR,
+} BMS_CAN_STATE_e;
+
 /** Substates of the BMS state machine */
 typedef enum {
     BMS_ENTRY,                /*!< Substate entry state */

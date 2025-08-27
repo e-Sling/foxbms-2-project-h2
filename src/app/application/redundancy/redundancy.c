@@ -594,7 +594,7 @@ static void MRC_ValidateStringVoltageMeasurement(
             pTableCurrentSensor->timestampHighVoltage[s][1u],
             pTableCurrentSensor->previousTimestampHighVoltage[s][1u],
             MRC_CURRENT_SENSOR_MEASUREMENT_TIMEOUT_ms);
-        DIAG_CheckEvent(updatedMeasurement, DIAG_ID_CURRENT_SENSOR_V1_MEASUREMENT_TIMEOUT, DIAG_STRING, s);
+        DIAG_CheckEvent(updatedMeasurement, DIAG_ID_CURRENT_SENSOR_V2_MEASUREMENT_TIMEOUT, DIAG_STRING, s);
 
         /* Perform plausibility check if AFE and new current sensor measurement is valid */
         if ((updatedMeasurement == STD_OK) && (pTableCurrentSensor->invalidHighVoltageMeasurement[s][1u] == 0u) &&
@@ -699,7 +699,7 @@ static void MRC_ValidateHighVoltageBusMeasurement(DATA_BLOCK_CURRENT_SENSOR_s *p
             pTableCurrentSensor->timestampHighVoltage[s][0u],
             pTableCurrentSensor->previousTimestampHighVoltage[s][0u],
             MRC_CURRENT_SENSOR_MEASUREMENT_TIMEOUT_ms);
-        DIAG_CheckEvent(updatedMeasurement, DIAG_ID_CURRENT_SENSOR_V3_MEASUREMENT_TIMEOUT, DIAG_STRING, s);
+        DIAG_CheckEvent(updatedMeasurement, DIAG_ID_CURRENT_SENSOR_V1_MEASUREMENT_TIMEOUT, DIAG_STRING, s);
 
         const bool stringClosed      = BMS_IsStringClosed(s);
         const bool stringPrecharging = BMS_IsStringPrecharging(s);

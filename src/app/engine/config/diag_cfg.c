@@ -92,7 +92,7 @@
 
 /*========== Macros and Definitions =========================================*/
 /** value of #DIAG_ID_MAX (as a define for the pre-processor) */
-#define DIAG_ID_MAX_FOR_INIT (86u)
+#define DIAG_ID_MAX_FOR_INIT (87u)
 
 FAS_STATIC_ASSERT(DIAG_ID_MAX_FOR_INIT == (uint16_t)DIAG_ID_MAX, "Both values need to be identical.");
 
@@ -190,6 +190,7 @@ DIAG_ID_CFG_s diag_diagnosisIdConfiguration[] = {
     {DIAG_ID_CURRENT_MEASUREMENT_ERROR,                         DIAG_SEN_EVENT_1,   DIAG_FATAL_ERROR,   DIAG_DELAY_100ms,   DIAG_CAN_SENSOR_PRESENT,    DIAG_ErrorCurrentMeasurement},
     {DIAG_ID_PRECHARGE_ABORT_REASON_VOLTAGE,                    DIAG_SEN_EVENT_1,   DIAG_WARNING,       DIAG_DELAY_DISCARD, DIAG_EVALUATION_ENABLED,    DIAG_PrechargeProcess},
     {DIAG_ID_PRECHARGE_ABORT_REASON_CURRENT,                    DIAG_SEN_EVENT_1,   DIAG_WARNING,       DIAG_DELAY_DISCARD, DIAG_EVALUATION_ENABLED,    DIAG_PrechargeProcess},
+    {DIAG_ID_DIRECTCONNECT_ABORT,                               DIAG_SEN_EVENT_10,   DIAG_FATAL_ERROR,   DIAG_DELAY_100ms,   DIAG_EVALUATION_ENABLED,    DIAG_PrechargeProcess},
     {DIAG_ID_CURRENT_SENSOR_V1_MEASUREMENT_TIMEOUT,             DIAG_SEN_EVENT_1,   DIAG_FATAL_ERROR,   DIAG_DELAY_100ms,   DIAG_CAN_SENSOR_PRESENT,    DIAG_ErrorHighVoltageMeasurement},
     {DIAG_ID_CURRENT_SENSOR_V2_MEASUREMENT_TIMEOUT,             DIAG_SEN_EVENT_1,   DIAG_FATAL_ERROR,   DIAG_DELAY_100ms,   DIAG_CAN_SENSOR_PRESENT,    DIAG_ErrorHighVoltageMeasurement},
     {DIAG_ID_CURRENT_SENSOR_V3_MEASUREMENT_TIMEOUT,             DIAG_SEN_EVENT_1,   DIAG_FATAL_ERROR,   DIAG_DELAY_100ms,   DIAG_CAN_SENSOR_PRESENT,    DIAG_ErrorHighVoltageMeasurement},

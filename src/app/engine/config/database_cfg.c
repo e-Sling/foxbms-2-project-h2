@@ -128,6 +128,9 @@ static DATA_BLOCK_INTERLOCK_FEEDBACK_s data_blockInterlockFeedback = {
 /** data block: sof */
 static DATA_BLOCK_SOF_s data_blockSof = {.header.uniqueId = DATA_BLOCK_ID_SOF};
 
+/** data block: system state */
+static DATA_BLOCK_SYSTEM_STATE_s data_blockSystemState = {.header.uniqueId = DATA_BLOCK_ID_SYSTEM_STATE};
+
 /** data block: maximum safety limit violations */
 static DATA_BLOCK_MSL_FLAG_s data_blockMsl = {.header.uniqueId = DATA_BLOCK_ID_MSL_FLAG};
 
@@ -191,6 +194,7 @@ DATA_BASE_s data_database[] = {
     {(void *)(&data_blockContactorFeedback), sizeof(DATA_BLOCK_CONTACTOR_FEEDBACK_s)},
     {(void *)(&data_blockInterlockFeedback), sizeof(DATA_BLOCK_INTERLOCK_FEEDBACK_s)},
     {(void *)(&data_blockSof), sizeof(DATA_BLOCK_SOF_s)},
+    {(void *)(&data_blockSystemState), sizeof(DATA_BLOCK_SYSTEM_STATE_s)},
     {(void *)(&data_blockMsl), sizeof(DATA_BLOCK_MSL_FLAG_s)},
     {(void *)(&data_blockRsl), sizeof(DATA_BLOCK_RSL_FLAG_s)},
     {(void *)(&data_blockMol), sizeof(DATA_BLOCK_MOL_FLAG_s)},

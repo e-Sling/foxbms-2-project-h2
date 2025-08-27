@@ -95,7 +95,8 @@ extern void DIAG_PrechargeProcess(
     const DIAG_DATABASE_SHIM_s *const kpkDiagShim,
     uint32_t stringNumber) {
     FAS_ASSERT(
-        (diagId == DIAG_ID_PRECHARGE_ABORT_REASON_VOLTAGE) || (diagId == DIAG_ID_PRECHARGE_ABORT_REASON_CURRENT));
+        (diagId == DIAG_ID_PRECHARGE_ABORT_REASON_VOLTAGE) || (diagId == DIAG_ID_PRECHARGE_ABORT_REASON_CURRENT) ||
+        (diagId == DIAG_ID_DIRECTCONNECT_ABORT));
     FAS_ASSERT((event == DIAG_EVENT_OK) || (event == DIAG_EVENT_NOT_OK) || (event == DIAG_EVENT_RESET));
     FAS_ASSERT(kpkDiagShim != NULL_PTR);
     FAS_ASSERT(stringNumber < BS_NR_OF_STRINGS);
@@ -113,6 +114,13 @@ extern void DIAG_PrechargeProcess(
         }
         if (event == DIAG_EVENT_NOT_OK) {
             kpkDiagShim->pTableError->prechargeAbortedDueToCurrent[stringNumber] = true;
+        }
+    } else if (diagId == DIAG_ID_DIRECTCONNECT_ABORT) {
+        if (event == DIAG_EVENT_RESET) {
+            kpkDiagShim->pTableError->directConnectAborted[stringNumber] = false;
+        }
+        if (event == DIAG_EVENT_NOT_OK) {
+            kpkDiagShim->pTableError->directConnectAborted[stringNumber] = true;
         }
     } else {
         /* We should never reach this case */

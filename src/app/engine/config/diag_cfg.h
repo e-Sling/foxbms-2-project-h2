@@ -199,6 +199,7 @@ typedef enum {
                                                                  redundancy0 temperature measurements are missing */
     DIAG_ID_PRECHARGE_ABORT_REASON_VOLTAGE, /*!< precharging aborted due to a too high voltage difference */
     DIAG_ID_PRECHARGE_ABORT_REASON_CURRENT, /*!< precharging aborted because measured current was too high */
+    DIAG_ID_DIRECTCONNECT_ABORT,            /*!< Cellsius: voltage spread too high for direct connect */
     DIAG_ID_CURRENT_MEASUREMENT_TIMEOUT,    /*!< the redundancy module has detected that the current measurement on a
                                                string    is not updated */
     DIAG_ID_CURRENT_MEASUREMENT_ERROR, /*!< the redundancy module has detected a current measurement to be invalid */

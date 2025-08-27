@@ -365,6 +365,7 @@ typedef struct {
                                                 insulation fault detected */
     bool prechargeAbortedDueToVoltage[BS_NR_OF_STRINGS];     /*!< false -> no error, true -> error */
     bool prechargeAbortedDueToCurrent[BS_NR_OF_STRINGS];     /*!< false -> no error, true -> error */
+    bool directConnectAborted[BS_NR_OF_STRINGS];             /*!< false -> no error, true -> error */
     bool deepDischargeDetectedError[BS_NR_OF_STRINGS];       /*!< false -> no error, true -> error */
     bool currentOnOpenStringDetectedError[BS_NR_OF_STRINGS]; /*!< false -> no error, true -> error */
     bool mcuDieTemperatureViolationError;                    /*!< false -> no error, true -> error */
@@ -425,6 +426,15 @@ typedef struct {
     float_t recommendedPeakChargeCurrent_mA[BS_NR_OF_STRINGS];    /*!< recommended peak operating charge current */
     float_t recommendedPeakDischargeCurrent_mA[BS_NR_OF_STRINGS]; /*!< recommended peak operating discharge current */
 } DATA_BLOCK_SOF_s;
+
+/** data block struct of system state */
+typedef struct {
+    /* This struct needs to be at the beginning of every database entry. During
+     * the initialization of a database struct, uniqueId must be set to the
+     * respective database entry representation in enum DATA_BLOCK_ID_e. */
+    DATA_BLOCK_HEADER_s header; /*!< Data block header */
+    int32_t bmsCanState;        /*!< system state for CAN messages (e.g., standby, normal) */
+} DATA_BLOCK_SYSTEM_STATE_s;
 
 /** data block struct of the maximum safe limits */
 typedef struct {
