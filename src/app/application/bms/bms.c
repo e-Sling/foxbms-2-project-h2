@@ -1315,7 +1315,7 @@ void BMS_Trigger(void) {
                         CONT_CloseContactor(bms_state.firstClosedString, CONT_PLUS) == STD_OK) {
                         bms_state.stringCloseTimeout = BMS_STRING_CLOSE_TIMEOUT;
                         bms_state.timer              = BMS_WAIT_TIME_AFTER_CLOSING_STRING_CONTACTOR;
-                        bms_state.substate           = BMS_PRECHARGE_CLOSE_PRECHARGE;
+                        bms_state.substate           = BMS_DIRECTCONNECT_CHECK_VOLTAGES;
                     } else {
                         /* Invalid contactor requested */
                         bms_state.timer     = BMS_STATEMACH_SHORTTIME;
