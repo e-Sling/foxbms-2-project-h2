@@ -408,12 +408,10 @@ static STD_RETURN_TYPE_e BMS_CheckDirectConnect(uint8_t stringNumber, const DATA
         /* Check if voltages are within acceptable range */
         if (cont_VoltDiff_mV < BMS_DIRECT_CONNECT_VOLTAGE_THRESHOLD_mV) {
             retVal = STD_OK;
-            (void)DIAG_Handler(DIAG_ID_PRECHARGE_ABORT_REASON_VOLTAGE, DIAG_EVENT_OK, DIAG_STRING, stringNumber);
-            (void)DIAG_Handler(DIAG_ID_PRECHARGE_ABORT_REASON_CURRENT, DIAG_EVENT_OK, DIAG_STRING, stringNumber);
+            (void)DIAG_Handler(DIAG_ID_DIRECTCONNECT_ABORT, DIAG_EVENT_OK, DIAG_STRING, stringNumber);
         } else {
             /* Voltage difference too large */
-            (void)DIAG_Handler(DIAG_ID_PRECHARGE_ABORT_REASON_VOLTAGE, DIAG_EVENT_NOT_OK, DIAG_STRING, stringNumber);
-            (void)DIAG_Handler(DIAG_ID_PRECHARGE_ABORT_REASON_CURRENT, DIAG_EVENT_OK, DIAG_STRING, stringNumber);
+            (void)DIAG_Handler(DIAG_ID_DIRECTCONNECT_ABORT, DIAG_EVENT_NOT_OK, DIAG_STRING, stringNumber);
         }
     }
     return retVal;
@@ -1063,11 +1061,13 @@ void BMS_Trigger(void) {
                         bms_state.state     = BMS_STATEMACH_PRECHARGE;
                         bms_state.substate  = BMS_ENTRY;
                     }
-                } else if (false && BMS_CheckCanRequests() == BMS_REQ_ID_CHARGE) {
-                    bms_state.timer    = BMS_STATEMACH_SHORTTIME;
-                    bms_state.state    = BMS_STATEMACH_CHARGE;
-                    bms_state.substate = BMS_ENTRY;
-                    break;
+                    /* TODO: Check for Charge request from DHVC */
+                    else if (false && BMS_CheckCanRequests() == BMS_REQ_ID_CHARGE) {
+                        bms_state.timer    = BMS_STATEMACH_SHORTTIME;
+                        bms_state.state    = BMS_STATEMACH_CHARGE;
+                        bms_state.substate = BMS_ENTRY;
+                        break;
+                    }
                 } else {
 #if BS_STANDBY_PERIODIC_OPEN_WIRE_CHECK == TRUE
                     if (nextOpenWireCheck <= timestamp) {
@@ -1523,7 +1523,7 @@ void BMS_Trigger(void) {
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
                 /* Cellsius: Go to standby with Fault Disarm or Bat_On rising edge */
                 if ((bms_state.faultDisarmOnEntry == false) && (bms_state.faultDisarmFlag == true) ||
-                    (bms_state.batOnSignalPrev == false && bms_state.batOnSignal == true) /* || inverter_override */) {
+                    (bms_state.batOnSignalPrev == false && bms_state.batOnSignal == true)) {
                     /* Activate balancing again */
                     BAL_SetStateRequest(BAL_STATE_ALLOW_BALANCING_REQUEST);
                     /* Set LED frequency to normal operation as we leave error

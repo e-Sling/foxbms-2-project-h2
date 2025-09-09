@@ -13,17 +13,6 @@
 #include <stdint.h>
 
 /*========== Macros and Definitions =========================================*/
-/**
- * @brief   CAN state request update time
- * @details When a new CAN state request is received, it leads to an update
- *          of #DATA_BLOCK_STATE_REQUEST_s::stateRequestViaCan if one of the
- *          following conditions is met:
- *
- *             - The new request is different than the old request.
- *             - The old request is older than the time span set in this define.
- */
-#define CANRX_CAN_REQUEST_UPDATE_TIME_ms (3000u)
-
 /** @{
  * defines for the state request signal data
  */

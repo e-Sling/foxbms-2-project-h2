@@ -368,7 +368,6 @@ typedef struct {
     bool directConnectAborted[BS_NR_OF_STRINGS];             /*!< false -> no error, true -> error */
     bool deepDischargeDetectedError[BS_NR_OF_STRINGS];       /*!< false -> no error, true -> error */
     bool currentOnOpenStringDetectedError[BS_NR_OF_STRINGS]; /*!< false -> no error, true -> error */
-    bool mcuDieTemperatureViolationError;                    /*!< false -> no error, true -> error */
     bool mcuSbcFinError;                    /*!< false -> no error, true -> error: short-circuit to RSTB */
     bool mcuSbcRstbError;                   /*!< false -> no error, true -> error: RSTB not working */
     bool pexI2cCommunicationError;          /*!< the I2C port expander does not work as expected */
