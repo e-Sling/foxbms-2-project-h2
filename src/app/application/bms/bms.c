@@ -1459,7 +1459,7 @@ void BMS_Trigger(void) {
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
                 /* Cellsius: Check if Bat_On was lost */
                 if (!bms_state.batOnSignal) {
-                    bms_state.timer     = BMS_STATEMACH_SHORTTIME;
+                    bms_state.timer     = BMS_WAIT_TIME_BAT_OFF;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;
                     bms_state.substate  = BMS_ENTRY;

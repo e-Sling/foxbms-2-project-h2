@@ -120,6 +120,9 @@
 /** Time in #BMS_Trigger() calls to wait after opening any string minus or string plus contactor */
 #define BMS_WAIT_TIME_AFTER_OPENING_STRING_CONTACTOR (10u)
 
+/* Time in #BMS_Trigger() calls to wait before opening contactor after detecting Bat Off in Running state */
+#define BMS_WAIT_TIME_BAT_OFF (50u)
+
 /**
  * @brief   Timeout in #BMS_Trigger() calls when closing a string after which
  *          the state machines goes to error if the string still has not closed
