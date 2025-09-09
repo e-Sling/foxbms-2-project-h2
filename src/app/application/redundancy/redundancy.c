@@ -609,7 +609,12 @@ static void MRC_ValidateStringVoltageMeasurement(
             if (voltagePlausible == STD_OK) {
                 mrc_tablePackValues.invalidStringVoltage[s] = 0u;
             } else {
-                mrc_tablePackValues.invalidStringVoltage[s] = 1u;
+                if (BMS_IsStringClosed(s)) {
+                    mrc_tablePackValues.invalidStringVoltage[s] = 1u;
+                } else {
+                    /* Cellsius: keep it valid if string is not closed */
+                    mrc_tablePackValues.invalidStringVoltage[s] = 0u;
+                }
             }
         } else {
             /* Plausibility check cannot be performed if we do not have valid
