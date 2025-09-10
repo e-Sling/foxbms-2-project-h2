@@ -1163,8 +1163,8 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                /* Cellsius: Check if Bat_On or Inverter command was lost */
-                if (bms_state.batOnSignal == false || bms_state.prechargeAllowedFlag == false) {
+                /* Cellsius: Check if Bat_On was lost */
+                if (bms_state.batOnSignal == false) {
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;

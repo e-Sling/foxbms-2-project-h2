@@ -601,18 +601,19 @@ static void MRC_ValidateStringVoltageMeasurement(
             (pTableCellVoltage->nrValidCellVoltages[s] == BS_NR_OF_CELL_BLOCKS_PER_STRING)) {
             STD_RETURN_TYPE_e voltagePlausible = PL_CheckStringVoltage(
                 pTableCellVoltage->stringVoltage_mV[s], pTableCurrentSensor->highVoltage_mV[s][1u]);
-            (void)DIAG_CheckEvent(voltagePlausible, DIAG_ID_PLAUSIBILITY_PACK_VOLTAGE, DIAG_STRING, s);
 
             /* Use AFE measurement when both are valid */
             mrc_tablePackValues.stringVoltage_mV[s] = pTableCellVoltage->stringVoltage_mV[s];
 
             if (voltagePlausible == STD_OK) {
                 mrc_tablePackValues.invalidStringVoltage[s] = 0u;
+                (void)DIAG_CheckEvent(voltagePlausible, DIAG_ID_PLAUSIBILITY_PACK_VOLTAGE, DIAG_STRING, s);
             } else {
+                /* Cellsius: Only declare Pack Voltage invalid if the string is already closed */
                 if (BMS_IsStringClosed(s)) {
                     mrc_tablePackValues.invalidStringVoltage[s] = 1u;
+                    (void)DIAG_CheckEvent(voltagePlausible, DIAG_ID_PLAUSIBILITY_PACK_VOLTAGE, DIAG_STRING, s);
                 } else {
-                    /* Cellsius: keep it valid if string is not closed */
                     mrc_tablePackValues.invalidStringVoltage[s] = 0u;
                 }
             }
@@ -652,43 +653,13 @@ static void MRC_ValidateStringVoltageMeasurement(
 }
 
 static void MRC_ValidateBatteryVoltageMeasurement(void) {
-    int64_t sumOfStringValues_mV       = 0;
-    int8_t numberOfValidStringVoltages = 0;
-    uint8_t numberOfConnectedStrings   = BMS_GetNumberOfConnectedStrings();
+    /* Cellsius: Only one string used. Always show battery voltage, even if the string is invalid. */
 
-    if (0u != numberOfConnectedStrings) {
-        /* Iterate over all strings to see which strings are connected */
-        for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
-            bool isStringConnected = BMS_IsStringClosed(s);
-            if ((mrc_tablePackValues.invalidStringVoltage[s] == 0u) && (isStringConnected == true)) {
-                /* AXIVION Disable Style MisraC2012Directive-4.1: Values start with 0, iteration is less than UINT8_MAX;
-                 * overflow impossible */
-                sumOfStringValues_mV += mrc_tablePackValues.stringVoltage_mV[s];
-                numberOfValidStringVoltages++;
-                /* AXIVION Enable Style MisraC2012Directive-4.1: */
-            }
-        }
-    } else {
-        /* Take average of all strings if no strings are connected */
-        for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
-            if (mrc_tablePackValues.invalidStringVoltage[s] == 0u) {
-                /* AXIVION Disable Style MisraC2012Directive-4.1: Values start with 0, iteration is less than UINT8_MAX;
-                 * overflow impossible */
-                sumOfStringValues_mV += mrc_tablePackValues.stringVoltage_mV[s];
-                numberOfValidStringVoltages++;
-                /* AXIVION Enable Style MisraC2012Directive-4.1: */
-            }
-        }
-    }
+    mrc_tablePackValues.batteryVoltage_mV = mrc_tablePackValues.stringVoltage_mV[BS_STRING0];
 
-    /* Only calculate average if at least one string voltage is valid */
-    if (0 != numberOfValidStringVoltages) {
-        /* AXIVION Next Codeline Style MisraC2012Directive-4.1: truncation impossible;
-           we sum INT32 values x times and divide by x, resulting in INT32 */
-        mrc_tablePackValues.batteryVoltage_mV     = (int32_t)(sumOfStringValues_mV / numberOfValidStringVoltages);
+    if (mrc_tablePackValues.invalidStringVoltage[BS_STRING0] == 0u) {
         mrc_tablePackValues.invalidBatteryVoltage = 0u;
     } else {
-        mrc_tablePackValues.batteryVoltage_mV     = INT32_MAX;
         mrc_tablePackValues.invalidBatteryVoltage = 1u;
     }
 }
