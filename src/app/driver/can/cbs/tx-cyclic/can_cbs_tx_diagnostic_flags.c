@@ -235,7 +235,7 @@ static void CANTX_BuildDiagnosticFlagsMessage(const CAN_SHIM_s *const kpkCanShim
         CANTX_BMS_STATE_ENDIANNESS);
 
     /* Error: Deep discharge */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->deepDischargeDetectedError);
+    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->deepDischargeDetectedError[BS_STRING0]);
     CAN_TxSetMessageDataWithSignalData(
         pMessageData, CANTX_DIAG_DEEP_DISCHARGE_DETECTED, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
 
@@ -352,12 +352,12 @@ static void CANTX_BuildDiagnosticFlagsMessage(const CAN_SHIM_s *const kpkCanShim
         pMessageData, CANTX_DIAG_CAN_TX_QUEUE_FULL, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
 
     /* Error: Current sensor responding */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->currentSensorNotRespondingError);
+    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->currentSensorNotRespondingError[BS_STRING0]);
     CAN_TxSetMessageDataWithSignalData(
         pMessageData, CANTX_DIAG_CURRENT_SENSOR_RESPONDING, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
 
     /* Error: Current sensor V1 measurement timeout */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->currentSensorVoltage1TimeoutError);
+    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->currentSensorVoltage1TimeoutError[BS_STRING0]);
     CAN_TxSetMessageDataWithSignalData(
         pMessageData,
         CANTX_DIAG_CURRENT_SENSOR_V1_MEASUREMENT_TIMEOUT,
@@ -366,7 +366,7 @@ static void CANTX_BuildDiagnosticFlagsMessage(const CAN_SHIM_s *const kpkCanShim
         CANTX_BMS_STATE_ENDIANNESS);
 
     /* Error: Current sensor V2 measurement timeout */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->currentSensorVoltage2TimeoutError);
+    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->currentSensorVoltage2TimeoutError[BS_STRING0]);
     CAN_TxSetMessageDataWithSignalData(
         pMessageData,
         CANTX_DIAG_CURRENT_SENSOR_V2_MEASUREMENT_TIMEOUT,
@@ -375,7 +375,7 @@ static void CANTX_BuildDiagnosticFlagsMessage(const CAN_SHIM_s *const kpkCanShim
         CANTX_BMS_STATE_ENDIANNESS);
 
     /* Error: Current sensor V3 measurement timeout */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->currentSensorVoltage3TimeoutError);
+    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->currentSensorVoltage3TimeoutError[BS_STRING0]);
     CAN_TxSetMessageDataWithSignalData(
         pMessageData,
         CANTX_DIAG_CURRENT_SENSOR_V3_MEASUREMENT_TIMEOUT,
@@ -384,7 +384,7 @@ static void CANTX_BuildDiagnosticFlagsMessage(const CAN_SHIM_s *const kpkCanShim
         CANTX_BMS_STATE_ENDIANNESS);
 
     /* Error: Current sensor power measurement timeout */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->currentSensorPowerTimeoutError);
+    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->currentSensorPowerTimeoutError[BS_STRING0]);
     CAN_TxSetMessageDataWithSignalData(
         pMessageData,
         CANTX_DIAG_CURRENT_SENSOR_POWER_MEASUREMENT_TIMEOUT,
@@ -393,7 +393,8 @@ static void CANTX_BuildDiagnosticFlagsMessage(const CAN_SHIM_s *const kpkCanShim
         CANTX_BMS_STATE_ENDIANNESS);
 
     /* Error: Current sensor CC responding */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->currentSensorCoulombCounterTimeoutError);
+    data =
+        CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->currentSensorCoulombCounterTimeoutError[BS_STRING0]);
     CAN_TxSetMessageDataWithSignalData(
         pMessageData,
         CANTX_DIAG_CURRENT_SENSOR_CC_RESPONDING,
@@ -402,7 +403,8 @@ static void CANTX_BuildDiagnosticFlagsMessage(const CAN_SHIM_s *const kpkCanShim
         CANTX_BMS_STATE_ENDIANNESS);
 
     /* Error: Current sensor EC responding */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->currentSensorEnergyCounterTimeoutError);
+    data =
+        CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->currentSensorEnergyCounterTimeoutError[BS_STRING0]);
     CAN_TxSetMessageDataWithSignalData(
         pMessageData,
         CANTX_DIAG_CURRENT_SENSOR_EC_RESPONDING,
@@ -549,17 +551,17 @@ static void CANTX_BuildDiagnosticFlagsMessage(const CAN_SHIM_s *const kpkCanShim
         CANTX_BMS_STATE_ENDIANNESS);
 
     /* Error: Current Measurement Timeout */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->currentMeasurementTimeoutError);
+    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->currentMeasurementTimeoutError[BS_STRING0]);
     CAN_TxSetMessageDataWithSignalData(
         pMessageData, CANTX_DIAG_CURRENT_MEASUREMENT_TIMEOUT, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
 
     /* Error: Current Measurement Error */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->currentMeasurementInvalidError);
+    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->currentMeasurementInvalidError[BS_STRING0]);
     CAN_TxSetMessageDataWithSignalData(
         pMessageData, CANTX_DIAG_CURRENT_MEASUREMENT_ERROR, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
 
     /* Error: Power Measurement Error */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->powerMeasurementInvalidError);
+    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->powerMeasurementInvalidError[BS_STRING0]);
     CAN_TxSetMessageDataWithSignalData(
         pMessageData, CANTX_DIAG_POWER_MEASUREMENT_ERROR, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
 }

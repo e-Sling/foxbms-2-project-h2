@@ -98,7 +98,7 @@
  * current is fully applied, i.e., below this temperature battery pack should
  * not deliver any current in discharge direction.
  */
-#define SOF_TEMPERATURE_LOW_LIMIT_DISCHARGE_ddegC (BC_TEMPERATURE_MIN_DISCHARGE_MSL_ddegC)
+#define SOF_TEMPERATURE_LOW_LIMIT_DISCHARGE_ddegC (BC_TEMPERATURE_MIN_DISCHARGE_RSL_ddegC)
 
 /**
  * Cold temperature in deci &deg;C where the derating of maximum charge current
@@ -112,7 +112,7 @@
  * is fully applied, i.e., below this temperature battery pack should not
  * deliver any current in charge direction.
  */
-#define SOF_TEMPERATURE_LOW_LIMIT_CHARGE_ddegC (BC_TEMPERATURE_MIN_CHARGE_MSL_ddegC)
+#define SOF_TEMPERATURE_LOW_LIMIT_CHARGE_ddegC (BC_TEMPERATURE_MIN_CHARGE_RSL_ddegC)
 
 /**
  * Hot temperature in deci &deg;C where the derating of maximum discharge
@@ -126,7 +126,7 @@
  * current is fully applied, i.e., above this temperature battery pack should
  * not deliver any current in discharge direction.
  */
-#define SOF_TEMPERATURE_HIGH_LIMIT_DISCHARGE_ddegC (BC_TEMPERATURE_MAX_DISCHARGE_MSL_ddegC)
+#define SOF_TEMPERATURE_HIGH_LIMIT_DISCHARGE_ddegC (BC_TEMPERATURE_MAX_DISCHARGE_RSL_ddegC)
 
 /**
  * Hot temperature in deci &deg;C where the derating of maximum charge current
@@ -140,7 +140,7 @@
  * is fully applied, i.e., above this temperature battery pack should not
  * deliver any current in charge direction.
  */
-#define SOF_TEMPERATURE_HIGH_LIMIT_CHARGE_ddegC (BC_TEMPERATURE_MAX_CHARGE_MSL_ddegC)
+#define SOF_TEMPERATURE_HIGH_LIMIT_CHARGE_ddegC (BC_TEMPERATURE_MAX_CHARGE_RSL_ddegC)
 
 /**
  * Above this voltage value battery pack should not be exposed to full current in charge direction.

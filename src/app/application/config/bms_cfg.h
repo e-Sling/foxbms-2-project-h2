@@ -158,10 +158,10 @@
 #define BMS_PRECHARGE_TRIES (3u)
 
 /* Precharge threshold limit on voltage (in mV) */
-#define BMS_PRECHARGE_VOLTAGE_THRESHOLD_mV (1000LL)
+#define BMS_PRECHARGE_VOLTAGE_THRESHOLD_mV (10000LL)
 
 /* Precharge threshold limit on current (in mA) */
-#define BMS_PRECHARGE_CURRENT_THRESHOLD_mA (50)
+#define BMS_PRECHARGE_CURRENT_THRESHOLD_mA (200)
 
 /* Direct Connect threshold limit on voltage (in mV) */
 #define BMS_DIRECT_CONNECT_VOLTAGE_THRESHOLD_mV (5000LL)

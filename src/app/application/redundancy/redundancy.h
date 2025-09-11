@@ -87,7 +87,7 @@
  * it will validate the measurement values it has up to
  * this point if possible.
  */
-#define MRC_AFE_MEASUREMENT_PERIOD_TIMEOUT_ms (500u) /* Leon: why does it take this long? */
+#define MRC_AFE_MEASUREMENT_PERIOD_TIMEOUT_ms (800u) /* Leon: 500 was too low */
 
 /**
  * Maximum time between current sensor high voltage, current
