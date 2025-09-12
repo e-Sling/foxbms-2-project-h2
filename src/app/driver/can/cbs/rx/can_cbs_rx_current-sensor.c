@@ -402,7 +402,8 @@ static void CANRX_SetEnergyCounting(const CAN_SHIM_s *const kpkCanShim, uint8_t 
     FAS_ASSERT(kpkCanShim != NULL_PTR);
     FAS_ASSERT(stringNumber < BS_NR_OF_STRINGS);
     /* AXIVION Routine Generic-MissingParameterAssert: signalData: parameter accepts whole range */
-    kpkCanShim->pTableCurrentSensor->energyCounter_Wh[stringNumber] = signalData;
+    /* Cellsius: Invert sign -> positive energy */
+    kpkCanShim->pTableCurrentSensor->energyCounter_Wh[stringNumber] = -signalData;
     kpkCanShim->pTableCurrentSensor->previousTimestampEnergyCounting[stringNumber] =
         kpkCanShim->pTableCurrentSensor->timestampEnergyCounting[stringNumber];
     kpkCanShim->pTableCurrentSensor->timestampEnergyCounting[stringNumber] = OS_GetTickCount();
