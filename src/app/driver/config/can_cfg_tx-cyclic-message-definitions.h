@@ -196,7 +196,7 @@
  *  - Period and phase in ms
  *  - Endianness
  *  - data length @{*/
-#define CANTX_DIAGNOSTIC_ID         (0x523u) /* Leon: change to 520 when free in yaml */
+#define CANTX_DIAGNOSTIC_ID         (0x523u)
 #define CANTX_DIAGNOSTIC_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
 #define CANTX_DIAGNOSTIC_PERIOD_ms  (100u)
 #define CANTX_DIAGNOSTIC_PHASE_ms   (80u)

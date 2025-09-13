@@ -372,6 +372,32 @@ extern uint8_t CAN_ConvertBooleanToInteger(bool input) {
     return returnValue;
 }
 
+extern int8_t CAN_ConvertFlagstoErrorLevel(
+    bool spread,
+    bool error_lower,
+    bool warning_lower,
+    bool info_lower,
+    bool info_upper,
+    bool warning_upper,
+    bool error_upper) {
+    if (spread)
+        return -4;
+    else if (error_upper)
+        return 3;
+    else if (error_lower)
+        return -3;
+    else if (warning_upper)
+        return 2;
+    else if (warning_lower)
+        return -2;
+    else if (info_upper)
+        return 1;
+    else if (info_lower)
+        return -1;
+    else
+        return 0;
+}
+
 /* Initial value variable, poly: 0x2F, xor value: 0xFF */
 extern uint8_t Compute_CRC8H2F(const uint8_t *Crc_DataPtr, uint32_t Crc_Length, uint8_t Crc_StartValue8H2F) {
     uint8_t crc = Crc_StartValue8H2F;

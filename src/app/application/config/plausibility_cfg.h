@@ -66,7 +66,7 @@
  * \par Range:
  * [0, 10000]
  */
-#define PL_STRING_VOLTAGE_TOLERANCE_mV (2000)
+#define PL_STRING_VOLTAGE_TOLERANCE_mV (3000)
 
 /**
  * @brief   Maximum difference between redundant cell voltage measurement
@@ -92,7 +92,7 @@
  * \par Range:
  * [0, 10000]
  */
-#define PL_CELL_VOLTAGE_SPREAD_TOLERANCE_mV (1000) /*Leon: adapt after testing*/
+#define PL_CELL_VOLTAGE_SPREAD_TOLERANCE_mV (300)
 
 /**
  * @brief   Maximum deviation between a single cell temperature measurement and
@@ -101,7 +101,7 @@
  * \par Range:
  * [0, 100]
  */
-#define PL_CELL_TEMPERATURE_SPREAD_TOLERANCE_dK (300) /*Leon: adapt after testing*/
+#define PL_CELL_TEMPERATURE_SPREAD_TOLERANCE_dK (100)
 
 /*========== Extern Constant and Variable Declarations ======================*/
 

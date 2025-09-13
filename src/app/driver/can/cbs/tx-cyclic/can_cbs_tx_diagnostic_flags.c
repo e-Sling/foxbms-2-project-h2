@@ -70,85 +70,69 @@
 /**
  * Configuration of the signals
  */
-#define CANTX_DIAG_FLAG_LENGTH (CAN_BIT)
+#define CANTX_DIAG_FLAG_LENGTH        (CAN_BIT)
+#define CANTX_DIAG_ERROR_LEVEL_LENGTH (3u)
 
-#define CANTX_DIAG_EMERGENCY_SHUTOFF             (0u)
-#define CANTX_DIAG_SYSTEM_MONITORING             (1u)
-#define CANTX_DIAG_ALERT_FLAG                    (2u)
-#define CANTX_DIAG_FRAM_READ_CRC                 (3u)
-#define CANTX_DIAG_SUPPLY_VOLTAGE_CLAMP_30C_LOST (4u)
-#define CANTX_DIAG_DEEP_DISCHARGE_DETECTED       (5u)
+/* Diagnostics shown on HMI */
 
-/* Voltage diagnostic flags */
-#define CANTX_DIAG_CELL_OVERVOLTAGE_MSL  (6u)
-#define CANTX_DIAG_CELL_OVERVOLTAGE_RSL  (7u)
-#define CANTX_DIAG_CELL_OVERVOLTAGE_MOL  (8u)
-#define CANTX_DIAG_CELL_UNDERVOLTAGE_MSL (9u)
-#define CANTX_DIAG_CELL_UNDERVOLTAGE_RSL (10u)
-#define CANTX_DIAG_CELL_UNDERVOLTAGE_MOL (11u)
+#define CANTX_DIAG_VOLTAGE_ERROR              (0u)
+#define CANTX_DIAG_TEMPERATURE_ERROR          (3u)
+#define CANTX_DIAG_PACK_OVERCURRENT_CHARGE    (6u)
+#define CANTX_DIAG_PACK_OVERCURRENT_DISCHARGE (7u)
+#define CANTX_DIAG_DEEP_DISCHARGE_DETECTED    (8u)
+#define CANTX_DIAG_AFE_SPI                    (9u)
+#define CANTX_DIAG_PLAUSIBILITY_PACK_VOLTAGE  (10u)
+#define CANTX_DIAG_PLAUSIBILITY_CELL_VOLTAGE  (11u)
+#define CANTX_DIAG_PLAUSIBILITY_CELL_TEMP     (12u)
+#define CANTX_DIAG_PRECHARGE_VOLTAGE          (15u)
+#define CANTX_DIAG_PRECHARGE_CURRENT          (16u)
+#define CANTX_DIAG_DIRECTCONNECT_ABORT        (17u)
 
-/* Temperature diagnostic flags */
-#define CANTX_DIAG_TEMP_OVERTEMPERATURE_MSL  (12u)
-#define CANTX_DIAG_TEMP_OVERTEMPERATURE_RSL  (13u)
-#define CANTX_DIAG_TEMP_OVERTEMPERATURE_MOL  (14u)
-#define CANTX_DIAG_TEMP_UNDERTEMPERATURE_MSL (15u)
-#define CANTX_DIAG_TEMP_UNDERTEMPERATURE_RSL (16u)
-#define CANTX_DIAG_TEMP_UNDERTEMPERATURE_MOL (17u)
+/************** Additional diagnostic flags **************/
 
-/* Current diagnostic flags*/
-#define CANTX_DIAG_PACK_OVERCURRENT_CHARGE    (18u)
-#define CANTX_DIAG_PACK_OVERCURRENT_DISCHARGE (19u)
-#define CANTX_DIAG_CURRENT_ON_OPEN_STRING     (20u)
+#define CANTX_DIAG_EMERGENCY_SHUTOFF             (18u)
+#define CANTX_DIAG_SYSTEM_MONITORING             (19u)
+#define CANTX_DIAG_ALERT_FLAG                    (20u)
+#define CANTX_DIAG_FRAM_READ_CRC                 (21u)
+#define CANTX_DIAG_SUPPLY_VOLTAGE_CLAMP_30C_LOST (22u)
+#define CANTX_DIAG_CURRENT_ON_OPEN_STRING        (23u)
 
 /* AFE diagnostic flags */
-#define CANTX_DIAG_AFE_SPI       (21u)
-#define CANTX_DIAG_AFE_CRC       (22u)
-#define CANTX_DIAG_AFE_MUX       (23u)
-#define CANTX_DIAG_AFE_CONFIG    (24u)
-#define CANTX_DIAG_AFE_OPEN_WIRE (25u)
+#define CANTX_DIAG_AFE_CRC       (24u)
+#define CANTX_DIAG_AFE_MUX       (25u)
+#define CANTX_DIAG_AFE_CONFIG    (26u)
+#define CANTX_DIAG_AFE_OPEN_WIRE (27u)
 
 /* CAN diagnostic flags */
-#define CANTX_DIAG_CAN_TIMING        (26u)
-#define CANTX_DIAG_CAN_RX_QUEUE_FULL (27u)
-#define CANTX_DIAG_CAN_TX_QUEUE_FULL (28u)
+#define CANTX_DIAG_CAN_TIMING        (28u)
+#define CANTX_DIAG_CAN_RX_QUEUE_FULL (29u)
+#define CANTX_DIAG_CAN_TX_QUEUE_FULL (30u)
 
 /* Isabellenhuette diagnostic flags */
-#define CANTX_DIAG_CURRENT_SENSOR_RESPONDING                (29u)
-#define CANTX_DIAG_CURRENT_SENSOR_V1_MEASUREMENT_TIMEOUT    (30u)
-#define CANTX_DIAG_CURRENT_SENSOR_V2_MEASUREMENT_TIMEOUT    (31u)
-#define CANTX_DIAG_CURRENT_SENSOR_V3_MEASUREMENT_TIMEOUT    (32u)
-#define CANTX_DIAG_CURRENT_SENSOR_POWER_MEASUREMENT_TIMEOUT (33u)
-#define CANTX_DIAG_CURRENT_SENSOR_CC_RESPONDING             (34u)
-#define CANTX_DIAG_CURRENT_SENSOR_EC_RESPONDING             (35u)
+#define CANTX_DIAG_CURRENT_SENSOR_RESPONDING                (31u)
+#define CANTX_DIAG_CURRENT_SENSOR_V1_MEASUREMENT_TIMEOUT    (32u)
+#define CANTX_DIAG_CURRENT_SENSOR_V2_MEASUREMENT_TIMEOUT    (33u)
+#define CANTX_DIAG_CURRENT_SENSOR_V3_MEASUREMENT_TIMEOUT    (34u)
+#define CANTX_DIAG_CURRENT_SENSOR_POWER_MEASUREMENT_TIMEOUT (35u)
+#define CANTX_DIAG_CURRENT_SENSOR_CC_RESPONDING             (36u)
+#define CANTX_DIAG_CURRENT_SENSOR_EC_RESPONDING             (37u)
 
 /* Contactor diagnostic flags */
-#define CANTX_DIAG_STRING_MINUS_CONTACTOR_FEEDBACK     (36u)
-#define CANTX_DIAG_STRING_PLUS_CONTACTOR_FEEDBACK      (37u)
-#define CANTX_DIAG_STRING_PRECHARGE_CONTACTOR_FEEDBACK (38u)
-#define CANTX_DIAG_STRING_MAIN_CONTACTOR_FEEDBACK      (39u)
-
-/* Plausibility diagnostic flags */
-#define CANTX_DIAG_PLAUSIBILITY_PACK_VOLTAGE        (40u)
-#define CANTX_DIAG_PLAUSIBILITY_CELL_VOLTAGE        (41u)
-#define CANTX_DIAG_PLAUSIBILITY_CELL_VOLTAGE_SPREAD (42u)
-#define CANTX_DIAG_PLAUSIBILITY_CELL_TEMP           (43u)
-#define CANTX_DIAG_PLAUSIBILITY_CELL_TEMP_SPREAD    (44u)
-
-/* Precharge diagnostic flags */
-#define CANTX_DIAG_PRECHARGE_VOLTAGE   (45u)
-#define CANTX_DIAG_PRECHARGE_CURRENT   (46u)
-#define CANTX_DIAG_DIRECTCONNECT_ABORT (47u)
+#define CANTX_DIAG_STRING_MINUS_CONTACTOR_FEEDBACK     (38u)
+#define CANTX_DIAG_STRING_PLUS_CONTACTOR_FEEDBACK      (39u)
+#define CANTX_DIAG_STRING_PRECHARGE_CONTACTOR_FEEDBACK (40u)
+#define CANTX_DIAG_STRING_MAIN_CONTACTOR_FEEDBACK      (41u)
 
 /* Measurement diagnostic flags */
-#define CANTX_DIAG_AFE_CELL_VOLTAGE_MEAS_ERROR                      (48u)
-#define CANTX_DIAG_AFE_CELL_TEMPERATURE_MEAS_ERROR                  (49u)
-#define CANTX_DIAG_BASE_CELL_VOLTAGE_MEASUREMENT_TIMEOUT            (50u)
-#define CANTX_DIAG_REDUNDANCY0_CELL_VOLTAGE_MEASUREMENT_TIMEOUT     (51u)
-#define CANTX_DIAG_BASE_CELL_TEMPERATURE_MEASUREMENT_TIMEOUT        (52u)
-#define CANTX_DIAG_REDUNDANCY0_CELL_TEMPERATURE_MEASUREMENT_TIMEOUT (53u)
-#define CANTX_DIAG_CURRENT_MEASUREMENT_TIMEOUT                      (54u)
-#define CANTX_DIAG_CURRENT_MEASUREMENT_ERROR                        (55u)
-#define CANTX_DIAG_POWER_MEASUREMENT_ERROR                          (56u)
+#define CANTX_DIAG_AFE_CELL_VOLTAGE_MEAS_ERROR                      (42u)
+#define CANTX_DIAG_AFE_CELL_TEMPERATURE_MEAS_ERROR                  (43u)
+#define CANTX_DIAG_BASE_CELL_VOLTAGE_MEASUREMENT_TIMEOUT            (44u)
+#define CANTX_DIAG_REDUNDANCY0_CELL_VOLTAGE_MEASUREMENT_TIMEOUT     (45u)
+#define CANTX_DIAG_BASE_CELL_TEMPERATURE_MEASUREMENT_TIMEOUT        (46u)
+#define CANTX_DIAG_REDUNDANCY0_CELL_TEMPERATURE_MEASUREMENT_TIMEOUT (47u)
+#define CANTX_DIAG_CURRENT_MEASUREMENT_TIMEOUT                      (48u)
+#define CANTX_DIAG_CURRENT_MEASUREMENT_ERROR                        (49u)
+#define CANTX_DIAG_POWER_MEASUREMENT_ERROR                          (50u)
 
 /*========== Static Constant and Variable Definitions =======================*/
 
@@ -190,8 +174,38 @@ static void CANTX_BuildDiagnosticFlagsMessage(const CAN_SHIM_s *const kpkCanShim
     FAS_ASSERT(kpkCanShim != NULL_PTR);
     FAS_ASSERT(pMessageData != NULL_PTR);
 
+    /* Voltage ErrorLevel */
+    uint64_t data = (uint64_t)CAN_ConvertFlagstoErrorLevel(
+        kpkCanShim->pTableErrorState->plausibilityCheckCellVoltageSpreadError[BS_STRING0],
+        kpkCanShim->pTableMsl->underVoltage[BS_STRING0],
+        kpkCanShim->pTableRsl->underVoltage[BS_STRING0],
+        kpkCanShim->pTableMol->underVoltage[BS_STRING0],
+        kpkCanShim->pTableMol->overVoltage[BS_STRING0],
+        kpkCanShim->pTableRsl->overVoltage[BS_STRING0],
+        kpkCanShim->pTableMsl->overVoltage[BS_STRING0]);
+    CAN_TxSetMessageDataWithSignalData(
+        pMessageData, CANTX_DIAG_VOLTAGE_ERROR, CANTX_DIAG_ERROR_LEVEL_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
+
+    /* Temperature ErrorLevel */
+    data |= (uint64_t)CAN_ConvertFlagstoErrorLevel(
+        kpkCanShim->pTableErrorState->plausibilityCheckCellTemperatureSpreadError[BS_STRING0],
+        kpkCanShim->pTableMsl->undertemperatureDischarge[BS_STRING0] ||
+            kpkCanShim->pTableMsl->undertemperatureCharge[BS_STRING0],
+        kpkCanShim->pTableRsl->undertemperatureDischarge[BS_STRING0] ||
+            kpkCanShim->pTableRsl->undertemperatureCharge[BS_STRING0],
+        kpkCanShim->pTableMol->undertemperatureDischarge[BS_STRING0] ||
+            kpkCanShim->pTableMol->undertemperatureCharge[BS_STRING0],
+        kpkCanShim->pTableMol->overtemperatureDischarge[BS_STRING0] ||
+            kpkCanShim->pTableMol->overtemperatureCharge[BS_STRING0],
+        kpkCanShim->pTableRsl->overtemperatureDischarge[BS_STRING0] ||
+            kpkCanShim->pTableRsl->overtemperatureCharge[BS_STRING0],
+        kpkCanShim->pTableMsl->overtemperatureDischarge[BS_STRING0] ||
+            kpkCanShim->pTableMsl->overtemperatureCharge[BS_STRING0]);
+    CAN_TxSetMessageDataWithSignalData(
+        pMessageData, CANTX_DIAG_TEMPERATURE_ERROR, CANTX_DIAG_ERROR_LEVEL_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
+
     /* Emergency shutoff */
-    uint64_t data = CAN_ConvertBooleanToInteger(BMS_IsTransitionToErrorStateActive());
+    data = CAN_ConvertBooleanToInteger(BMS_IsTransitionToErrorStateActive());
     CAN_TxSetMessageDataWithSignalData(
         pMessageData, CANTX_DIAG_EMERGENCY_SHUTOFF, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
 
@@ -238,78 +252,6 @@ static void CANTX_BuildDiagnosticFlagsMessage(const CAN_SHIM_s *const kpkCanShim
     data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->deepDischargeDetectedError[BS_STRING0]);
     CAN_TxSetMessageDataWithSignalData(
         pMessageData, CANTX_DIAG_DEEP_DISCHARGE_DETECTED, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Error: Overvoltage */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableMsl->overVoltage[BS_STRING0]);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData, CANTX_DIAG_CELL_OVERVOLTAGE_MSL, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Warning: Overvoltage */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableRsl->overVoltage[BS_STRING0]);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData, CANTX_DIAG_CELL_OVERVOLTAGE_RSL, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Info: Overvoltage */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableMol->overVoltage[BS_STRING0]);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData, CANTX_DIAG_CELL_OVERVOLTAGE_MOL, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Error: Undervoltage */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableMsl->underVoltage[BS_STRING0]);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData, CANTX_DIAG_CELL_UNDERVOLTAGE_MSL, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Warning: Undervoltage */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableRsl->underVoltage[BS_STRING0]);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData, CANTX_DIAG_CELL_UNDERVOLTAGE_RSL, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Info: Undervoltage */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableMol->underVoltage[BS_STRING0]);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData, CANTX_DIAG_CELL_UNDERVOLTAGE_MOL, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Error: Overtemperature (combined charge or discharge) */
-    data = CAN_ConvertBooleanToInteger(
-        kpkCanShim->pTableMsl->overtemperatureCharge[BS_STRING0] ||
-        kpkCanShim->pTableMsl->overtemperatureDischarge[BS_STRING0]);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData, CANTX_DIAG_TEMP_OVERTEMPERATURE_MSL, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Warning: Overtemperature (combined charge or discharge) */
-    data = CAN_ConvertBooleanToInteger(
-        kpkCanShim->pTableRsl->overtemperatureCharge[BS_STRING0] ||
-        kpkCanShim->pTableRsl->overtemperatureDischarge[BS_STRING0]);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData, CANTX_DIAG_TEMP_OVERTEMPERATURE_RSL, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Info: Overtemperature (combined charge or discharge) */
-    data = CAN_ConvertBooleanToInteger(
-        kpkCanShim->pTableMol->overtemperatureCharge[BS_STRING0] ||
-        kpkCanShim->pTableMol->overtemperatureDischarge[BS_STRING0]);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData, CANTX_DIAG_TEMP_OVERTEMPERATURE_MOL, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Error: Undertemperature (combined charge or discharge) */
-    data = CAN_ConvertBooleanToInteger(
-        kpkCanShim->pTableMsl->undertemperatureCharge[BS_STRING0] ||
-        kpkCanShim->pTableMsl->undertemperatureDischarge[BS_STRING0]);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData, CANTX_DIAG_TEMP_UNDERTEMPERATURE_MSL, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Warning: Undertemperature (combined charge or discharge) */
-    data = CAN_ConvertBooleanToInteger(
-        kpkCanShim->pTableRsl->undertemperatureCharge[BS_STRING0] ||
-        kpkCanShim->pTableRsl->undertemperatureDischarge[BS_STRING0]);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData, CANTX_DIAG_TEMP_UNDERTEMPERATURE_RSL, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Info: Undertemperature (combined charge or discharge) */
-    data = CAN_ConvertBooleanToInteger(
-        kpkCanShim->pTableMol->undertemperatureCharge[BS_STRING0] ||
-        kpkCanShim->pTableMol->undertemperatureDischarge[BS_STRING0]);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData, CANTX_DIAG_TEMP_UNDERTEMPERATURE_MOL, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
 
     /* Error: Current on open string */
     data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->currentOnOpenStringDetectedError[BS_STRING0]);
@@ -460,30 +402,10 @@ static void CANTX_BuildDiagnosticFlagsMessage(const CAN_SHIM_s *const kpkCanShim
     CAN_TxSetMessageDataWithSignalData(
         pMessageData, CANTX_DIAG_PLAUSIBILITY_CELL_VOLTAGE, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
 
-    /* Warning: Plausibility Cell Voltage Spread */
-    data =
-        CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->plausibilityCheckCellVoltageSpreadError[BS_STRING0]);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        CANTX_DIAG_PLAUSIBILITY_CELL_VOLTAGE_SPREAD,
-        CANTX_DIAG_FLAG_LENGTH,
-        data,
-        CANTX_BMS_STATE_ENDIANNESS);
-
     /* Warning: Plausibility Cell Temperature */
     data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->plausibilityCheckCellTemperatureError[BS_STRING0]);
     CAN_TxSetMessageDataWithSignalData(
         pMessageData, CANTX_DIAG_PLAUSIBILITY_CELL_TEMP, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Warning: Plausibility Cell Temperature Spread */
-    data = CAN_ConvertBooleanToInteger(
-        kpkCanShim->pTableErrorState->plausibilityCheckCellTemperatureSpreadError[BS_STRING0]);
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        CANTX_DIAG_PLAUSIBILITY_CELL_TEMP_SPREAD,
-        CANTX_DIAG_FLAG_LENGTH,
-        data,
-        CANTX_BMS_STATE_ENDIANNESS);
 
     /* Warning: Precharge voltage */
     data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->prechargeAbortedDueToVoltage[BS_STRING0]);

@@ -615,6 +615,7 @@ static void MRC_ValidateStringVoltageMeasurement(
                     (void)DIAG_CheckEvent(voltagePlausible, DIAG_ID_PLAUSIBILITY_PACK_VOLTAGE, DIAG_STRING, s);
                 } else {
                     mrc_tablePackValues.invalidStringVoltage[s] = 0u;
+                    (void)DIAG_CheckEvent(STD_OK, DIAG_ID_PLAUSIBILITY_PACK_VOLTAGE, DIAG_STRING, s);
                 }
             }
         } else {
