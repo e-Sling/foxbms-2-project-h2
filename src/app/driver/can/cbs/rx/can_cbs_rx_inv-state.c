@@ -20,6 +20,8 @@
 #define CANRX_INV_STATE_PRECHARGE_ALLOWED_LENGTH    (CAN_BIT)
 #define CANRX_INV_STATE_DIRECT_CONNECT_START_BIT    (21u)
 #define CANRX_INV_STATE_DIRECT_CONNECT_LENGTH       (CAN_BIT)
+#define CANRX_INV_STATE_CRC_START_BIT               (56u)
+#define CANRX_INV_STATE_CRC_LENGTH                  (8u)
 /** @} */
 
 /*========== Static Constant and Variable Definitions =======================*/
@@ -48,7 +50,7 @@ static void CANRX_SetPrechargeAllowedFlag(uint64_t messageData) {
         CANRX_INV_STATE_PRECHARGE_ALLOWED_START_BIT,
         CANRX_INV_STATE_PRECHARGE_ALLOWED_LENGTH,
         &signalData,
-        CANRX_BMS_STATE_REQUEST_ENDIANNESS);
+        CANRX_INV_STATE_ENDIANNESS);
 
     BMS_SetPrechargeAllowedFlag((bool)signalData);
 }
@@ -60,34 +62,48 @@ static void CANRX_SetDirectConnectFlag(uint64_t messageData) {
         CANRX_INV_STATE_DIRECT_CONNECT_START_BIT,
         CANRX_INV_STATE_DIRECT_CONNECT_LENGTH,
         &signalData,
-        CANRX_BMS_STATE_REQUEST_ENDIANNESS);
+        CANRX_INV_STATE_ENDIANNESS);
 
     BMS_SetDirectConnectFlag((bool)signalData);
 }
 
 /*========== Extern Function Implementations ================================*/
-extern uint32_t CANRX_InverterStateRequest(
+extern uint32_t CANRX_InverterState(
     CAN_MESSAGE_PROPERTIES_s message,
     const uint8_t *const kpkCanData,
     const CAN_SHIM_s *const kpkCanShim) {
-    FAS_ASSERT(message.id == CANRX_INV_STATE_REQUEST_ID);
-    FAS_ASSERT(message.idType == CANRX_INV_STATE_REQUEST_ID_TYPE);
-    FAS_ASSERT(message.dlc == CANRX_INV_STATE_REQUEST_DLC);
-    FAS_ASSERT(message.endianness == CANRX_INV_STATE_REQUEST_ENDIANNESS);
+    FAS_ASSERT(message.id == CANRX_INV_STATE_ID);
+    FAS_ASSERT(message.idType == CANRX_INV_STATE_ID_TYPE);
+    FAS_ASSERT(message.dlc == CANRX_INV_STATE_DLC);
+    FAS_ASSERT(message.endianness == CANRX_INV_STATE_ENDIANNESS);
     FAS_ASSERT(kpkCanData != NULL_PTR);
     FAS_ASSERT(kpkCanShim != NULL_PTR);
 
     uint64_t messageData = 0u;
-    CAN_RxGetMessageDataFromCanData(&messageData, kpkCanData, CANRX_INV_STATE_REQUEST_ENDIANNESS);
+    /* Get message as big endian for CRC calculation */
+    CAN_RxGetMessageDataFromCanData(&messageData, kpkCanData, CAN_BIG_ENDIAN);
+    uint8_t crc =
+        Compute_RX_CRC8H2F((uint8_t *)&messageData, CANRX_INV_STATE_CRC_START_BIT / 8u, CRC8H2F_INITIAL_VALUE);
 
-    /* Set Precharge Allowed Flag */
-    CANRX_SetPrechargeAllowedFlag(messageData);
+    CAN_RxGetMessageDataFromCanData(&messageData, kpkCanData, CANRX_INV_STATE_ENDIANNESS);
+    uint64_t crc_received = 0u;
+    CAN_RxGetSignalDataFromMessageData(
+        messageData,
+        CANRX_INV_STATE_CRC_START_BIT,
+        CANRX_INV_STATE_CRC_LENGTH,
+        &crc_received,
+        CANRX_INV_STATE_ENDIANNESS);
 
-    /* Set Direct Connect Flag */
-    CANRX_SetDirectConnectFlag(messageData);
+    if (crc == (uint8_t)crc_received) {
+        /* Set Precharge Allowed Flag */
+        CANRX_SetPrechargeAllowedFlag(messageData);
 
-    /* Save tick from this message */
-    BMS_SetLastInverterTick();
+        /* Set Direct Connect Flag */
+        CANRX_SetDirectConnectFlag(messageData);
+
+        /* Save tick from this message */
+        BMS_SetLastInverterTick();
+    }
 
     return 0u;
 }

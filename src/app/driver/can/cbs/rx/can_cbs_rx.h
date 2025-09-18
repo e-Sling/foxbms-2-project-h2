@@ -104,23 +104,34 @@ extern uint32_t CANRX_Debug(
 /***** Cellsius: Own CAN TX message definitions *****/
 
 /**
- * @brief   CAN Rx callback function for ECU state requests
+ * @brief   CAN Rx callback function for ECU state
  * @param[in] message     contains the message ID, DLC and endianness
  * @param[in] kpkCanData  payload of can frame
  * @param[in] kpkCanShim  shim to the database entries
  */
-extern uint32_t CANRX_EcuStateRequest(
+extern uint32_t CANRX_EcuState(
     CAN_MESSAGE_PROPERTIES_s message,
     const uint8_t *const kpkCanData,
     const CAN_SHIM_s *const kpkCanShim);
 
 /**
- * @brief   CAN Rx callback function for Inverter state requests
+ * @brief   CAN Rx callback function for Inverter state
  * @param[in] message     contains the message ID, DLC and endianness
  * @param[in] kpkCanData  payload of can frame
  * @param[in] kpkCanShim  shim to the database entries
  */
-extern uint32_t CANRX_InverterStateRequest(
+extern uint32_t CANRX_InverterState(
+    CAN_MESSAGE_PROPERTIES_s message,
+    const uint8_t *const kpkCanData,
+    const CAN_SHIM_s *const kpkCanShim);
+
+/**
+ * @brief   CAN Rx callback function for DHVC state
+ * @param[in] message     contains the message ID, DLC and endianness
+ * @param[in] kpkCanData  payload of can frame
+ * @param[in] kpkCanShim  shim to the database entries
+ */
+extern uint32_t CANRX_DhvcState(
     CAN_MESSAGE_PROPERTIES_s message,
     const uint8_t *const kpkCanData,
     const CAN_SHIM_s *const kpkCanShim);

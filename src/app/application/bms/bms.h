@@ -185,6 +185,8 @@ typedef struct {
     bool batOnSignal;                                    /*!< Cellsius: Bat_On signal from switch in Cockpit */
     bool batOnSignalPrev;                                /*!< Cellsius: Previous Bat_On signal */
     bool faultDisarmFlag;                                /*!< Cellsius: Fault_Disarm signal from ECU */
+    bool flightmode;                                     /*!< Cellsius: Flightmode signal from ECU */
+    bool allow_hv;                                       /*!< Cellsius: Allow HV signal from DHVC */
     bool faultDisarmOnEntry;                             /*!< Cellsius: Fault_Disarm signal on entry to error state */
     bool prechargeAllowedFlag;                           /*!< Cellsius: Precharge_Allowed signal from Inverter */
     bool directConnectFlag;                              /*!< Cellsius: Direct_Connect signal from Inverter */
@@ -234,6 +236,18 @@ extern bool BMS_GetBatOnSignal(void);
  * @param   faultDisarmFlag    Value transmitted by ECU
  */
 extern void BMS_SetFaultDisarmFlag(bool faultDisarmFlag);
+
+/**
+ * @brief   Sets Flightmode
+ * @param   flightmode    Value transmitted by ECU
+ */
+extern void BMS_SetFlightmode(bool flightmode);
+
+/**
+ * @brief   Sets Allow HV
+ * @param   allow_hv    Value transmitted by ECU
+ */
+extern void BMS_SetAllowHV(bool allow_hv);
 
 /**
  * @brief   Sets the Precharge Allowed Flag

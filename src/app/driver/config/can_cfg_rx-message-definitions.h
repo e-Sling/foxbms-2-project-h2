@@ -202,30 +202,43 @@
 /**@} */
 
 /***** Cellsius: Own CAN TX message definitions *****/
-/** CAN message properties for ECU state request message.
+/** CAN message properties for ECU state message.
  *  - ID
  *  - Identifier type (standard or extended)
  *  - Period in ms
  *  - data length
  *  - Endianness @{*/
-#define CANRX_ECU_STATE_REQUEST_ID         (0x100u)
-#define CANRX_ECU_STATE_REQUEST_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANRX_ECU_STATE_REQUEST_PERIOD_ms  (CANRX_NOT_PERIODIC)
-#define CANRX_ECU_STATE_REQUEST_ENDIANNESS (CAN_LITTLE_ENDIAN)
-#define CANRX_ECU_STATE_REQUEST_DLC        (7u)
+#define CANRX_ECU_STATE_ID         (0x100u)
+#define CANRX_ECU_STATE_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
+#define CANRX_ECU_STATE_PERIOD_ms  (CANRX_NOT_PERIODIC)
+#define CANRX_ECU_STATE_ENDIANNESS (CAN_LITTLE_ENDIAN)
+#define CANRX_ECU_STATE_DLC        (7u)
 /**@} */
 
-/** CAN message properties for ECU state request message.
+/** CAN message properties for Inverter state message.
  *  - ID
  *  - Identifier type (standard or extended)
  *  - Period in ms
  *  - data length
  *  - Endianness @{*/
-#define CANRX_INV_STATE_REQUEST_ID         (0x210u)
-#define CANRX_INV_STATE_REQUEST_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANRX_INV_STATE_REQUEST_PERIOD_ms  (CANRX_NOT_PERIODIC)
-#define CANRX_INV_STATE_REQUEST_ENDIANNESS (CAN_LITTLE_ENDIAN)
-#define CANRX_INV_STATE_REQUEST_DLC        (8u)
+#define CANRX_INV_STATE_ID         (0x210u)
+#define CANRX_INV_STATE_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
+#define CANRX_INV_STATE_PERIOD_ms  (CANRX_NOT_PERIODIC)
+#define CANRX_INV_STATE_ENDIANNESS (CAN_LITTLE_ENDIAN)
+#define CANRX_INV_STATE_DLC        (8u)
+/**@} */
+
+/** CAN message properties for DHVC state message.
+ *  - ID
+ *  - Identifier type (standard or extended)
+ *  - Period in ms
+ *  - data length
+ *  - Endianness @{*/
+#define CANRX_DHVC_STATE_ID         (0x170u)
+#define CANRX_DHVC_STATE_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
+#define CANRX_DHVC_STATE_PERIOD_ms  (CANRX_NOT_PERIODIC)
+#define CANRX_DHVC_STATE_ENDIANNESS (CAN_LITTLE_ENDIAN)
+#define CANRX_DHVC_STATE_DLC        (7u)
 /**@} */
 
 /* composed Rx  messages */
@@ -351,26 +364,37 @@
     }
 
 /***** Cellsius: Own CAN TX message definitions *****/
-#define CANRX_ECU_STATE_REQUEST_MESSAGE                   \
-    {                                                     \
-        .id         = CANRX_ECU_STATE_REQUEST_ID,         \
-        .idType     = CANRX_ECU_STATE_REQUEST_ID_TYPE,    \
-        .dlc        = CANRX_ECU_STATE_REQUEST_DLC,        \
-        .endianness = CANRX_ECU_STATE_REQUEST_ENDIANNESS, \
-    },                                                    \
-    {                                                     \
-        .period = CANRX_ECU_STATE_REQUEST_PERIOD_ms       \
+#define CANRX_ECU_STATE_MESSAGE                   \
+    {                                             \
+        .id         = CANRX_ECU_STATE_ID,         \
+        .idType     = CANRX_ECU_STATE_ID_TYPE,    \
+        .dlc        = CANRX_ECU_STATE_DLC,        \
+        .endianness = CANRX_ECU_STATE_ENDIANNESS, \
+    },                                            \
+    {                                             \
+        .period = CANRX_ECU_STATE_PERIOD_ms       \
     }
 
-#define CANRX_INV_STATE_REQUEST_MESSAGE                   \
-    {                                                     \
-        .id         = CANRX_INV_STATE_REQUEST_ID,         \
-        .idType     = CANRX_INV_STATE_REQUEST_ID_TYPE,    \
-        .dlc        = CANRX_INV_STATE_REQUEST_DLC,        \
-        .endianness = CANRX_INV_STATE_REQUEST_ENDIANNESS, \
-    },                                                    \
-    {                                                     \
-        .period = CANRX_INV_STATE_REQUEST_PERIOD_ms       \
+#define CANRX_INV_STATE_MESSAGE                   \
+    {                                             \
+        .id         = CANRX_INV_STATE_ID,         \
+        .idType     = CANRX_INV_STATE_ID_TYPE,    \
+        .dlc        = CANRX_INV_STATE_DLC,        \
+        .endianness = CANRX_INV_STATE_ENDIANNESS, \
+    },                                            \
+    {                                             \
+        .period = CANRX_INV_STATE_PERIOD_ms       \
+    }
+
+#define CANRX_DHVC_STATE_MESSAGE                   \
+    {                                              \
+        .id         = CANRX_DHVC_STATE_ID,         \
+        .idType     = CANRX_DHVC_STATE_ID_TYPE,    \
+        .dlc        = CANRX_DHVC_STATE_DLC,        \
+        .endianness = CANRX_DHVC_STATE_ENDIANNESS, \
+    },                                             \
+    {                                              \
+        .period = CANRX_DHVC_STATE_PERIOD_ms       \
     }
 
 /* AXIVION Enable Style Generic-NoUnsafeMacro */

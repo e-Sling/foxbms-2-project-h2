@@ -198,9 +198,14 @@ extern int8_t CAN_ConvertFlagstoErrorLevel(
     bool error_upper);
 
 /**
- * @brief Compute CRC
+ * @brief Compute CRC for TX messages
  */
-extern uint8_t Compute_CRC8H2F(const uint8_t *Crc_DataPtr, uint32_t Crc_Length, uint8_t Crc_StartValue8H2F);
+extern uint8_t Compute_TX_CRC8H2F(const uint8_t *Crc_DataPtr, uint32_t Crc_Length, uint8_t Crc_StartValue8H2F);
+
+/**
+ * @brief Compute CRC for RX messages
+ */
+extern uint8_t Compute_RX_CRC8H2F(const uint8_t *Crc_DataPtr, uint32_t Crc_Length, uint8_t Crc_StartValue8H2F);
 
 /*========== Externalized Static Functions Prototypes (Unit Test) ===========*/
 #ifdef UNITY_UNIT_TEST

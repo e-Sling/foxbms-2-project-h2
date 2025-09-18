@@ -675,6 +675,14 @@ extern void BMS_SetFaultDisarmFlag(bool faultDisarmFlag) {
     bms_state.faultDisarmFlag = faultDisarmFlag;
 }
 
+extern void BMS_SetFlightmode(bool flightmode) {
+    bms_state.flightmode = flightmode;
+}
+
+extern void BMS_SetAllowHV(bool allow_hv) {
+    bms_state.allow_hv = allow_hv;
+}
+
 extern void BMS_SetPrechargeAllowedFlag(bool prechargeAllowedFlag) {
     bms_state.prechargeAllowedFlag = prechargeAllowedFlag;
 }
@@ -1041,8 +1049,8 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                /* Cellsius: Check for Bat_On */
-                if (bms_state.batOnSignal) {
+                /* Cellsius: Check for Startup requirements */
+                if (bms_state.batOnSignal && (bms_state.allow_hv || bms_state.flightmode)) {
                     /* Check for Direct Connect and inverter NOT timed-out */
                     if (bms_state.directConnectFlag &&
                         (timestamp - bms_state.last_inverter_tick <= BMS_INVERTER_MESSAGE_TIMEOUT)) {
@@ -1163,8 +1171,8 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                /* Cellsius: Check if Bat_On was lost */
-                if (bms_state.batOnSignal == false) {
+                /* Cellsius: Check if requirements to precharge are lost */
+                if (bms_state.batOnSignal == false || (bms_state.allow_hv == false && bms_state.flightmode == false)) {
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;
@@ -1379,8 +1387,9 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                /* Cellsius: Check if Bat_On or Inverter command was lost */
-                if (bms_state.batOnSignal == false || bms_state.directConnectFlag == false) {
+                /* Cellsius: Check if requirements to direct connect are lost */
+                if (bms_state.batOnSignal == false || (bms_state.allow_hv == false && bms_state.flightmode == false) ||
+                    bms_state.directConnectFlag == false) {
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;
@@ -1457,8 +1466,8 @@ void BMS_Trigger(void) {
                     break;
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
-                /* Cellsius: Check if Bat_On was lost */
-                if (!bms_state.batOnSignal) {
+                /* Cellsius: Check if requirements to run are lost */
+                if (bms_state.batOnSignal == false || (bms_state.allow_hv == false && bms_state.flightmode == false)) {
                     bms_state.timer     = BMS_WAIT_TIME_BAT_OFF;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;

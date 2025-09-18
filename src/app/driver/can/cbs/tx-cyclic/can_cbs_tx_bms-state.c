@@ -185,7 +185,7 @@ static void CANTX_BuildBmsStateMessage(uint64_t *pMessageData, const CAN_SHIM_s 
         CANTX_BMS_STATE_ENDIANNESS);
 
     /* Cellsius: CRC */
-    data = Compute_CRC8H2F((uint8_t *)pMessageData, CANTX_SIGNAL_BMS_CRC_START_BIT / 8u, CRC8H2F_INITIAL_VALUE);
+    data = Compute_TX_CRC8H2F((uint8_t *)pMessageData, CANTX_SIGNAL_BMS_CRC_START_BIT / 8u, CRC8H2F_INITIAL_VALUE);
     CAN_TxSetMessageDataWithSignalData(
         pMessageData, CANTX_SIGNAL_BMS_CRC_START_BIT, CANTX_SIGNAL_BMS_CRC_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
 }

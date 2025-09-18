@@ -398,11 +398,21 @@ extern int8_t CAN_ConvertFlagstoErrorLevel(
         return 0;
 }
 
-/* Initial value variable, poly: 0x2F, xor value: 0xFF */
-extern uint8_t Compute_CRC8H2F(const uint8_t *Crc_DataPtr, uint32_t Crc_Length, uint8_t Crc_StartValue8H2F) {
+extern uint8_t Compute_TX_CRC8H2F(const uint8_t *Crc_DataPtr, uint32_t Crc_Length, uint8_t Crc_StartValue8H2F) {
     uint8_t crc = Crc_StartValue8H2F;
 
     for (uint32_t i = Crc_Length; i > 0; --i) {
+        uint8_t data = Crc_DataPtr[i] ^ crc;
+        crc          = CRC8H2F_TABLE[data];
+    }
+
+    return (crc ^ 0xFF);
+}
+
+extern uint8_t Compute_RX_CRC8H2F(const uint8_t *Crc_DataPtr, uint32_t Crc_Length, uint8_t Crc_StartValue8H2F) {
+    uint8_t crc = Crc_StartValue8H2F;
+
+    for (uint32_t i = 0; i < Crc_Length; ++i) {
         uint8_t data = Crc_DataPtr[i] ^ crc;
         crc          = CRC8H2F_TABLE[data];
     }

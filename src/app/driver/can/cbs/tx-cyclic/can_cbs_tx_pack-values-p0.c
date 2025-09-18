@@ -278,7 +278,8 @@ static void CANTX_BuildP0Message(const CAN_SHIM_s *const kpkCanShim, uint64_t *p
         CANTX_PACK_VALUES_P0_ENDIANNESS);
 
     /* Cellsius: CRC */
-    data = Compute_CRC8H2F((uint8_t *)pMessageData, CANTX_SIGNAL_PACK_VALUES_CRC_START_BIT / 8u, CRC8H2F_INITIAL_VALUE);
+    data =
+        Compute_TX_CRC8H2F((uint8_t *)pMessageData, CANTX_SIGNAL_PACK_VALUES_CRC_START_BIT / 8u, CRC8H2F_INITIAL_VALUE);
     CAN_TxSetMessageDataWithSignalData(
         pMessageData,
         CANTX_SIGNAL_PACK_VALUES_CRC_START_BIT,
