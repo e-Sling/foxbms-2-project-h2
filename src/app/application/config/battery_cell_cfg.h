@@ -145,8 +145,8 @@
  * @unit    mV
  */
 /**@{*/
-#define BC_VOLTAGE_MAX_MSL_mV (4300)
-#define BC_VOLTAGE_MAX_RSL_mV (4200)
+#define BC_VOLTAGE_MAX_MSL_mV (4200)
+#define BC_VOLTAGE_MAX_RSL_mV (4150)
 #define BC_VOLTAGE_MAX_MOL_mV (4100)
 /**@}*/
 
@@ -170,9 +170,9 @@
  * @unit    mV
  */
 /**@{*/
-#define BC_VOLTAGE_MIN_MSL_mV (2400)
-#define BC_VOLTAGE_MIN_RSL_mV (2500)
-#define BC_VOLTAGE_MIN_MOL_mV (2600)
+#define BC_VOLTAGE_MIN_MSL_mV (2500)
+#define BC_VOLTAGE_MIN_RSL_mV (2600)
+#define BC_VOLTAGE_MIN_MOL_mV (2700)
 /**@}*/
 
 /**
@@ -184,7 +184,7 @@
  * @ptype   int
  * @unit    mV
  */
-#define BC_VOLTAGE_DEEP_DISCHARGE_mV (BC_VOLTAGE_MIN_MSL_mV - 100)
+#define BC_VOLTAGE_DEEP_DISCHARGE_mV (BC_VOLTAGE_MIN_MSL_mV - 50)
 
 /**
  * @brief   Maximum discharge current limit.
