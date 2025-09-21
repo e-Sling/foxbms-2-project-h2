@@ -149,6 +149,14 @@ typedef enum {
     BMS_ALREADY_INITIALIZED, /*!< error: BMS state machine already initialized */
 } BMS_RETURN_TYPE_e;
 
+/* Error bits that caused shutdown */
+enum {
+    SHUTDOWNBIT_OVERCURRENT_CHARGE     = (1u << 0),
+    SHUTDOWNBIT_OVERCURRENT_DISCHARGE  = (1u << 1),
+    SHUTDOWNBIT_CONTACTOR_FEEDBACK     = (1u << 2),
+    SHUTDOWNBIT_CURRENT_ON_OPEN_STRING = (1u << 3),
+};
+
 /**
  * This structure contains all the variables relevant for the CONT state
  * machine. The user can get the current state of the CONT state machine with
@@ -191,6 +199,7 @@ typedef struct {
     bool prechargeAllowedFlag;                           /*!< Cellsius: Precharge_Allowed signal from Inverter */
     bool directConnectFlag;                              /*!< Cellsius: Direct_Connect signal from Inverter */
     uint32_t last_inverter_tick;                         /*!< Cellsius: Last tick from Inverter */
+    uint8_t shutdown_bits;                               /*!< Cellsius: Error bits that caused shutdown */
 } BMS_STATE_s;
 
 /*========== Extern Constant and Variable Declarations ======================*/
@@ -264,7 +273,22 @@ extern void BMS_SetDirectConnectFlag(bool directConnectFlag);
 /**
  * @brief   Saves the current tick when Inverter message is received
  */
-extern void BMS_SetLastInverterTick();
+extern void BMS_SetLastInverterTick(void);
+
+/**
+ * @brief   Latches error bits that caused the shutdown
+ */
+extern void BMS_LatchShutdownBits(void);
+
+/**
+ * @brief   Gets the latched error bits that caused the shutdown
+ */
+extern uint8_t BMS_GetLatchedShutdownBits(void);
+
+/**
+ * @brief   Clears the latched error bits that caused the shutdown
+ */
+extern void BMS_ClearLatchedShutdownBits(void);
 
 /**
  * @brief   Gets the initialization state.

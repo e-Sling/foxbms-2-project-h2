@@ -125,8 +125,8 @@ static BMS_STATE_s bms_state = {
     .faultDisarmOnEntry                = false,
     .prechargeAllowedFlag              = false,
     .directConnectFlag                 = false,
-    .last_inverter_tick                = 0u
-
+    .last_inverter_tick                = 0u,
+    .shutdown_bits                     = 0u,
 };
 
 /** local copies of database tables */
@@ -329,15 +329,14 @@ static uint8_t BMS_CheckCanRequests(void) {
 }
 
 static void BMS_CheckOpenSenseWire(void) {
-    uint8_t openWireDetected = 0;
-
     for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
+        uint8_t openWireDetected = 0;
         /* Iterate over all modules */
         for (uint8_t m = 0u; m < BS_NR_OF_MODULES_PER_STRING; m++) {
             /* Iterate over all voltage sense wires: cells per module + 1 */
             for (uint8_t wire = 0u; wire < (BS_NR_OF_CELL_BLOCKS_PER_MODULE + 1); wire++) {
                 /* open wire detected */
-                if (bms_tableOpenWire.openWire[s][(wire + (m * (BS_NR_OF_CELL_BLOCKS_PER_MODULE + 1))) == 1] > 0u) {
+                if (bms_tableOpenWire.openWire[s][wire + (m * (BS_NR_OF_CELL_BLOCKS_PER_MODULE + 1))] == 1u) {
                     openWireDetected++;
 
                     /* Add additional error handling here */
@@ -418,7 +417,8 @@ static STD_RETURN_TYPE_e BMS_CheckDirectConnect(uint8_t stringNumber, const DATA
 }
 
 static bool BMS_IsAnyFatalErrorFlagSet(void) {
-    bool fatalErrorActive = false;
+    bool fatalErrorActive           = false;
+    bms_state.minimumActiveDelay_ms = BMS_NO_ACTIVE_DELAY_TIME_ms;
 
     for (uint16_t entry = 0u; entry < diag_device.numberOfFatalErrors; entry++) {
         const STD_RETURN_TYPE_e diagnosisState =
@@ -473,6 +473,7 @@ static STD_RETURN_TYPE_e BMS_IsBatterySystemStateOkay(void) {
     /* Check if bms state machine should switch to error state. This is the case
      * if the delay is activated and the remaining delay is down to 0 */
     if ((bms_state.transitionToErrorState == true) && (bms_state.remainingDelay_ms == 0u)) {
+        BMS_LatchShutdownBits();
         retVal = STD_NOT_OK;
     }
 
@@ -691,8 +692,51 @@ extern void BMS_SetDirectConnectFlag(bool directConnectFlag) {
     bms_state.directConnectFlag = directConnectFlag;
 }
 
-extern void BMS_SetLastInverterTick() {
+extern void BMS_SetLastInverterTick(void) {
     bms_state.last_inverter_tick = OS_GetTickCount();
+}
+
+extern void BMS_LatchShutdownBits(void) {
+    uint8_t bits = 0u;
+
+    DATA_BLOCK_ERROR_STATE_s es = {.header.uniqueId = DATA_BLOCK_ID_ERROR_STATE};
+    DATA_BLOCK_MSL_FLAG_s msl   = {.header.uniqueId = DATA_BLOCK_ID_MSL_FLAG};
+    DATA_READ_DATA(&es, &msl);
+
+    if (msl.cellChargeOvercurrent[BS_STRING0] || msl.packChargeOvercurrent)
+        bits |= SHUTDOWNBIT_OVERCURRENT_CHARGE;
+    if (msl.cellDischargeOvercurrent[BS_STRING0] || msl.packDischargeOvercurrent)
+        bits |= SHUTDOWNBIT_OVERCURRENT_DISCHARGE;
+    /* if (es.prechargeAbortedDueToVoltage[BS_STRING0])
+        bits |= SHUTDOWNBIT_PRECHARGE_VOLTAGE;
+    if (es.prechargeAbortedDueToCurrent[BS_STRING0])
+        bits |= SHUTDOWNBIT_PRECHARGE_CURRENT;
+    if (es.directConnectAborted[BS_STRING0])
+        bits |= SHUTDOWNBIT_DIRECTCONNECT_ABORT; */
+    if (es.contactorInNegativePathOfStringFeedbackError[BS_STRING0] ||
+        es.contactorInPositivePathOfStringFeedbackError[BS_STRING0] || es.prechargeContactorFeedbackError[BS_STRING0] ||
+        es.mainContactorFeedbackError[BS_STRING0])
+        bits |= SHUTDOWNBIT_CONTACTOR_FEEDBACK;
+    if (es.currentOnOpenStringDetectedError[BS_STRING0])
+        bits |= SHUTDOWNBIT_CURRENT_ON_OPEN_STRING;
+
+    OS_EnterTaskCritical();
+    bms_state.shutdown_bits |= bits;
+    OS_ExitTaskCritical();
+}
+
+extern uint8_t BMS_GetLatchedShutdownBits(void) {
+    uint8_t bits;
+    OS_EnterTaskCritical();
+    bits = bms_state.shutdown_bits;
+    OS_ExitTaskCritical();
+    return bits;
+}
+
+extern void BMS_ClearLatchedShutdownBits(void) {
+    OS_EnterTaskCritical();
+    bms_state.shutdown_bits = 0u;
+    OS_ExitTaskCritical();
 }
 
 BMS_RETURN_TYPE_e BMS_SetStateRequest(BMS_STATE_REQUEST_e statereq) {
@@ -868,9 +912,8 @@ void BMS_Trigger(void) {
             } else if (bms_state.substate == BMS_OPEN_FIRST_STRING_CONTACTOR) {
                 /* Precharge contactors have been opened -> start opening first string contactor */
                 /* TODO: Check if precharge contactors have been opened? */
-                if ((bms_tablePackValues.invalidStringCurrent[stringNumber] == 0u) &&
-                    (MATH_AbsInt32_t(bms_tablePackValues.stringCurrent_mA[stringNumber]) <
-                     BS_MAIN_CONTACTORS_MAXIMUM_BREAK_CURRENT_mA)) {
+                if (MATH_AbsInt32_t(bms_tablePackValues.stringCurrent_mA[stringNumber]) <
+                    BS_MAIN_CONTACTORS_MAXIMUM_BREAK_CURRENT_mA) {
                     /* Current is below maximum break current -> open first contactor
                      * Check the mounting direction of the contactors and open the contactor that is mounted in the
                      * preferred current flow direction. Open the plus contactor first if, there is no contactor
@@ -1522,7 +1565,6 @@ void BMS_Trigger(void) {
                 } else {
                     /* No error detected anymore - reset fatal error related variables */
                     bms_state.remainingDelay_ms      = BMS_NO_ACTIVE_DELAY_TIME_ms;
-                    bms_state.minimumActiveDelay_ms  = BMS_NO_ACTIVE_DELAY_TIME_ms;
                     bms_state.transitionToErrorState = false;
                     /* Check for STANDBY request */
                     bms_state.timer    = BMS_STATEMACH_SHORTTIME;
@@ -1541,6 +1583,7 @@ void BMS_Trigger(void) {
 
                     /* Verify that all contactors are opened and switch to
                      * STANDBY state afterwards */
+                    BMS_ClearLatchedShutdownBits();
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;
                     bms_state.substate  = BMS_ENTRY;
