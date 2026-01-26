@@ -503,8 +503,8 @@ static CAN_NODE_s *CAN_GetNodeConfigurationStructFromRegisterAddress(canBASE_t *
     /* Find correct CAN node configuration struct */
     if (pNodeRegister == can_node.canNodeRegister) {
         node = (CAN_NODE_s *)&can_node;
-    // } else if (pNodeRegister == can_node2Isolated.canNodeRegister) {
-    //     node = (CAN_NODE_s *)&can_node2Isolated;
+        // } else if (pNodeRegister == can_node2Isolated.canNodeRegister) {
+        //     node = (CAN_NODE_s *)&can_node2Isolated;
     } else {
         /* Invalid address. This should not have happened */
         FAS_ASSERT(FAS_TRAP);
@@ -818,6 +818,7 @@ extern STD_RETURN_TYPE_e CAN_DataSend(CAN_NODE_s *pNode, uint32_t id, CAN_IDENTI
      *  In the HAL, message box numbers start from 1, not 0.
      */
     for (uint8_t messageBox = 1u; messageBox <= CAN_NR_OF_TX_MESSAGE_BOX; messageBox++) {
+        portDISABLE_INTERRUPTS();
         if (canIsTxMessagePending(pNode->canNodeRegister, messageBox) == 0u) {
             /* id shifted by 18 to use standard frame */
             /* standard frame: bits [28:18] */
@@ -840,8 +841,12 @@ extern STD_RETURN_TYPE_e CAN_DataSend(CAN_NODE_s *pNode, uint32_t id, CAN_IDENTI
             }
             canTransmit(pNode->canNodeRegister, messageBox, pData);
             result = STD_OK;
+            /* Re-enable interrupts if empty mailbox found */
+            portENABLE_INTERRUPTS();
             break;
         }
+        /* Re-enable interrupts if all mailboxes are full */
+        portENABLE_INTERRUPTS();
     }
     return result;
 }
