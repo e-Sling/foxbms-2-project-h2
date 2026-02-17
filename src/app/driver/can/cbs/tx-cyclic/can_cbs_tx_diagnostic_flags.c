@@ -83,13 +83,14 @@
 #define CANTX_DIAG_PLAUSIBILITY_CELL_TEMP    (11u)
 #define CANTX_DIAG_PRECHARGE_VOLTAGE         (12u)
 #define CANTX_DIAG_PRECHARGE_CURRENT         (13u)
-#define CANTX_DIAG_CONTACTOR_FEEDBACK        (14u)
-#define CANTX_DIAG_CURRENT_SENSOR            (15u)
-#define CANTX_DIAG_CURRENT_ON_OPEN_STRING    (16u)
-#define CANTX_DIAG_AFE_COMMUNICATION         (17u)
-#define CANTX_DIAG_AFE_OPEN_WIRE             (18u)
-#define CANTX_DIAG_SYSTEM_CAUTION            (19u)
-#define CANTX_DIAG_SYSTEM_WARNING            (20u)
+
+#define CANTX_DIAG_CONTACTOR_FEEDBACK     (15u)
+#define CANTX_DIAG_CURRENT_SENSOR         (16u)
+#define CANTX_DIAG_CURRENT_ON_OPEN_STRING (17u)
+#define CANTX_DIAG_AFE_COMMUNICATION      (18u)
+#define CANTX_DIAG_AFE_OPEN_WIRE          (19u)
+#define CANTX_DIAG_SYSTEM_CAUTION         (20u)
+#define CANTX_DIAG_SYSTEM_WARNING         (21u)
 
 /*========== Static Constant and Variable Definitions =======================*/
 
