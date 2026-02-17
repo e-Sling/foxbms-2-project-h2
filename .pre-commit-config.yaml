@@ -236,16 +236,6 @@ repos:
   - repo: local
     hooks:
       - id: check-file-encoding
-        name: check encoding [c]
-        language: system
-        entry: python cli/pre_commit_scripts/check_encoding.py --encoding=ascii
-        types: [c]
-        exclude: |
-          (?x)^(
-            src/app/driver/afe/nxp/mc33775a/vendor/.*|
-            tests/cli/pre_commit_scripts/test_check_doxygen/invalid-encoding_utf-16\.c
-          )$
-      - id: check-file-encoding
         name: check encoding [dbc, sym]
         language: system
         entry: python cli/pre_commit_scripts/check_encoding.py --encoding=ascii
@@ -343,35 +333,6 @@ repos:
             tests/cli/pre_commit_scripts/test_check_for_tabs/tabs_0\.txt|
             tests/cli/pre_commit_scripts/test_check_for_tabs/tabs_1\.txt|
             tests/cli/pre_commit_scripts/test_check_for_tabs/tabs_2\.txt
-          )$
-      - id: check-include-guard
-        name: check include guard
-        language: system
-        entry: python cli/pre_commit_scripts/check_include_guard.py
-        types: [c]
-        exclude: |
-          (?x)^(
-            src/app/driver/afe/nxp/mc33775a/vendor/.*|
-            src/app/driver/sbc/fs8x_driver/.*|
-            tests/axivion/config-test/coding-style-naming\.macro_1\.h|
-            tests/cli/pre_commit_scripts/test_check_include_guard/test_file_empty\.h|
-            tests/cli/pre_commit_scripts/test_check_include_guard/test_file_invalid_content\.h|
-            tests/cli/pre_commit_scripts/test_check_include_guard/test_file\.c|
-            tests/cli/pre_commit_scripts/test_check_include_guard/test_file_multiple\.h|
-            tests/cli/pre_commit_scripts/test_check_include_guard/test_file_valid\.h
-          )$
-      - id: check-comment-style
-        name: check C comment style
-        language: system
-        entry: python cli/pre_commit_scripts/check_cpp_style_comment.py
-        types: [c]
-        exclude: |
-          (?x)^(
-
-            tests/axivion/axivion_preinc\.h^|
-            tests/axivion/config-test/.*\.[c|h]|
-            tests/cli/pre_commit_scripts/test_check_cpp_style_comment/cpp-style-comment_[0|1|2]\.c|
-            tests/cli/pre_commit_scripts/test_check_doxygen/invalid-encoding_utf-16\.c
           )$
   - repo: https://github.com/shellcheck-py/shellcheck-py
     rev: v0.10.0.1

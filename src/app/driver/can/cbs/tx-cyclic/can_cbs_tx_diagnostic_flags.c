@@ -269,16 +269,22 @@ static void CANTX_BuildDiagnosticFlagsMessage(const CAN_SHIM_s *const kpkCanShim
 
     /* Warning: Precharge voltage */
     data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->prechargeAbortedDueToVoltage[BS_STRING0]);
+    if (latch & SHUTDOWNBIT_PRECHARGE_VOLTAGE)
+        data = 1u;
     CAN_TxSetMessageDataWithSignalData(
         pMessageData, CANTX_DIAG_PRECHARGE_VOLTAGE, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
 
     /* Warning: Precharge current */
     data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->prechargeAbortedDueToCurrent[BS_STRING0]);
+    if (latch & SHUTDOWNBIT_PRECHARGE_CURRENT)
+        data = 1u;
     CAN_TxSetMessageDataWithSignalData(
         pMessageData, CANTX_DIAG_PRECHARGE_CURRENT, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
 
     /* Error: Direct connect abort */
     data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->directConnectAborted[BS_STRING0]);
+    if (latch & SHUTDOWNBIT_DIRECTCONNECT_ABORT)
+        data = 1u;
     CAN_TxSetMessageDataWithSignalData(
         pMessageData, CANTX_DIAG_DIRECTCONNECT_ABORT, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
 }

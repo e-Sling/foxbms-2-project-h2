@@ -707,12 +707,12 @@ extern void BMS_LatchShutdownBits(void) {
         bits |= SHUTDOWNBIT_OVERCURRENT_CHARGE;
     if (msl.cellDischargeOvercurrent[BS_STRING0] || msl.packDischargeOvercurrent)
         bits |= SHUTDOWNBIT_OVERCURRENT_DISCHARGE;
-    /* if (es.prechargeAbortedDueToVoltage[BS_STRING0])
+    if (es.prechargeAbortedDueToVoltage[BS_STRING0])
         bits |= SHUTDOWNBIT_PRECHARGE_VOLTAGE;
     if (es.prechargeAbortedDueToCurrent[BS_STRING0])
         bits |= SHUTDOWNBIT_PRECHARGE_CURRENT;
     if (es.directConnectAborted[BS_STRING0])
-        bits |= SHUTDOWNBIT_DIRECTCONNECT_ABORT; */
+        bits |= SHUTDOWNBIT_DIRECTCONNECT_ABORT;
     if (es.contactorInNegativePathOfStringFeedbackError[BS_STRING0] ||
         es.contactorInPositivePathOfStringFeedbackError[BS_STRING0] || es.prechargeContactorFeedbackError[BS_STRING0] ||
         es.mainContactorFeedbackError[BS_STRING0])

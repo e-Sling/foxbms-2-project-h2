@@ -164,15 +164,16 @@
  *          (RSL) or maximum operating limit (MOL) is violated, the respective
  *          flag will be set.
  *
- *  @note   MSL from P50B datasheet
+ *  @note   MSL from P50B datasheet,
+ *          MOL at 2800mV to warn before inverter limit is reached (2778mV)
  *
  * @ptype   int
  * @unit    mV
  */
 /**@{*/
 #define BC_VOLTAGE_MIN_MSL_mV (2500)
-#define BC_VOLTAGE_MIN_RSL_mV (2600)
-#define BC_VOLTAGE_MIN_MOL_mV (2700)
+#define BC_VOLTAGE_MIN_RSL_mV (2700)
+#define BC_VOLTAGE_MIN_MOL_mV (2800)
 /**@}*/
 
 /**
@@ -193,15 +194,17 @@
  *          (RSL) or maximum operating limit (MOL) is violated, the respective
  *          flag will be set.
  *
- *  @note   MSL from P50B datasheet
+ *  @note   MSL is used to detect overcurrent,
+ *          MOL is used to calculate recommended battery current,
+ *          both set to 40A (2P = 80A max current)
  *
  * @ptype   int
  * @unit    mA
  */
 /**@{*/
-#define BC_CURRENT_MAX_DISCHARGE_MSL_mA (60000u)
-#define BC_CURRENT_MAX_DISCHARGE_RSL_mA (55000u)
-#define BC_CURRENT_MAX_DISCHARGE_MOL_mA (50000u)
+#define BC_CURRENT_MAX_DISCHARGE_MSL_mA (40000u)
+#define BC_CURRENT_MAX_DISCHARGE_RSL_mA (40000u)
+#define BC_CURRENT_MAX_DISCHARGE_MOL_mA (40000u)
 /**@}*/
 
 /**
@@ -211,14 +214,16 @@
  *          (RSL) or maximum operating limit (MOL) is violated, the respective
  *          flag will be set.
  *
- *  @note   MSL from P50B datasheet
+ *  @note   MSL is used to detect overcurrent,
+ *          MOL is used to calculate recommended battery current,
+ *          both set to 15A (2P = 30A max current)
  *
  * @ptype   int
  * @unit    mA
  */
 /**@{*/
-#define BC_CURRENT_MAX_CHARGE_MSL_mA (25000u)
-#define BC_CURRENT_MAX_CHARGE_RSL_mA (20000u)
+#define BC_CURRENT_MAX_CHARGE_MSL_mA (15000u)
+#define BC_CURRENT_MAX_CHARGE_RSL_mA (15000u)
 #define BC_CURRENT_MAX_CHARGE_MOL_mA (15000u)
 /**@}*/
 

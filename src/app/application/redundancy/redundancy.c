@@ -780,21 +780,20 @@ static STD_RETURN_TYPE_e MRC_CalculateCellVoltageMinMaxAverage(
         /* Iterate over all cells in each string */
         for (uint8_t m = 0u; m < BS_NR_OF_MODULES_PER_STRING; m++) {
             for (uint8_t cb = 0u; cb < BS_NR_OF_CELL_BLOCKS_PER_MODULE; cb++) {
-                if (pValidatedVoltages->invalidCellVoltage[s][m][cb] == false) {
-                    /* Cell voltage is valid -> use this voltage for subsequent calculations */
-                    nrValidCellVoltages++;
-                    sum += pValidatedVoltages->cellVoltage_mV[s][m][cb];
+                /* Cellsius: do NOT filter out invalid cell voltages,
+                we want min and max to include all cells */
+                nrValidCellVoltages++;
+                sum += pValidatedVoltages->cellVoltage_mV[s][m][cb];
 
-                    if (pValidatedVoltages->cellVoltage_mV[s][m][cb] < min) {
-                        min                 = pValidatedVoltages->cellVoltage_mV[s][m][cb];
-                        moduleNumberMinimum = m;
-                        cellNumberMinimum   = cb;
-                    }
-                    if (pValidatedVoltages->cellVoltage_mV[s][m][cb] > max) {
-                        max                 = pValidatedVoltages->cellVoltage_mV[s][m][cb];
-                        moduleNumberMaximum = m;
-                        cellNumberMaximum   = cb;
-                    }
+                if (pValidatedVoltages->cellVoltage_mV[s][m][cb] < min) {
+                    min                 = pValidatedVoltages->cellVoltage_mV[s][m][cb];
+                    moduleNumberMinimum = m;
+                    cellNumberMinimum   = cb;
+                }
+                if (pValidatedVoltages->cellVoltage_mV[s][m][cb] > max) {
+                    max                 = pValidatedVoltages->cellVoltage_mV[s][m][cb];
+                    moduleNumberMaximum = m;
+                    cellNumberMaximum   = cb;
                 }
             }
         }
