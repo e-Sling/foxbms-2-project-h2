@@ -18,8 +18,6 @@
  */
 #define CANRX_INV_STATE_PRECHARGE_ALLOWED_START_BIT (20u)
 #define CANRX_INV_STATE_PRECHARGE_ALLOWED_LENGTH    (CAN_BIT)
-#define CANRX_INV_STATE_DIRECT_CONNECT_START_BIT    (21u)
-#define CANRX_INV_STATE_DIRECT_CONNECT_LENGTH       (CAN_BIT)
 #define CANRX_INV_STATE_CRC_START_BIT               (56u)
 #define CANRX_INV_STATE_CRC_LENGTH                  (8u)
 /** @} */
@@ -35,12 +33,6 @@
  */
 static void CANRX_SetPrechargeAllowedFlag(uint64_t messageData);
 
-/**
- * @brief   sets the direct connect flag
- * @param[in] messageData contents of the inv state message
- */
-static void CANRX_SetDirectConnectFlag(uint64_t messageData);
-
 /*========== Static Function Implementations ================================*/
 
 static void CANRX_SetPrechargeAllowedFlag(uint64_t messageData) {
@@ -53,18 +45,6 @@ static void CANRX_SetPrechargeAllowedFlag(uint64_t messageData) {
         CANRX_INV_STATE_ENDIANNESS);
 
     BMS_SetPrechargeAllowedFlag((bool)signalData);
-}
-
-static void CANRX_SetDirectConnectFlag(uint64_t messageData) {
-    uint64_t signalData = 0u;
-    CAN_RxGetSignalDataFromMessageData(
-        messageData,
-        CANRX_INV_STATE_DIRECT_CONNECT_START_BIT,
-        CANRX_INV_STATE_DIRECT_CONNECT_LENGTH,
-        &signalData,
-        CANRX_INV_STATE_ENDIANNESS);
-
-    BMS_SetDirectConnectFlag((bool)signalData);
 }
 
 /*========== Extern Function Implementations ================================*/
@@ -97,9 +77,6 @@ extern uint32_t CANRX_InverterState(
     if (crc == (uint8_t)crc_received) {
         /* Set Precharge Allowed Flag */
         CANRX_SetPrechargeAllowedFlag(messageData);
-
-        /* Set Direct Connect Flag */
-        CANRX_SetDirectConnectFlag(messageData);
 
         /* Save tick from this message */
         BMS_SetLastInverterTick();

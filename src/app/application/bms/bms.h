@@ -85,7 +85,6 @@ typedef enum {
     BMS_STATEMACH_OPEN_CONTACTORS,
     BMS_STATEMACH_STANDBY,
     BMS_STATEMACH_PRECHARGE,
-    BMS_STATEMACH_DIRECTCONNECT,
     BMS_STATEMACH_NORMAL,
     BMS_STATEMACH_CHARGE,
     BMS_STATEMACH_ERROR,
@@ -101,7 +100,6 @@ typedef enum {
     BMS_CAN_STATE_OPEN_CONTACTORS,
     BMS_CAN_STATE_STANDBY,
     BMS_CAN_STATE_PRECHARGE,
-    BMS_CAN_STATE_DIRECTCONNECT,
     BMS_CAN_STATE_NORMAL,
     BMS_CAN_STATE_CHARGE,
     BMS_CAN_STATE_ERROR,
@@ -116,10 +114,6 @@ typedef enum {
     BMS_PRECHARGE_CHECK_VOLTAGES,
     BMS_PRECHARGE_OPEN_PRECHARGE,
     BMS_PRECHARGE_CHECK_OPEN_PRECHARGE,
-    BMS_DIRECTCONNECT_CHECK_VOLTAGES,           /*!< Cellsisus: check voltages before direct connection */
-    BMS_DIRECTCONNECT_CHECK_MAIN_CONTACTOR,     /*!< Cellsisus: check if main contactor is closed */
-    BMS_DIRECTCONNECT_CHECK_ERROR_FLAGS,        /*!< Cellsisus: check if any error flag is set */
-    BMS_DIRECTCONNECT_CHECK_ERROR_FLAGS_CLOSED, /*!< Cellsisus: check if any error flag is set when Main is closed */
     BMS_CHECK_CLOSE_MAIN_CONTACTOR_PRECHARGE_STATE,
     BMS_CHECK_ERROR_FLAGS_PRECHARGE_FIRST_STRING,
     BMS_CHECK_ERROR_FLAGS_PRECHARGE_CLOSING_STRINGS,
@@ -155,7 +149,6 @@ enum {
     SHUTDOWNBIT_OVERCURRENT_DISCHARGE  = (1u << 1),
     SHUTDOWNBIT_PRECHARGE_VOLTAGE      = (1u << 2),
     SHUTDOWNBIT_PRECHARGE_CURRENT      = (1u << 3),
-    SHUTDOWNBIT_DIRECTCONNECT_ABORT    = (1u << 4),
     SHUTDOWNBIT_CONTACTOR_FEEDBACK     = (1u << 5),
     SHUTDOWNBIT_CURRENT_ON_OPEN_STRING = (1u << 6),
 };
@@ -200,7 +193,6 @@ typedef struct {
     bool allow_hv;                                       /*!< Cellsius: Allow HV signal from DHVC */
     bool faultDisarmOnEntry;                             /*!< Cellsius: Fault_Disarm signal on entry to error state */
     bool prechargeAllowedFlag;                           /*!< Cellsius: Precharge_Allowed signal from Inverter */
-    bool directConnectFlag;                              /*!< Cellsius: Direct_Connect signal from Inverter */
     uint32_t last_inverter_tick;                         /*!< Cellsius: Last tick from Inverter */
     uint8_t shutdown_bits;                               /*!< Cellsius: Error bits that caused shutdown */
 } BMS_STATE_s;
@@ -266,12 +258,6 @@ extern void BMS_SetAllowHV(bool allow_hv);
  * @param   prechargeAllowedFlag    Value transmitted by Inverter
  */
 extern void BMS_SetPrechargeAllowedFlag(bool prechargeAllowedFlag);
-
-/**
- * @brief   Sets the Direct Connect Flag
- * @param   directConnectFlag    Value transmitted by Inverter
- */
-extern void BMS_SetDirectConnectFlag(bool directConnectFlag);
 
 /**
  * @brief   Saves the current tick when Inverter message is received

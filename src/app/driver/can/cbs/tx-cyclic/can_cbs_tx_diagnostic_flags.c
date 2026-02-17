@@ -83,14 +83,13 @@
 #define CANTX_DIAG_PLAUSIBILITY_CELL_TEMP    (11u)
 #define CANTX_DIAG_PRECHARGE_VOLTAGE         (12u)
 #define CANTX_DIAG_PRECHARGE_CURRENT         (13u)
-#define CANTX_DIAG_DIRECTCONNECT_ABORT       (14u)
-#define CANTX_DIAG_CONTACTOR_FEEDBACK        (15u)
-#define CANTX_DIAG_CURRENT_SENSOR            (16u)
-#define CANTX_DIAG_CURRENT_ON_OPEN_STRING    (17u)
-#define CANTX_DIAG_AFE_COMMUNICATION         (18u)
-#define CANTX_DIAG_AFE_OPEN_WIRE             (19u)
-#define CANTX_DIAG_SYSTEM_CAUTION            (20u)
-#define CANTX_DIAG_SYSTEM_WARNING            (21u)
+#define CANTX_DIAG_CONTACTOR_FEEDBACK        (14u)
+#define CANTX_DIAG_CURRENT_SENSOR            (15u)
+#define CANTX_DIAG_CURRENT_ON_OPEN_STRING    (16u)
+#define CANTX_DIAG_AFE_COMMUNICATION         (17u)
+#define CANTX_DIAG_AFE_OPEN_WIRE             (18u)
+#define CANTX_DIAG_SYSTEM_CAUTION            (19u)
+#define CANTX_DIAG_SYSTEM_WARNING            (20u)
 
 /*========== Static Constant and Variable Definitions =======================*/
 
@@ -280,13 +279,6 @@ static void CANTX_BuildDiagnosticFlagsMessage(const CAN_SHIM_s *const kpkCanShim
         data = 1u;
     CAN_TxSetMessageDataWithSignalData(
         pMessageData, CANTX_DIAG_PRECHARGE_CURRENT, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
-
-    /* Error: Direct connect abort */
-    data = CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->directConnectAborted[BS_STRING0]);
-    if (latch & SHUTDOWNBIT_DIRECTCONNECT_ABORT)
-        data = 1u;
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData, CANTX_DIAG_DIRECTCONNECT_ABORT, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
 }
 
 /*========== Extern Function Implementations ================================*/

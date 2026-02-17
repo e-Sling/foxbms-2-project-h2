@@ -163,9 +163,6 @@
 /* Precharge threshold limit on current (in mA) */
 #define BMS_PRECHARGE_CURRENT_THRESHOLD_mA (200)
 
-/* Direct Connect threshold limit on voltage (in mV) */
-#define BMS_DIRECT_CONNECT_VOLTAGE_THRESHOLD_mV (5000LL)
-
 /* Timeout of inverter CAN message. If no message is received, precharge shall be started anyways */
 #define BMS_INVERTER_MESSAGE_TIMEOUT (5000u)
 

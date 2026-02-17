@@ -365,7 +365,6 @@ typedef struct {
                                                 insulation fault detected */
     bool prechargeAbortedDueToVoltage[BS_NR_OF_STRINGS];     /*!< false -> no error, true -> error */
     bool prechargeAbortedDueToCurrent[BS_NR_OF_STRINGS];     /*!< false -> no error, true -> error */
-    bool directConnectAborted[BS_NR_OF_STRINGS];             /*!< false -> no error, true -> error */
     bool deepDischargeDetectedError[BS_NR_OF_STRINGS];       /*!< false -> no error, true -> error */
     bool currentOnOpenStringDetectedError[BS_NR_OF_STRINGS]; /*!< false -> no error, true -> error */
     bool mcuSbcFinError;                    /*!< false -> no error, true -> error: short-circuit to RSTB */
