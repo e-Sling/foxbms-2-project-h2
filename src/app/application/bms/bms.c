@@ -170,14 +170,6 @@ static BMS_STATE_REQUEST_e BMS_TransferStateRequest(void);
 static uint8_t BMS_CheckReEntrance(void);
 
 /**
- * @brief   Checks the state requests made to the BMS state machine.
- * @details Checks of the state request in the database and sets this value as
- *          return value.
- * @return  requested state
- */
-static uint8_t BMS_CheckCanRequests(void);
-
-/**
  * @brief   Checks all the error flags from diagnosis module with a severity of
  *          #DIAG_FATAL_ERROR
  * @details Checks all the error flags from diagnosis module with a severity of
@@ -304,27 +296,6 @@ static BMS_STATE_REQUEST_e BMS_TransferStateRequest(void) {
 
 static void BMS_GetMeasurementValues(void) {
     DATA_READ_DATA(&bms_tablePackValues, &bms_tableOpenWire, &bms_tableMinMax);
-}
-
-static uint8_t BMS_CheckCanRequests(void) {
-    uint8_t retVal                     = BMS_REQ_ID_NOREQ;
-    DATA_BLOCK_STATE_REQUEST_s request = {.header.uniqueId = DATA_BLOCK_ID_STATE_REQUEST};
-
-    DATA_READ_DATA(&request);
-
-    if (request.stateRequestViaCan == BMS_REQ_ID_STANDBY) {
-        retVal = BMS_REQ_ID_STANDBY;
-    } else if (request.stateRequestViaCan == BMS_REQ_ID_NORMAL) {
-        retVal = BMS_REQ_ID_NORMAL;
-    } else if (request.stateRequestViaCan == BMS_REQ_ID_CHARGE) {
-        retVal = BMS_REQ_ID_CHARGE;
-    } else if (request.stateRequestViaCan == BMS_REQ_ID_NOREQ) {
-        retVal = BMS_REQ_ID_NOREQ;
-    } else {
-        /* invalid or no request, default to BMS_REQ_ID_NOREQ (already set) */
-    }
-
-    return retVal;
 }
 
 static void BMS_CheckOpenSenseWire(void) {
