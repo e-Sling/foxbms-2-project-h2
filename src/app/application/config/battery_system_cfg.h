@@ -110,7 +110,7 @@ typedef enum {
  *          <a href="../../../../introduction/naming-conventions.html" target="_blank">Naming Conventions</a>.
  * @ptype   uint
  */
-#define BS_NR_OF_MODULES_PER_STRING (15u)
+#define BS_NR_OF_MODULES_PER_STRING (1u)
 
 /**
  * @brief   number of cells per module
@@ -120,7 +120,7 @@ typedef enum {
  *          <a href="../../../../introduction/naming-conventions.html" target="_blank">Naming Conventions</a>.
  * @ptype   uint
  */
-#define BS_NR_OF_CELL_BLOCKS_PER_MODULE (12u)
+#define BS_NR_OF_CELL_BLOCKS_PER_MODULE (1u)
 
 /**
  * @brief   number of parallel connected battery cells in a cell block
@@ -128,13 +128,13 @@ typedef enum {
  *          <a href="../../../../introduction/naming-conventions.html" target="_blank">Naming Conventions</a>.
  * @ptype   uint
  */
-#define BS_NR_OF_PARALLEL_CELLS_PER_CELL_BLOCK (2u)
+#define BS_NR_OF_PARALLEL_CELLS_PER_CELL_BLOCK (1u)
 
 /**
  * @brief   number of temperature sensors per battery module
  * @ptype   int
  */
-#define BS_NR_OF_TEMP_SENSORS_PER_MODULE (12u)
+#define BS_NR_OF_TEMP_SENSORS_PER_MODULE (1u)
 
 #if BS_NR_OF_TEMP_SENSORS_PER_MODULE > SLV_NR_OF_GPIOS_PER_MODULE
 #error "Number of temperature inputs cannot be higher than number of GPIOs"
@@ -156,7 +156,7 @@ typedef enum {
  *            sensor. If sensor stops responding during runtime, an error is
  *            raised.
  */
-#define BS_CURRENT_SENSOR_PRESENT (true)
+#define BS_CURRENT_SENSOR_PRESENT (false)
 
 #if BS_CURRENT_SENSOR_PRESENT == true
 /**
