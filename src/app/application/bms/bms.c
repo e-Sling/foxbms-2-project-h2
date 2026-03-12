@@ -481,6 +481,10 @@ static void BMS_UpdateBatterySystemState(DATA_BLOCK_PACK_VALUES_s *pPackValues) 
                 if (bms_state.restTimer_10ms == 0u) {
                     /* Rest timer elapsed -> battery system at rest */
                     bms_state.currentFlowState = BMS_AT_REST;
+                } else if (bms_state.restTimer_10ms <= BS_SHORT_REST_PERIOD_10ms) {
+                    /* Short rest elapsed -> short rest */
+                    bms_state.restTimer_10ms--;
+                    bms_state.currentFlowState = BMS_SHORT_REST;
                 } else {
                     bms_state.restTimer_10ms--;
                     bms_state.currentFlowState = BMS_RELAXATION;
@@ -500,6 +504,10 @@ static void BMS_UpdateBatterySystemState(DATA_BLOCK_PACK_VALUES_s *pPackValues) 
                 if (bms_state.restTimer_10ms == 0u) {
                     /* Rest timer elapsed -> battery system at rest */
                     bms_state.currentFlowState = BMS_AT_REST;
+                } else if (bms_state.restTimer_10ms <= BS_SHORT_REST_PERIOD_10ms) {
+                    /* Short rest elapsed -> short rest */
+                    bms_state.restTimer_10ms--;
+                    bms_state.currentFlowState = BMS_SHORT_REST;
                 } else {
                     bms_state.restTimer_10ms--;
                     bms_state.currentFlowState = BMS_RELAXATION;

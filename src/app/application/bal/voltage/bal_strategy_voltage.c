@@ -128,6 +128,10 @@ static bool BAL_ActivateBalancing(void) {
 
     DATA_READ_DATA(&cellVoltage, &minMax);
 
+    /* Cellsius: moved here to compare the cells with the set BAL threshold */
+    /* set without hysteresis so that we now balance all cells that are below the initial threshold */
+    bal_state.balancingThreshold = BAL_GetBalancingThreshold_mV();
+
     for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
         int16_t min              = minMax.minimumCellVoltage_mV[s];
         uint16_t nrBalancedCells = 0u;
@@ -136,10 +140,8 @@ static bool BAL_ActivateBalancing(void) {
                 if (cellVoltage.cellVoltage_mV[s][m][cb] > (min + bal_state.balancingThreshold)) {
                     bal_balancing.activateBalancing[s][m][cb] = true;
                     finished                                  = false;
-                    /* set without hysteresis so that we now balance all cells that are below the initial threshold */
-                    bal_state.balancingThreshold  = BAL_GetBalancingThreshold_mV();
-                    bal_state.active              = true;
-                    bal_balancing.enableBalancing = true;
+                    bal_state.active                          = true;
+                    bal_balancing.enableBalancing             = true;
                     nrBalancedCells++;
                 } else {
                     bal_balancing.activateBalancing[s][m][cb] = false;
@@ -183,7 +185,7 @@ static void BAL_ProcessStateCheckBalancing(BAL_STATE_REQUEST_e state_request) {
         BAL_Deactivate();
         bal_state.active = false;
     } else {
-        if (BMS_GetBatterySystemState() == BMS_AT_REST) {
+        if (BMS_GetBatterySystemState() == BMS_SHORT_REST || BMS_GetBatterySystemState() == BMS_AT_REST) {
             bal_state.state    = BAL_STATEMACH_BALANCE;
             bal_state.substate = BAL_ENTRY;
         }
@@ -241,7 +243,7 @@ static void BAL_ProcessStateBalancing(BAL_STATE_REQUEST_e state_request) {
         bal_state.timer = BAL_STATEMACH_BALANCING_TIME_100ms;
         return;
     } else if (bal_state.substate == BAL_CHECK_CURRENT) {
-        if (BMS_GetBatterySystemState() == BMS_AT_REST) {
+        if (BMS_GetBatterySystemState() == BMS_SHORT_REST || BMS_GetBatterySystemState() == BMS_AT_REST) {
             bal_state.substate = BAL_ACTIVATE_BALANCING;
         } else {
             if (bal_state.active == true) {

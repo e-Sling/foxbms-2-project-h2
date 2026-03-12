@@ -53,6 +53,8 @@
  */
 
 /*========== Includes =======================================================*/
+#include "bal_cfg.h"
+
 #include "bms.h"
 #include "can.h"
 /* AXIVION Next Codeline Generic-LocalInclude: 'can_cbs_tx_cyclic.h' declares
@@ -87,6 +89,10 @@
 #define CANTX_SIGNAL_BMS_FATAL_ERROR_LENGTH                    (CAN_BIT)
 #define CANTX_SIGNAL_BMS_BAT_ON_START_BIT                      (23u)
 #define CANTX_SIGNAL_BMS_BAT_ON_LENGTH                         (CAN_BIT)
+#define CANTX_SIGNAL_BMS_BALANCING_THRESHOLD_START_BIT         (24u)
+#define CANTX_SIGNAL_BMS_BALANCING_THRESHOLD_LENGTH            (8u)
+#define CANTX_SIGNAL_BMS_CURRENT_FLOW_STATE_START_BIT          (32u)
+#define CANTX_SIGNAL_BMS_CURRENT_FLOW_STATE_LENGTH             (3u)
 #define CANTX_SIGNAL_BMS_CRC_START_BIT                         (56u)
 #define CANTX_SIGNAL_BMS_CRC_LENGTH                            (8u)
 
@@ -181,6 +187,24 @@ static void CANTX_BuildBmsStateMessage(uint64_t *pMessageData, const CAN_SHIM_s 
         pMessageData,
         CANTX_SIGNAL_BMS_BAT_ON_START_BIT,
         CANTX_SIGNAL_BMS_BAT_ON_LENGTH,
+        data,
+        CANTX_BMS_STATE_ENDIANNESS);
+
+    /* Cellsius: Balancing Threshold */
+    data = (uint8_t)BAL_GetBalancingThreshold_mV();
+    CAN_TxSetMessageDataWithSignalData(
+        pMessageData,
+        CANTX_SIGNAL_BMS_BALANCING_THRESHOLD_START_BIT,
+        CANTX_SIGNAL_BMS_BALANCING_THRESHOLD_LENGTH,
+        data,
+        CANTX_BMS_STATE_ENDIANNESS);
+
+    /* Cellsius: Current Flow State */
+    data = (uint8_t)BMS_GetBatterySystemState();
+    CAN_TxSetMessageDataWithSignalData(
+        pMessageData,
+        CANTX_SIGNAL_BMS_CURRENT_FLOW_STATE_START_BIT,
+        CANTX_SIGNAL_BMS_CURRENT_FLOW_STATE_LENGTH,
         data,
         CANTX_BMS_STATE_ENDIANNESS);
 

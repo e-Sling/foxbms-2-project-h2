@@ -74,15 +74,12 @@ static int32_t bal_threshold_mV = BAL_DEFAULT_THRESHOLD_mV;
 /*========== Extern Function Implementations ================================*/
 extern void BAL_SetBalancingThreshold(int32_t threshold_mV) {
     int32_t boundedThreshold_mV = threshold_mV;
-    if (boundedThreshold_mV > BAL_MAXIMUM_THRESHOLD_mV) {
-        boundedThreshold_mV = BAL_MAXIMUM_THRESHOLD_mV;
+    /* Cellsius: only set the value received by CAN if within bounds, else ignore */
+    if (boundedThreshold_mV >= BAL_MINIMUM_THRESHOLD_mV && boundedThreshold_mV <= BAL_MAXIMUM_THRESHOLD_mV) {
+        OS_EnterTaskCritical();
+        bal_threshold_mV = boundedThreshold_mV;
+        OS_ExitTaskCritical();
     }
-    if (boundedThreshold_mV < BAL_MINIMUM_THRESHOLD_mV) {
-        boundedThreshold_mV = BAL_MINIMUM_THRESHOLD_mV;
-    }
-    OS_EnterTaskCritical();
-    bal_threshold_mV = boundedThreshold_mV;
-    OS_ExitTaskCritical();
 }
 
 extern int32_t BAL_GetBalancingThreshold_mV(void) {
