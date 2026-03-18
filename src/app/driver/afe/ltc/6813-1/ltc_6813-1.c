@@ -2939,18 +2939,6 @@ void LTC_Trigger(LTC_STATE_s *ltc_state) {
                             ltc_state->ltcData.openWireDetection->openWirePdown[ltc_state->requestedString][i];
                     }
 
-                    /* Open-wire at C(N): delta cell(n+1) < -400mV */
-                    for (uint8_t m = 0u; m < BS_NR_OF_MODULES_PER_STRING; m++) {
-                        for (uint8_t c = 1u; c < (BS_NR_OF_CELL_BLOCKS_PER_MODULE - 1); c++) {
-                            if (ltc_state->ltcData.openWireDetection
-                                    ->openWireDelta[ltc_state->requestedString]
-                                                   [c + (m * BS_NR_OF_CELL_BLOCKS_PER_MODULE)] < LTC_ADOW_THRESHOLD) {
-                                ltc_state->ltcData.openWire->openWire[ltc_state->requestedString]
-                                                                     [c + (m * BS_NR_OF_CELL_BLOCKS_PER_MODULE)] = 1;
-                            }
-                        }
-                    }
-
                     /* Write database entry */
                     DATA_WRITE_DATA(ltc_state->ltcData.openWire);
                     /* Start new measurement cycle */
