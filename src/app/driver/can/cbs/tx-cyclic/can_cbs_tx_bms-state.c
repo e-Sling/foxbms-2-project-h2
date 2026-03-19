@@ -172,7 +172,7 @@ static void CANTX_BuildBmsStateMessage(uint64_t *pMessageData, const CAN_SHIM_s 
         data,
         CANTX_BMS_STATE_ENDIANNESS);
 
-    /* Fatal error - Cellsius: Master Warning */
+    /* Fatal error -> Cellsius: Master Warning */
     data = CAN_ConvertBooleanToInteger(DIAG_IsAnyFatalErrorSet()) || BMS_GetState() == BMS_STATEMACH_ERROR;
     CAN_TxSetMessageDataWithSignalData(
         pMessageData,

@@ -363,8 +363,7 @@ static STD_RETURN_TYPE_e BMS_CheckPrecharge(uint8_t stringNumber, const DATA_BLO
 }
 
 static bool BMS_IsAnyFatalErrorFlagSet(void) {
-    bool fatalErrorActive           = false;
-    bms_state.minimumActiveDelay_ms = BMS_NO_ACTIVE_DELAY_TIME_ms;
+    bool fatalErrorActive = false;
 
     for (uint16_t entry = 0u; entry < diag_device.numberOfFatalErrors; entry++) {
         const STD_RETURN_TYPE_e diagnosisState =
@@ -668,23 +667,17 @@ extern void BMS_LatchShutdownBits(void) {
     if (es.currentOnOpenStringDetectedError[BS_STRING0])
         bits |= SHUTDOWNBIT_CURRENT_ON_OPEN_STRING;
 
-    OS_EnterTaskCritical();
     bms_state.shutdown_bits |= bits;
-    OS_ExitTaskCritical();
 }
 
 extern uint8_t BMS_GetLatchedShutdownBits(void) {
     uint8_t bits;
-    OS_EnterTaskCritical();
     bits = bms_state.shutdown_bits;
-    OS_ExitTaskCritical();
     return bits;
 }
 
 extern void BMS_ClearLatchedShutdownBits(void) {
-    OS_EnterTaskCritical();
     bms_state.shutdown_bits = 0u;
-    OS_ExitTaskCritical();
 }
 
 BMS_RETURN_TYPE_e BMS_SetStateRequest(BMS_STATE_REQUEST_e statereq) {
@@ -817,16 +810,10 @@ void BMS_Trigger(void) {
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
                 /* Cellsius: Go to standby without request */
-                if (true) {
-                    bms_state.timer     = BMS_STATEMACH_SHORTTIME;
-                    bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
-                    bms_state.nextState = BMS_STATEMACH_STANDBY;
-                    bms_state.substate  = BMS_ENTRY;
-                    break;
-                } else {
-                    bms_state.timer    = BMS_STATEMACH_SHORTTIME;
-                    bms_state.substate = BMS_CHECK_ERROR_FLAGS;
-                }
+                bms_state.timer     = BMS_STATEMACH_SHORTTIME;
+                bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
+                bms_state.nextState = BMS_STATEMACH_STANDBY;
+                bms_state.substate  = BMS_ENTRY;
                 break;
             }
             break;
@@ -1361,6 +1348,7 @@ void BMS_Trigger(void) {
                     }
                 } else {
                     /* No error detected anymore - reset fatal error related variables */
+                    bms_state.minimumActiveDelay_ms  = BMS_NO_ACTIVE_DELAY_TIME_ms;
                     bms_state.remainingDelay_ms      = BMS_NO_ACTIVE_DELAY_TIME_ms;
                     bms_state.transitionToErrorState = false;
                     /* Check for STANDBY request */
