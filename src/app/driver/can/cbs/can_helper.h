@@ -189,7 +189,6 @@ extern uint8_t CAN_ConvertBooleanToInteger(bool input);
  * @brief   Cellsius: Convert flags to error level for HMI display
  */
 extern int8_t CAN_ConvertFlagstoErrorLevel(
-    bool spread,
     bool error_lower,
     bool warning_lower,
     bool info_lower,

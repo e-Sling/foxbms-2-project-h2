@@ -299,8 +299,9 @@ static void BMS_GetMeasurementValues(void) {
 }
 
 static void BMS_CheckOpenSenseWire(void) {
+    uint8_t openWireDetected = 0;
+
     for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
-        uint8_t openWireDetected = 0;
         /* Iterate over all modules */
         for (uint8_t m = 0u; m < BS_NR_OF_MODULES_PER_STRING; m++) {
             /* Iterate over all voltage sense wires: cells per module + 1 */

@@ -186,7 +186,7 @@ typedef enum {
  *          above this value. The fuse should trigger to interrupt current
  *          flows above this value.
  */
-#define BS_MAIN_CONTACTORS_MAXIMUM_BREAK_CURRENT_mA (175000)
+#define BS_MAIN_CONTACTORS_MAXIMUM_BREAK_CURRENT_mA (500000)
 
 /**
  * @brief   Maximum fuse trigger duration
