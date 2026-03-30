@@ -87,7 +87,7 @@
 #define BAL_LOWER_VOLTAGE_LIMIT_mV (3000)
 
 /** BAL upper temperature limit in deci &deg;C */
-#define BAL_UPPER_TEMPERATURE_LIMIT_ddegC (500)
+#define BAL_UPPER_TEMPERATURE_LIMIT_ddegC (400)
 
 /*========== Extern Constant and Variable Declarations ======================*/
 
