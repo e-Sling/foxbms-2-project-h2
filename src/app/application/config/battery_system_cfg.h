@@ -263,7 +263,7 @@ typedef enum {
  * @brief   Wait time in 10ms before battery system is at rest. Recalibration
  *          of SoE/SoC for example only starts if battery system is at rest.
  */
-#define BS_RELAXATION_PERIOD_10ms (60000u) /* 10 minutes */
+#define BS_RELAXATION_PERIOD_10ms (30000u) /* 5 minutes */
 
 /**
  * @brief   Wait time in 10ms before battery system is at short rest. Balancing for
