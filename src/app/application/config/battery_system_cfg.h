@@ -82,10 +82,7 @@ typedef enum {
 
 /** Symbolic identifiers for strings. */
 typedef enum {
-    BS_STRING0    = 0u,
-    BS_STRING1    = 1u,
-    BS_STRING2    = 2u,
-    BS_STRING_MAX = 3u,
+    BS_STRING0 = 0u,
 } BS_STRING_ID_e;
 
 /** Define if discharge current is seen as positive or negative */
@@ -215,7 +212,7 @@ typedef enum {
  * @details When maximum safety limit (MSL) is violated, error state is
  *          requested and contactors will open.
  */
-#define BS_MAXIMUM_PACK_CURRENT_mA (80000u * BS_NR_OF_STRINGS)
+#define BS_MAXIMUM_PACK_CURRENT_mA (BS_MAXIMUM_STRING_CURRENT_mA * BS_NR_OF_STRINGS)
 
 /**
  * @brief   Define if interlock feedback should be discarded or not
@@ -230,15 +227,16 @@ typedef enum {
  *          - If set to true, foxBMS checks CAN timing. A valid request must
  *            come every 100ms, within the 95-105ms window.
  */
-#define BS_CHECK_CAN_TIMING (true)
+#define BS_CHECK_CAN_TIMING (false)
 
 /**
  * @brief   Defines whether balancing shall be available or not
  * @details - If set to true, balancing is deactivated completely.
  *          - If set to false, foxBMS checks when balancing must be done and
  *            activates it accordingly.
+ *          Cellsius: Balancing is globally deactivated, but can be activated via CAN
  */
-#define BS_BALANCING_DEFAULT_INACTIVE (false)
+#define BS_BALANCING_DEFAULT_INACTIVE (true)
 
 /**
  * @brief   number of high voltage inputs measured by current sensors (like
@@ -247,8 +245,8 @@ typedef enum {
  */
 #define BS_NR_OF_VOLTAGES_FROM_CURRENT_SENSOR (3u)
 
-/** Number of contactors in addition to string contactors (e.g., PRECHARGE).*/
-#define BS_NR_OF_CONTACTORS_OUTSIDE_STRINGS (1u)
+/** Number of contactors in addition to string contactors (PRECHARGE, MAIN).*/
+#define BS_NR_OF_CONTACTORS_OUTSIDE_STRINGS (2u)
 
 /** Total number of contactors in system:
  *  - Two contactors per string (string+ and string-)
@@ -262,10 +260,16 @@ typedef enum {
 #define BS_REST_CURRENT_mA (200)
 
 /**
- * @brief   Wait time in 10ms before battery system is at rest. Balancing for
- *          example only starts if battery system is at rest.
+ * @brief   Wait time in 10ms before battery system is at rest. Recalibration
+ *          of SoE/SoC for example only starts if battery system is at rest.
  */
-#define BS_RELAXATION_PERIOD_10ms (60000u)
+#define BS_RELAXATION_PERIOD_10ms (30000u) /* 5 minutes */
+
+/**
+ * @brief   Wait time in 10ms before battery system is at short rest. Balancing for
+ *          example only starts if battery system is at short rest.
+ */
+#define BS_SHORT_REST_PERIOD_10ms (BS_RELAXATION_PERIOD_10ms - 12000u) /* 2 minutes */
 
 /**
  * @brief   current sensor threshold for 0 current in mA as the sensor has a
@@ -297,7 +301,7 @@ typedef enum {
  *          -----+---| FUSE |-----+------------/   -----------------
  *                   +------+
  */
-#define BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH (true)
+#define BS_CHECK_FUSE_PLACED_IN_NORMAL_PATH (false)
 
 /**
  * @brief   TODO
@@ -323,7 +327,7 @@ typedef enum {
  * @{
  */
 /** enable open-wire checks during standby */
-#define BS_STANDBY_PERIODIC_OPEN_WIRE_CHECK (false)
+#define BS_STANDBY_PERIODIC_OPEN_WIRE_CHECK (true)
 
 /** Periodic open-wire check time in STANDBY state in ms */
 #define BS_STANDBY_OPEN_WIRE_PERIOD_ms (600000)

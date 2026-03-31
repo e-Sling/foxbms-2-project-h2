@@ -72,21 +72,9 @@ typedef enum {
     BMS_CHARGING,    /*!< battery is charged */
     BMS_DISCHARGING, /*!< battery is discharged */
     BMS_RELAXATION,  /*!< battery relaxation ongoing */
+    BMS_SHORT_REST,  /*!< Cellsius: short rest, used for BAL */
     BMS_AT_REST,     /*!< battery is resting */
 } BMS_CURRENT_FLOW_STATE_e;
-
-/** Symbolic names for busyness of the BMS control */
-typedef enum {
-    BMS_CHECK_OK,     /*!< BMS control ok */
-    BMS_CHECK_BUSY,   /*!< BMS control busy */
-    BMS_CHECK_NOT_OK, /*!< BMS control not ok */
-} BMS_CHECK_e;
-
-/** Symbolic names to take precharge into account or not */
-typedef enum {
-    BMS_DO_NOT_TAKE_PRECHARGE_INTO_ACCOUNT, /*!< do not take precharge into account */
-    BMS_TAKE_PRECHARGE_INTO_ACCOUNT,        /*!< do take precharge into account */
-} BMS_CONSIDER_PRECHARGE_e;
 
 /** States of the BMS state machine */
 typedef enum {
@@ -98,12 +86,10 @@ typedef enum {
     BMS_STATEMACH_OPEN_CONTACTORS,
     BMS_STATEMACH_STANDBY,
     BMS_STATEMACH_PRECHARGE,
+    BMS_STATEMACH_DIRECTCONNECT,
     BMS_STATEMACH_NORMAL,
-    BMS_STATEMACH_DISCHARGE,
     BMS_STATEMACH_CHARGE,
     BMS_STATEMACH_ERROR,
-    BMS_STATEMACH_UNDEFINED,
-    BMS_STATEMACH_RESERVED1,
 } BMS_STATEMACH_e;
 
 /** CAN states of the BMS state machine */
@@ -116,6 +102,7 @@ typedef enum {
     BMS_CAN_STATE_OPEN_CONTACTORS,
     BMS_CAN_STATE_STANDBY,
     BMS_CAN_STATE_PRECHARGE,
+    BMS_CAN_STATE_DIRECTCONNECT,
     BMS_CAN_STATE_NORMAL,
     BMS_CAN_STATE_CHARGE,
     BMS_CAN_STATE_ERROR,
@@ -123,38 +110,23 @@ typedef enum {
 
 /** Substates of the BMS state machine */
 typedef enum {
-    BMS_ENTRY,                        /*!< Substate entry state */
-    BMS_CHECK_ERROR_FLAGS_INTERLOCK,  /*!< Substate check measurements after interlock closed */
-    BMS_INTERLOCK_CHECKED,            /*!< Substate interlocked checked */
-    BMS_CHECK_STATE_REQUESTS,         /*!< Substate check if there is a state request */
-    BMS_CHECK_BALANCING_REQUESTS,     /*!< Substate check if there is a balancing request */
-    BMS_CHECK_ERROR_FLAGS,            /*!< Substate check if any error flag set */
-    BMS_CHECK_CONTACTOR_NORMAL_STATE, /*!< Substate in precharge, check if there contactors reached normal */
-    BMS_CHECK_CONTACTOR_CHARGE_STATE, /*!< Substate in precharge, check if there contactors reached normal */
-    BMS_PRECHARGE_CLOSE_MINUS,
+    BMS_ENTRY,                /*!< Substate entry state */
+    BMS_CHECK_STATE_REQUESTS, /*!< Substate check if there is a state request */
+    BMS_CHECK_ERROR_FLAGS,    /*!< Substate check if any error flag set */
     BMS_PRECHARGE_CLOSE_PRECHARGE,
     BMS_PRECHARGE_CHECK_VOLTAGES,
     BMS_PRECHARGE_OPEN_PRECHARGE,
     BMS_PRECHARGE_CHECK_OPEN_PRECHARGE,
-    BMS_OPEN_FIRST_CONTACTOR,
-    BMS_OPEN_SECOND_CONTACTOR_MINUS,
-    BMS_OPEN_SECOND_CONTACTOR_PLUS,
-    BMS_CHECK_CLOSE_SECOND_STRING_CONTACTOR_PRECHARGE_STATE,
-    BMS_CHECK_ERROR_FLAGS_PRECHARGE,
+    BMS_CHECK_CLOSE_MAIN_CONTACTOR_PRECHARGE_STATE,
     BMS_CHECK_ERROR_FLAGS_PRECHARGE_FIRST_STRING,
-    BMS_PRECHARGE_CLOSE_NEXT_STRING,
-    BMS_CLOSE_SECOND_CONTACTOR_PLUS,
-    BMS_CHECK_STRING_CLOSED,
     BMS_CHECK_ERROR_FLAGS_PRECHARGE_CLOSING_STRINGS,
     BMS_CHECK_ERROR_FLAGS_CLOSING_PRECHARGE,
-    BMS_NORMAL_CLOSE_NEXT_STRING,
-    BMS_NORMAL_CLOSE_SECOND_STRING_CONTACTOR,
     BMS_OPEN_ALL_PRECHARGE_CONTACTORS,
-    BMS_CHECK_ALL_PRECHARGE_CONTACTORS_OPEN,
-    BMS_OPEN_STRINGS_ENTRY,
     BMS_OPEN_FIRST_STRING_CONTACTOR,
     BMS_OPEN_SECOND_STRING_CONTACTOR,
     BMS_CHECK_SECOND_STRING_CONTACTOR,
+    BMS_OPEN_MAIN_CONTACTOR,  /*!< Cellsius: open main contactor in HV-PDU */
+    BMS_CHECK_MAIN_CONTACTOR, /*!< Cellsius: check if main contactor opened */
     BMS_HANDLE_SUPPLY_VOLTAGE_30C_LOSS,
     BMS_OPEN_STRINGS_EXIT,
 } BMS_STATEMACH_SUB_e;
@@ -174,12 +146,15 @@ typedef enum {
     BMS_ALREADY_INITIALIZED, /*!< error: BMS state machine already initialized */
 } BMS_RETURN_TYPE_e;
 
-/** Power path type (discharge or charge) */
-typedef enum {
-    BMS_POWER_PATH_OPEN, /* contactors open */
-    BMS_POWER_PATH_0,    /* power path */
-    BMS_POWER_PATH_1,    /* second power path */
-} BMS_POWER_PATH_TYPE_e;
+/* Error bits that caused shutdown */
+enum {
+    SHUTDOWNBIT_OVERCURRENT_CHARGE     = (1u << 0),
+    SHUTDOWNBIT_OVERCURRENT_DISCHARGE  = (1u << 1),
+    SHUTDOWNBIT_PRECHARGE_VOLTAGE      = (1u << 2),
+    SHUTDOWNBIT_PRECHARGE_CURRENT      = (1u << 3),
+    SHUTDOWNBIT_CONTACTOR_FEEDBACK     = (1u << 5),
+    SHUTDOWNBIT_CURRENT_ON_OPEN_STRING = (1u << 6),
+};
 
 /**
  * This structure contains all the variables relevant for the CONT state
@@ -201,15 +176,11 @@ typedef struct {
     uint32_t restTimer_10ms;                    /*!< timer until battery system is at rest */
     uint16_t OscillationTimeout;                /*!< timeout to prevent oscillation of contactors */
     uint8_t prechargeTryCounter;                /*!< timeout to prevent oscillation of contactors */
-    BMS_POWER_PATH_TYPE_e powerPath;            /*!< power path type (discharge or charge) */
     uint8_t numberOfClosedStrings;              /*!< number of closed strings */
     uint16_t stringOpenTimeout;                 /*!< timeout to abort if string opening takes too long */
-    uint32_t nextStringClosedTimer;             /*!< timer to wait if the next string was closed */
     uint16_t stringCloseTimeout;                /*!< timeout to abort if a string takes too long to close */
     BMS_STATEMACH_e nextState;                  /*!< next state of the State Machine */
     uint8_t firstClosedString;                  /*!< strings with highest or lowest voltage, that was closed first */
-    uint16_t prechargeOpenTimeout;              /*!< timeout to abort if string opening takes too long */
-    uint16_t prechargeCloseTimeout;             /*!< timeout to abort if a string takes too long to close */
     uint32_t remainingDelay_ms;                 /*!< time until state machine should switch to error state */
     uint32_t minimumActiveDelay_ms;             /*!< minimum delay time of all active fatal errors */
     uint32_t timeAboveContactorBreakCurrent_ms; /*!< duration of current flow above maximum contactor break current */
@@ -218,7 +189,15 @@ typedef struct {
     bool transitionToErrorState;                /*!< flag if fatal error has been detected and delay is active */
     uint8_t closedPrechargeContactors[BS_NR_OF_STRINGS]; /*!< strings whose precharge contactors are closed */
     uint8_t closedStrings[BS_NR_OF_STRINGS];             /*!< strings whose contactors are closed */
-    uint8_t deactivatedStrings[BS_NR_OF_STRINGS]; /*!< Deactivated strings after error detection, cannot be closed */
+    bool batOnSignal;                                    /*!< Cellsius: Bat_On signal from switch in Cockpit */
+    bool batOnSignalPrev;                                /*!< Cellsius: Previous Bat_On signal */
+    bool faultDisarmFlag;                                /*!< Cellsius: Fault_Disarm signal from ECU */
+    bool flightmode;                                     /*!< Cellsius: Flightmode signal from ECU */
+    bool allow_hv;                                       /*!< Cellsius: Allow HV signal from DHVC */
+    bool faultDisarmOnEntry;                             /*!< Cellsius: Fault_Disarm signal on entry to error state */
+    bool prechargeAllowedFlag;                           /*!< Cellsius: Precharge_Allowed signal from Inverter */
+    uint32_t last_inverter_tick;                         /*!< Cellsius: Last tick from Inverter */
+    uint8_t shutdown_bits;                               /*!< Cellsius: Error bits that caused shutdown */
 } BMS_STATE_s;
 
 /*========== Extern Constant and Variable Declarations ======================*/
@@ -251,6 +230,57 @@ extern BMS_STATEMACH_e BMS_GetState(void);
  * @return  current substate, taken from BMS_STATEMACH_SUB_e
  */
 extern BMS_STATEMACH_SUB_e BMS_GetSubstate(void);
+
+/**
+ * @brief   Returns the current Bat_On signal.
+ * @details This function is used to get the current Bat_On signal state.
+ * @return  true if Bat_On is active, otherwise false
+ */
+extern bool BMS_GetBatOnSignal(void);
+
+/**
+ * @brief   Sets the Fault Disarm Flag
+ * @param   faultDisarmFlag    Value transmitted by ECU
+ */
+extern void BMS_SetFaultDisarmFlag(bool faultDisarmFlag);
+
+/**
+ * @brief   Sets Flightmode
+ * @param   flightmode    Value transmitted by ECU
+ */
+extern void BMS_SetFlightmode(bool flightmode);
+
+/**
+ * @brief   Sets Allow HV
+ * @param   allow_hv    Value transmitted by ECU
+ */
+extern void BMS_SetAllowHV(bool allow_hv);
+
+/**
+ * @brief   Sets the Precharge Allowed Flag
+ * @param   prechargeAllowedFlag    Value transmitted by Inverter
+ */
+extern void BMS_SetPrechargeAllowedFlag(bool prechargeAllowedFlag);
+
+/**
+ * @brief   Saves the current tick when Inverter message is received
+ */
+extern void BMS_SetLastInverterTick(void);
+
+/**
+ * @brief   Latches error bits that caused the shutdown
+ */
+extern void BMS_LatchShutdownBits(void);
+
+/**
+ * @brief   Gets the latched error bits that caused the shutdown
+ */
+extern uint8_t BMS_GetLatchedShutdownBits(void);
+
+/**
+ * @brief   Clears the latched error bits that caused the shutdown
+ */
+extern void BMS_ClearLatchedShutdownBits(void);
 
 /**
  * @brief   Gets the initialization state.

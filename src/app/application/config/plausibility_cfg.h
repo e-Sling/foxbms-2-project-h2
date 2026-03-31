@@ -91,8 +91,10 @@
  * @ptype   int
  * \par Range:
  * [0, 10000]
+ * @note    set to 100mV to detect cell voltage spread early
+ *          highest recorded spread: 70mV (Feb 2026)
  */
-#define PL_CELL_VOLTAGE_SPREAD_TOLERANCE_mV (300)
+#define PL_CELL_VOLTAGE_SPREAD_TOLERANCE_mV (100)
 
 /**
  * @brief   Maximum deviation between a single cell temperature measurement and
@@ -100,6 +102,8 @@
  * @ptype   int
  * \par Range:
  * [0, 100]
+ * @note    set to 10°C to detect cell temperature spread early
+ *          highest recorded spread: 7°C (Feb 2026)
  */
 #define PL_CELL_TEMPERATURE_SPREAD_TOLERANCE_dK (100)
 

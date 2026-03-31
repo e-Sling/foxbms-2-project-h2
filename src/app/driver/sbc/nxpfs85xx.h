@@ -202,6 +202,13 @@ extern STD_RETURN_TYPE_e FS85_TriggerWatchdog(FS85_STATE_s *pInstance);
  */
 extern bool FS85_CheckIgnitionSignal(FS85_STATE_s *pInstance);
 
+/**
+ * @brief           Cellsius: Check Bat_On Signal at SBC
+ * @param[in,out]   pInstance   SBC instance where BAT_ON is checked
+ * @return          true if BAT_ON signal is detected, otherwise false
+ */
+extern bool FS85_CheckBatOnSignal(FS85_STATE_s *pInstance);
+
 /*========== Externalized Static Functions Prototypes (Unit Test) ===========*/
 #ifdef UNITY_UNIT_TEST
 extern STD_RETURN_TYPE_e TEST_FS85_CheckRegisterValues(uint32_t registerValue, uint32_t expectedRegisterValue);

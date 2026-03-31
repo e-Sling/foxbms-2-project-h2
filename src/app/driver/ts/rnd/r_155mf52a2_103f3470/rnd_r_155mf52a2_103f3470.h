@@ -40,65 +40,87 @@
  */
 
 /**
- * @file    can_cbs_tx_imd-request.h
+ * @file    rnd_r_155mf52a2_103f3470.h
  * @author  foxBMS Team
- * @date    2022-11-16 (date of creation)
- * @updated 2025-03-31 (date of last update)
+ * @date    2020-12-14 (date of creation)
+ * @updated 2020-02-23 (date of last update)
  * @version v1.9.0
  * @ingroup DRIVERS
- * @prefix  CANTX
+ * @prefix  TS
  *
- * @brief   Declarations for handling the transmit of imd request messages
- * @details This header declares the interface for transmitting imd request
- *          messages and everything else that is externally required to be able
- *          to use that interface.
+ * @brief   Resistive divider used for measuring temperature
+ * @details Schematics:
+ *
+ *          V_supply
+ *            --.--
+ *              |
+ *            +-.-+
+ *            |   |
+ *            |   |  R_1
+ *            |   |
+ *            +-.-+
+ *              |
+ *              .--- V_adc
+ *              |
+ *            +-.-+
+ *            |   |
+ *            |   |  R_2
+ *            |   |
+ *            +-.-+
+ *              |
+ *            --.--
+ *             GND
  */
 
-#ifndef FOXBMS__CAN_CBS_TX_IMD_REQUEST_H_
-#define FOXBMS__CAN_CBS_TX_IMD_REQUEST_H_
+#ifndef FOXBMS__RND_R_155MF52A2_103F3470_H_
+#define FOXBMS__RND_R_155MF52A2_103F3470_H_
 
 /*========== Includes =======================================================*/
-
-#include "fstd_types.h"
-
-#include <stdint.h>
+#include "general.h"
 
 /*========== Macros and Definitions =========================================*/
-/** defines which action is performed when #CANTX_ImdRequest is called */
-typedef enum {
-    CANTX_IMD_REQUEST_OPEN_POSITIVE_RELAY,
-    CANTX_IMD_REQUEST_OPEN_NEGATIVE_RELAY,
-    CANTX_IMD_REQUEST_CLOSE_POSITIVE_RELAY,
-    CANTX_IMD_REQUEST_CLOSE_NEGATIVE_RELAY,
-    CANTX_IMD_REQUEST_POSITIVE_RELAY_STATE,
-    CANTX_IMD_REQUEST_NEGATIVE_RELAY_STATE,
-    CANTX_IMD_REQUEST_ENABLE_MEASUREMENT,
-    CANTX_IMD_REQUEST_DISABLE_MEASUREMENT,
-    CANTX_IMD_REQUEST_SET_AVERAGING_FACTOR,
-    CANTX_IMD_REQUEST_READ_RESISTANCE,
-    CANTX_IMD_REQUEST_INITIALIZATION_UNLOCK,
-    CANTX_IMD_REQUEST_INITIALIZATION_SELF_TEST,
-    CANTX_IMD_REQUEST_INITIALIZATION_SET_ERROR_THRESHOLD,
-    CANTX_IMD_REQUEST_INITIALIZATION_SET_WARNING_THRESHOLD,
-    CANTX_IMD_REQUEST_LAST_ACTION, /* always the last action, do not remove */
-} CANTX_IMD_REQUEST_ACTIONS_e;
+/**
+ * Position of the NTC in the voltage resistor
+ * TRUE: NTC is positioned above the voltage tap for the ADC voltage.
+ * This equals resistor R1 in the above circuit diagram
+ *
+ * FALSE: NTC is positioned below the voltage tap for the ADC voltage.
+ * This equals resistor R2 in the above circuit diagram
+ */
+#define R_155MF52A2_103F3470_POSITION_IN_RESISTOR_DIVIDER_IS_R1 (FALSE)
+
+/**
+ * Resistor divider supply voltage in volt
+ */
+#define R_155MF52A2_103F3470_RESISTOR_DIVIDER_SUPPLY_VOLTAGE_V (3.0f)
+
+/**
+ * Resistance value of the other resistor (not the NTC) in the resistor
+ * divider in kOhm.
+ */
+#define R_155MF52A2_103F3470_RESISTOR_DIVIDER_RESISTANCE_R1_R2_Ohm (10000.0f)
 
 /*========== Extern Constant and Variable Declarations ======================*/
+/**
+ * @brief   returns temperature based on measured ADC voltage.
+ * @param   adcVoltage_mV   voltage in mV
+ * @return  corresponding temperature in &deg;C or FLT_MAX/FLT_MIN if NTC is
+ *          shorted or got disconnected. The caller of this functions needs to
+ *          check for these return values to prevent invalid data.
+ */
+extern int16_t R_155MF52A2_103F3470_GetTempFromLUT(uint16_t adcVoltage_mV);
+
+/**
+ * @brief   returns temperature based on measured ADC voltage
+ * @param   adcVoltage_mV voltage in mV
+ * @return  corresponding temperature in &deg;C
+ */
+extern int16_t R_155MF52A2_103F3470_GetTempFromPolynomial(uint16_t adcVoltage_mV);
 
 /*========== Extern Function Prototypes =====================================*/
 
-/**
- * @brief   Handles IMD request message
- * @param   action  type of information that should be sent
- * @return  #STD_OK if transmission successful, otherwise #STD_NOT_OK
- */
-extern STD_RETURN_TYPE_e CANTX_ImdRequest(CANTX_IMD_REQUEST_ACTIONS_e action);
-
 /*========== Externalized Static Functions Prototypes (Unit Test) ===========*/
 #ifdef UNITY_UNIT_TEST
-extern STD_RETURN_TYPE_e TEST_CANTX_RequestRelayOpen(uint8_t relay);
-extern STD_RETURN_TYPE_e TEST_CANTX_RequestRelayClose(uint8_t relay);
-extern STD_RETURN_TYPE_e TEST_CANTX_RequestRelayState(uint8_t relay);
 #endif
 
-#endif /* FOXBMS__CAN_CBS_TX_IMD_REQUEST_H_ */
+#endif /* FOXBMS__RND_R_155MF52A2_103F3470_H_ */

@@ -87,7 +87,7 @@ FS85_STATE_s fs85xx_mcuSupervisor = {
     .configValues.watchdogSeed      = FS8x_WD_SEED_DEFAULT,
     .configValues.communicationMode = fs8xSPI,
     .configValues.i2cAddressOtp     = 0, /* Not used as SPI is selected */
-    .fin.finUsed                    = false,
+    .fin.finUsed                    = true,
     .fin.finState                   = STD_NOT_OK,
     .fin.pGIOport = &(systemREG1->SYSPC4), /* FIN connected to ECLK1 (ball A12): PRIVILEGE MODE REQUIRED! */
     .fin.pin      = 0,
@@ -244,7 +244,7 @@ static STD_RETURN_TYPE_e FS85_PerformPathCheckFs0b(FS85_STATE_s *pInstance);
  *  @details        Sets GOTOSTBY Bit on SBC via SPI.
  *  @param          pInstance   SBC Instance to send to Standby
  */
-static STD_RETURN_TYPE_e FS85_GoToStandby(FS85_STATE_s *pInstance);
+/* static STD_RETURN_TYPE_e FS85_GoToStandby(FS85_STATE_s *pInstance); */
 
 /*========== Static Function Implementations ================================*/
 static STD_RETURN_TYPE_e FS85_CheckRegisterValues(uint32_t registerValue, uint32_t expectedRegisterValue) {
@@ -511,7 +511,7 @@ static STD_RETURN_TYPE_e FS85_ClearRegisterFlags(
     return retval;
 }
 
-static STD_RETURN_TYPE_e FS85_GoToStandby(FS85_STATE_s *pInstance) {
+/* static STD_RETURN_TYPE_e FS85_GoToStandby(FS85_STATE_s *pInstance) {
     FAS_ASSERT(pInstance != NULL_PTR);
 
     STD_RETURN_TYPE_e retVal = STD_NOT_OK;
@@ -523,7 +523,7 @@ static STD_RETURN_TYPE_e FS85_GoToStandby(FS85_STATE_s *pInstance) {
     }
 
     return retVal;
-}
+} */
 
 /*========== Extern Function Implementations ================================*/
 extern STD_RETURN_TYPE_e FS85_InitializeFsPhase(FS85_STATE_s *pInstance) {
@@ -917,28 +917,45 @@ extern bool FS85_CheckIgnitionSignal(FS85_STATE_s *pInstance) {
     /* Default state */
     bool ignitionSignalDetected = true;
     /* variables for storing current and previous wake1 signal levels */
-    static uint16_t wake1Level    = 0u;
+    /* static uint16_t wake1Level    = 0u;
     static uint16_t oldWake1Level = 0u;
 
-    /* Read wake1 signal level */
+    / Read wake1 signal level
     fs8x_rx_frame_t rxTemp = {.deviceStatus = 0u, .readData = 0u};
     if (fs8xStatusOk ==
         FS8x_ReadRegister(pInstance->pSpiInterface, &(pInstance->configValues), false, FS8X_M_FLAG2_ADDR, &rxTemp)) {
         wake1Level = rxTemp.readData & FS8X_M_WK1RT_WAKE1_HIGH;
     }
 
-    /* Check for falling edge in wake1 signal */
+    / Check for falling edge in wake1 signal
     if ((oldWake1Level != wake1Level) && (wake1Level == 0u)) {
         if (STD_OK != FS85_GoToStandby(pInstance)) {
-            /* error in switch to standby mode, reset ole level to try again */
+            / error in switch to standby mode, reset ole level to try again
             wake1Level = oldWake1Level;
         } else {
             ignitionSignalDetected = false;
         }
     }
-    /* update old level for edge detection */
-    oldWake1Level = wake1Level;
+    / update old level for edge detection
+    oldWake1Level = wake1Level; */
     return ignitionSignalDetected;
+}
+
+/* Cellsius: Check Bat_On Signal, used on Ignition Pin */
+extern bool FS85_CheckBatOnSignal(FS85_STATE_s *pInstance) {
+    FAS_ASSERT(pInstance != NULL_PTR);
+
+    /* Default state */
+    bool wake2Level = false;
+
+    /* Read bat_on signal level */
+    fs8x_rx_frame_t rxTemp = {.deviceStatus = 0u, .readData = 0u};
+    if (fs8xStatusOk ==
+        FS8x_ReadRegister(pInstance->pSpiInterface, &(pInstance->configValues), false, FS8X_M_FLAG2_ADDR, &rxTemp)) {
+        wake2Level = rxTemp.readData & FS8X_M_WK2RT_WAKE2_HIGH;
+    }
+
+    return wake2Level;
 }
 
 extern STD_RETURN_TYPE_e FS85_InitializeNumberOfRequiredWatchdogRefreshes(

@@ -68,34 +68,15 @@
 #include <stdint.h>
 
 /*========== Macros and Definitions =========================================*/
-/**
- * @brief   CAN state request update time
- * @details When a new CAN state request is received, it leads to an update
- *          of #DATA_BLOCK_STATE_REQUEST_s::stateRequestViaCan if one of the
- *          following conditions is met:
- *
- *             - The new request is different than the old request.
- *             - The old request is older than the time span set in this define.
- */
-#define CANRX_CAN_REQUEST_UPDATE_TIME_ms (3000u)
-
 /** @{
  * defines for the state request signal data
  */
-#define CANRX_STATE_REQUEST_DISABLE_INSULATION_MONITORING_START_BIT (5u)
-#define CANRX_STATE_REQUEST_DISABLE_INSULATION_MONITORING_LENGTH    (CAN_BIT)
-#define CANRX_STATE_REQUEST_CHARGER_CONNECTED_START_BIT             (4u)
-#define CANRX_STATE_REQUEST_CHARGER_CONNECTED_LENGTH                (CAN_BIT)
-#define CANRX_STATE_REQUEST_INDICATE_PRECHARGE_TYPE_START_BIT       (3u)
-#define CANRX_STATE_REQUEST_INDICATE_PRECHARGE_TYPE_LENGTH          (CAN_BIT)
-#define CANRX_STATE_REQUEST_RESET_PERSISTENT_FLAGS_START_BIT        (2u)
-#define CANRX_STATE_REQUEST_RESET_PERSISTENT_FLAGS_LENGTH           (CAN_BIT)
-#define CANRX_STATE_REQUEST_REQUEST_BMS_MODE_START_BIT              (1u)
-#define CANRX_STATE_REQUEST_REQUEST_BMS_MODE_LENGTH                 (2u)
-#define CANRX_STATE_REQUEST_ACTIVATE_BALANCING_START_BIT            (8u)
-#define CANRX_STATE_REQUEST_ACTIVATE_BALANCING_LENGTH               (CAN_BIT)
-#define CANRX_STATE_REQUEST_SET_BALANCING_THRESHOLD_START_BIT       (23u)
-#define CANRX_STATE_REQUEST_SET_BALANCING_THRESHOLD_LENGTH          (8u)
+#define CANRX_STATE_REQUEST_SET_BALANCING_THRESHOLD_START_BIT (0u)
+#define CANRX_STATE_REQUEST_SET_BALANCING_THRESHOLD_LENGTH    (32u)
+#define CANRX_STATE_REQUEST_ACTIVATE_BALANCING_START_BIT      (32u)
+#define CANRX_STATE_REQUEST_ACTIVATE_BALANCING_LENGTH         (CAN_BIT)
+#define CANRX_STATE_REQUEST_RESET_PERSISTENT_FLAGS_START_BIT  (40u)
+#define CANRX_STATE_REQUEST_RESET_PERSISTENT_FLAGS_LENGTH     (CAN_BIT)
 /** @} */
 
 /*========== Static Constant and Variable Definitions =======================*/
@@ -112,13 +93,6 @@
  * @param[in] messageData contents of the bms state request message
  */
 static void CANRX_ClearAllPersistentFlags(uint64_t messageData);
-
-/**
- * @brief   handles the mode request
- * @param[in]     messageData contents of the bms state request message
- * @param[in,out] kpkCanShim  can shim with database entries
- */
-static void CANRX_HandleModeRequest(uint64_t messageData, const CAN_SHIM_s *const kpkCanShim);
 
 /**
  * @brief   handles the balancing request
@@ -150,52 +124,6 @@ static void CANRX_ClearAllPersistentFlags(uint64_t messageData) {
         }
         /* clear sys mon */
         SYSM_ClearAllTimingViolations();
-    }
-}
-
-static void CANRX_HandleModeRequest(uint64_t messageData, const CAN_SHIM_s *const kpkCanShim) {
-    FAS_ASSERT(kpkCanShim != NULL_PTR);
-    /* AXIVION Routine Generic-MissingParameterAssert: messageData: parameter accepts whole range */
-    uint64_t signalData = 0u;
-    CAN_RxGetSignalDataFromMessageData(
-        messageData,
-        CANRX_STATE_REQUEST_REQUEST_BMS_MODE_START_BIT,
-        CANRX_STATE_REQUEST_REQUEST_BMS_MODE_LENGTH,
-        &signalData,
-        CANRX_BMS_STATE_REQUEST_ENDIANNESS);
-
-    /** 0x00: Disconnect strings from HV bus
-     *  0x01: Connect strings to HV bus to start discharge
-     *  0x02: Connect strings to HV bus to start charging
-     */
-    uint8_t stateRequest = BMS_REQ_ID_NOREQ;
-
-    switch (signalData) {
-        case 0u:
-            stateRequest = BMS_REQ_ID_STANDBY;
-            break;
-        case 1u:
-            stateRequest = BMS_REQ_ID_NORMAL;
-            break;
-        case 2u:
-            stateRequest = BMS_REQ_ID_CHARGE;
-            break;
-        default:
-            /* default value already set in initialization */
-            break;
-    }
-    kpkCanShim->pTableStateRequest->previousStateRequestViaCan = kpkCanShim->pTableStateRequest->stateRequestViaCan;
-    kpkCanShim->pTableStateRequest->stateRequestViaCan         = stateRequest;
-    if ((kpkCanShim->pTableStateRequest->stateRequestViaCan !=
-         kpkCanShim->pTableStateRequest->previousStateRequestViaCan) ||
-        (OS_CheckTimeHasPassed(kpkCanShim->pTableStateRequest->header.timestamp, CANRX_CAN_REQUEST_UPDATE_TIME_ms))) {
-        kpkCanShim->pTableStateRequest->stateRequestViaCanPending = stateRequest;
-    }
-    if (kpkCanShim->pTableStateRequest->stateCounter == (uint8_t)UINT8_MAX) {
-        /* overflow of state counter */
-        kpkCanShim->pTableStateRequest->stateCounter = 0u;
-    } else {
-        kpkCanShim->pTableStateRequest->stateCounter++;
     }
 }
 
@@ -254,9 +182,6 @@ extern uint32_t CANRX_BmsStateRequest(
     uint64_t messageData = 0u;
     CAN_RxGetMessageDataFromCanData(&messageData, kpkCanData, CANRX_BMS_STATE_REQUEST_ENDIANNESS);
 
-    /* Get mode request */
-    CANRX_HandleModeRequest(messageData, kpkCanShim);
-
     /* check for reset flag */
     CANRX_ClearAllPersistentFlags(messageData);
 
@@ -265,8 +190,6 @@ extern uint32_t CANRX_BmsStateRequest(
 
     /* Get balancing threshold */
     CANRX_SetBalancingThreshold(messageData);
-
-    /* TODO: Implement missing signals */
 
     DATA_WRITE_DATA(kpkCanShim->pTableStateRequest);
 

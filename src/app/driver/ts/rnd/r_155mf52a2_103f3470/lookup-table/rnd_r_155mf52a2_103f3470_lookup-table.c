@@ -40,44 +40,21 @@
  */
 
 /**
- * @file    main.c
+ * @file    rnd_r_155mf52a2_103f3470_lookup-table.c
  * @author  foxBMS Team
- * @date    2019-08-27 (date of creation)
- * @updated 2025-03-31 (date of last update)
+ * @date    2020-12-14 (date of creation)
+ * @updated 2020-12-14 (date of last update)
  * @version v1.9.0
- * @ingroup MAIN
- * @prefix  TODO
+ * @ingroup DRIVERS
+ * @prefix  TS
  *
- * @brief   Main function
- * @details The main function implements the hardware initialization and
- *          starts operating system (and the application runs in this context).
+ * @brief   Resistive divider used for measuring temperature
+ * @details TODO
  */
 
 /*========== Includes =======================================================*/
-#include "main.h"
-
-#include "HL_adc.h"
-#include "HL_crc.h"
-#include "HL_etpwm.h"
-#include "HL_gio.h"
-#include "HL_het.h"
-#include "HL_pinmux.h"
-#include "HL_sys_core.h"
-
-#include "adc.h"
-#include "checksum.h"
-#include "diag.h"
-#include "dma.h"
-#include "foxmath.h"
-#include "fstd_types.h"
-#include "i2c.h"
-#include "led.h"
-#include "master_info.h"
-#include "os.h"
-#include "pwm.h"
-#include "spi.h"
-
-#include <stdint.h>
+#include "rnd_r_155mf52a2_103f3470.h"
+#include "tsi.h"
 
 /*========== Macros and Definitions =========================================*/
 
@@ -90,54 +67,9 @@
 /*========== Static Function Implementations ================================*/
 
 /*========== Extern Function Implementations ================================*/
-#ifndef UNITY_UNIT_TEST
-int main(void)
-#else
-int unit_test_main(void)
-#endif
-{
-    MINFO_SetResetSource(getResetSource()); /* Get reset source and clear respective flags */
-    muxInit();
-    gioInit();
-    SPI_Initialize();
-    adcInit();
-    hetInit();
-    etpwmInit();
-    crcInit();
-    LED_SetDebugLed();
-    I2C_Initialize();
-    DMA_Initialize();
-    PWM_Initialize();
-    DIAG_Initialize(&diag_device);
-    MATH_StartupSelfTest();
-    const STD_RETURN_TYPE_e checkTimeHasPassedSelfTestReturnValue = OS_CheckTimeHasPassedSelfTest();
-    FAS_ASSERT(checkTimeHasPassedSelfTestReturnValue == STD_OK);
 
-    OS_InitializeOperatingSystem();
-
-    /* Enable IRQ interrupt after creating the AFE task to prevent the DMA interrupt,
-    because the function called on DMA interrupts require an valid AFE task handle,
-    which is NULL before creating the AFE task. */
-    _enable_IRQ_interrupt_();
-
-    if (OS_INIT_PRE_OS != os_boot) {
-        /* Could not create Queues, Mutexes, Events and Tasks do not boot further from this point on */
-        FAS_ASSERT(FAS_TRAP);
-    }
-
-    if (STD_OK != CHK_ValidateChecksum()) {
-        if (DIAG_HANDLER_RETURN_OK != DIAG_Handler(DIAG_ID_FLASHCHECKSUM, DIAG_EVENT_NOT_OK, DIAG_SYSTEM, 0u)) {
-            /* Could not validate checksum do not boot further from this point on */
-            FAS_ASSERT(FAS_TRAP);
-        }
-    }
-
-    os_schedulerStartTime = OS_GetTickCount();
-
-    OS_StartScheduler();
-    /* we must never get here; there is no way to determine the exit state of this program,
-     * but for the sake of correctness we exit with an error code */
-    return 1;
+extern int16_t TSI_GetTemperature(uint16_t adcVoltage_mV) {
+    return R_155MF52A2_103F3470_GetTempFromLUT(adcVoltage_mV);
 }
 
 /*========== Externalized Static Function Implementations (Unit Test) =======*/

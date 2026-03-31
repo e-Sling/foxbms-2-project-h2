@@ -158,7 +158,7 @@ typedef struct {
 #endif
 
 /** FRAM chip select pin */
-#define SPI_FRAM_CHIP_SELECT_PIN (1u)
+#define SPI_FRAM_CHIP_SELECT_PIN (0u)
 
 /** GIO defines for SPI for Smart Power Switches @{ */
 #define SPI_SPS_CS_GIOPORT     (hetREG2->DOUT)

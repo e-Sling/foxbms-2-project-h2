@@ -72,13 +72,16 @@
  *          requested and contactors will open. When recommended safety limit
  *          (RSL) or maximum operating limit (MOL) is violated, the respective
  *          flag will be set.
+ *
+ *  @note   MSL from P50B datasheet, RSL and MOL from BBM limits
+ *
  * @ptype   int
  * @unit    deci &deg;C
  */
 /**@{*/
-#define BC_TEMPERATURE_MAX_DISCHARGE_MSL_ddegC (550)
-#define BC_TEMPERATURE_MAX_DISCHARGE_RSL_ddegC (500)
-#define BC_TEMPERATURE_MAX_DISCHARGE_MOL_ddegC (450)
+#define BC_TEMPERATURE_MAX_DISCHARGE_MSL_ddegC (700)
+#define BC_TEMPERATURE_MAX_DISCHARGE_RSL_ddegC (600)
+#define BC_TEMPERATURE_MAX_DISCHARGE_MOL_ddegC (500)
 /**@}*/
 
 /**
@@ -102,13 +105,17 @@
  *          requested and contactors will open. When recommended safety limit
  *          (RSL) or maximum operating limit (MOL) is violated, the respective
  *          flag will be set.
+ *
+ *  @note   MSL from P50B datasheet, RSL and MOL set lower than discharge
+ *          limits to prevent charging at high temperatures.
+ *
  * @ptype   int
  * @unit    deci &deg;C
  */
 /**@{*/
-#define BC_TEMPERATURE_MAX_CHARGE_MSL_ddegC (450)
-#define BC_TEMPERATURE_MAX_CHARGE_RSL_ddegC (400)
-#define BC_TEMPERATURE_MAX_CHARGE_MOL_ddegC (350)
+#define BC_TEMPERATURE_MAX_CHARGE_MSL_ddegC (700)
+#define BC_TEMPERATURE_MAX_CHARGE_RSL_ddegC (500)
+#define BC_TEMPERATURE_MAX_CHARGE_MOL_ddegC (400)
 /**@}*/
 
 /**
@@ -132,13 +139,16 @@
  *          requested and contactors will open. When recommended safety limit
  *          (RSL) or maximum operating limit (MOL) is violated, the respective
  *          flag will be set.
+ *
+ *  @note   MSL from P50B datasheet
+ *
  * @ptype   int
  * @unit    mV
  */
 /**@{*/
-#define BC_VOLTAGE_MAX_MSL_mV (2800)
-#define BC_VOLTAGE_MAX_RSL_mV (2750)
-#define BC_VOLTAGE_MAX_MOL_mV (2720)
+#define BC_VOLTAGE_MAX_MSL_mV (4200)
+#define BC_VOLTAGE_MAX_RSL_mV (4150)
+#define BC_VOLTAGE_MAX_MOL_mV (4100)
 /**@}*/
 
 /**
@@ -146,7 +156,7 @@
  * @ptype   int
  * @unit    mV
  */
-#define BC_VOLTAGE_NOMINAL_mV (2500)
+#define BC_VOLTAGE_NOMINAL_mV (3600)
 
 /**
  * @brief   Minimum cell voltage limit.
@@ -154,13 +164,17 @@
  *          requested and contactors will open. When recommended safety limit
  *          (RSL) or maximum operating limit (MOL) is violated, the respective
  *          flag will be set.
+ *
+ *  @note   MSL from P50B datasheet,
+ *          MOL at 2800mV to warn before inverter limit is reached (2778mV)
+ *
  * @ptype   int
  * @unit    mV
  */
 /**@{*/
-#define BC_VOLTAGE_MIN_MSL_mV (1500)
-#define BC_VOLTAGE_MIN_RSL_mV (1550)
-#define BC_VOLTAGE_MIN_MOL_mV (1580)
+#define BC_VOLTAGE_MIN_MSL_mV (2500)
+#define BC_VOLTAGE_MIN_RSL_mV (2700)
+#define BC_VOLTAGE_MIN_MOL_mV (2800)
 /**@}*/
 
 /**
@@ -172,7 +186,7 @@
  * @ptype   int
  * @unit    mV
  */
-#define BC_VOLTAGE_DEEP_DISCHARGE_mV (BC_VOLTAGE_MIN_MSL_mV)
+#define BC_VOLTAGE_DEEP_DISCHARGE_mV (BC_VOLTAGE_MIN_MSL_mV - 50)
 
 /**
  * @brief   Maximum discharge current limit.
@@ -180,13 +194,18 @@
  *          requested and contactors will open. When recommended safety limit
  *          (RSL) or maximum operating limit (MOL) is violated, the respective
  *          flag will be set.
+ *
+ *  @note   MSL is used to detect overcurrent,
+ *          MOL is used to calculate recommended battery current,
+ *          both set to 40A (2P = 80A max current)
+ *
  * @ptype   int
  * @unit    mA
  */
 /**@{*/
-#define BC_CURRENT_MAX_DISCHARGE_MSL_mA (180000u)
-#define BC_CURRENT_MAX_DISCHARGE_RSL_mA (175000u)
-#define BC_CURRENT_MAX_DISCHARGE_MOL_mA (170000u)
+#define BC_CURRENT_MAX_DISCHARGE_MSL_mA (40000u)
+#define BC_CURRENT_MAX_DISCHARGE_RSL_mA (40000u)
+#define BC_CURRENT_MAX_DISCHARGE_MOL_mA (40000u)
 /**@}*/
 
 /**
@@ -195,13 +214,18 @@
  *          requested and contactors will open. When recommended safety limit
  *          (RSL) or maximum operating limit (MOL) is violated, the respective
  *          flag will be set.
+ *
+ *  @note   MSL is used to detect overcurrent,
+ *          MOL is used to calculate recommended battery current,
+ *          both set to 15A (2P = 30A max current)
+ *
  * @ptype   int
  * @unit    mA
  */
 /**@{*/
-#define BC_CURRENT_MAX_CHARGE_MSL_mA (180000u)
-#define BC_CURRENT_MAX_CHARGE_RSL_mA (175000u)
-#define BC_CURRENT_MAX_CHARGE_MOL_mA (170000u)
+#define BC_CURRENT_MAX_CHARGE_MSL_mA (15000u)
+#define BC_CURRENT_MAX_CHARGE_RSL_mA (15000u)
+#define BC_CURRENT_MAX_CHARGE_MOL_mA (15000u)
 /**@}*/
 
 /**
@@ -209,14 +233,14 @@
  * @ptype   int
  * @unit    mAh
  */
-#define BC_CAPACITY_mAh (3500u)
+#define BC_CAPACITY_mAh (5000u)
 
 /**
  * @brief   Cell energy
  * @ptype   float
  * @unit    Wh
  */
-#define BC_ENERGY_Wh (10.0f)
+#define BC_ENERGY_Wh (18.0f)
 
 #if BC_VOLTAGE_MIN_MSL_mV < BC_VOLTAGE_DEEP_DISCHARGE_mV
 #error "Configuration error! - Maximum safety limit for under voltage can't be lower than deep-discharge limit"

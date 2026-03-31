@@ -340,7 +340,8 @@ static void CANRX_SetVoltageU1(const CAN_SHIM_s *const kpkCanShim, uint8_t strin
     FAS_ASSERT(kpkCanShim != NULL_PTR);
     FAS_ASSERT(stringNumber < BS_NR_OF_STRINGS);
     /* AXIVION Routine Generic-MissingParameterAssert: signalData: parameter accepts whole range */
-    kpkCanShim->pTableCurrentSensor->highVoltage_mV[stringNumber][0] = signalData;
+    /* Cellsius: Invert sign -> positive voltage */
+    kpkCanShim->pTableCurrentSensor->highVoltage_mV[stringNumber][0] = -signalData;
     kpkCanShim->pTableCurrentSensor->previousTimestampHighVoltage[stringNumber][0] =
         kpkCanShim->pTableCurrentSensor->timestampHighVoltage[stringNumber][0];
     kpkCanShim->pTableCurrentSensor->timestampHighVoltage[stringNumber][0] = OS_GetTickCount();
@@ -350,7 +351,8 @@ static void CANRX_SetVoltageU2(const CAN_SHIM_s *const kpkCanShim, uint8_t strin
     FAS_ASSERT(kpkCanShim != NULL_PTR);
     FAS_ASSERT(stringNumber < BS_NR_OF_STRINGS);
     /* AXIVION Routine Generic-MissingParameterAssert: signalData: parameter accepts whole range */
-    kpkCanShim->pTableCurrentSensor->highVoltage_mV[stringNumber][1] = signalData;
+    /* Cellsius: Invert sign -> positive voltage */
+    kpkCanShim->pTableCurrentSensor->highVoltage_mV[stringNumber][1] = -signalData;
     kpkCanShim->pTableCurrentSensor->previousTimestampHighVoltage[stringNumber][1] =
         kpkCanShim->pTableCurrentSensor->timestampHighVoltage[stringNumber][1];
     kpkCanShim->pTableCurrentSensor->timestampHighVoltage[stringNumber][1] = OS_GetTickCount();
@@ -360,7 +362,8 @@ static void CANRX_SetVoltageU3(const CAN_SHIM_s *const kpkCanShim, uint8_t strin
     FAS_ASSERT(kpkCanShim != NULL_PTR);
     FAS_ASSERT(stringNumber < BS_NR_OF_STRINGS);
     /* AXIVION Routine Generic-MissingParameterAssert: signalData: parameter accepts whole range */
-    kpkCanShim->pTableCurrentSensor->highVoltage_mV[stringNumber][2] = signalData;
+    /* Cellsius: Invert sign -> positive voltage */
+    kpkCanShim->pTableCurrentSensor->highVoltage_mV[stringNumber][2] = -signalData;
     kpkCanShim->pTableCurrentSensor->previousTimestampHighVoltage[stringNumber][2] =
         kpkCanShim->pTableCurrentSensor->timestampHighVoltage[stringNumber][2];
     kpkCanShim->pTableCurrentSensor->timestampHighVoltage[stringNumber][2] = OS_GetTickCount();
@@ -377,7 +380,8 @@ static void CANRX_SetPower(const CAN_SHIM_s *const kpkCanShim, uint8_t stringNum
     FAS_ASSERT(kpkCanShim != NULL_PTR);
     FAS_ASSERT(stringNumber < BS_NR_OF_STRINGS);
     /* AXIVION Routine Generic-MissingParameterAssert: signalData: parameter accepts whole range */
-    kpkCanShim->pTableCurrentSensor->power_W[stringNumber] = signalData;
+    /* Cellsius: Invert sign -> positive power */
+    kpkCanShim->pTableCurrentSensor->power_W[stringNumber] = -signalData;
     kpkCanShim->pTableCurrentSensor->newPower++;
     kpkCanShim->pTableCurrentSensor->previousTimestampPower[stringNumber] =
         kpkCanShim->pTableCurrentSensor->timestampPower[stringNumber];
@@ -398,7 +402,8 @@ static void CANRX_SetEnergyCounting(const CAN_SHIM_s *const kpkCanShim, uint8_t 
     FAS_ASSERT(kpkCanShim != NULL_PTR);
     FAS_ASSERT(stringNumber < BS_NR_OF_STRINGS);
     /* AXIVION Routine Generic-MissingParameterAssert: signalData: parameter accepts whole range */
-    kpkCanShim->pTableCurrentSensor->energyCounter_Wh[stringNumber] = signalData;
+    /* Cellsius: Invert sign -> positive energy */
+    kpkCanShim->pTableCurrentSensor->energyCounter_Wh[stringNumber] = -signalData;
     kpkCanShim->pTableCurrentSensor->previousTimestampEnergyCounting[stringNumber] =
         kpkCanShim->pTableCurrentSensor->timestampEnergyCounting[stringNumber];
     kpkCanShim->pTableCurrentSensor->timestampEnergyCounting[stringNumber] = OS_GetTickCount();

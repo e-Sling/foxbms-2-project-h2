@@ -40,19 +40,22 @@
  */
 
 /**
- * @file    can_cbs_tx_pack-values-p1.c
+ * @file    can_cbs_tx_voltage_min-max-avg.c
  * @author  foxBMS Team
- * @date    2023-05-31 (date of creation)
+ * @date    2021-04-20 (date of creation)
  * @updated 2025-03-31 (date of last update)
  * @version v1.9.0
  * @ingroup DRIVERS
  * @prefix  CANTX
  *
  * @brief   CAN driver Tx callback implementation
- * @details CAN Tx callback for pack value and string value messages
+ * @details CAN Tx callback for min/max/avg values
  */
 
 /*========== Includes =======================================================*/
+#include "bms.h"
+/* AXIVION Next Codeline Generic-LocalInclude: 'can_cbs_tx_cyclic.h' declares
+ * the prototype for the callback 'CANTX_PackMinimumMaximumValues' */
 #include "can_cbs_tx_cyclic.h"
 #include "can_cfg_tx-cyclic-message-definitions.h"
 #include "can_helper.h"
@@ -62,108 +65,85 @@
 #include <stdint.h>
 
 /*========== Macros and Definitions =========================================*/
-/** @{
- * defines of the insulation resistance signal
-*/
-#define CANTX_PACK_P1_INSULATION_RESISTANCE_START_BIT    (7u)
-#define CANTX_PACK_P1_INSULATION_RESISTANCE_LENGTH       (13u)
-#define CANTX_MINIMUM_VALUE_INSULATION_RESISTANCE_SIGNAL (0.0f)
-#define CANTX_MAXIMUM_VALUE_INSULATION_RESISTANCE_SIGNAL (57337.0f)
-#define CANTX_FACTOR_INSULATION_RESISTANCE               (7.0f)
-/** @} */
-
-/** @{
- * configuration of the insulation resistance signal
-*/
-static const CAN_SIGNAL_TYPE_s cantx_insulationResistance = {
-    CANTX_PACK_P1_INSULATION_RESISTANCE_START_BIT,
-    CANTX_PACK_P1_INSULATION_RESISTANCE_LENGTH,
-    CANTX_FACTOR_INSULATION_RESISTANCE,
-    CAN_SIGNAL_OFFSET_0,
-    CANTX_MINIMUM_VALUE_INSULATION_RESISTANCE_SIGNAL,
-    CANTX_MAXIMUM_VALUE_INSULATION_RESISTANCE_SIGNAL};
-/** @} */
+/**
+ * Configuration of the signals
+ */
+#define CANTX_SIGNAL_MAXIMUM_CELL_VOLTAGE_START_BIT (0u)
+#define CANTX_SIGNAL_MAXIMUM_CELL_VOLTAGE_LENGTH    (16u)
+#define CANTX_SIGNAL_MINIMUM_CELL_VOLTAGE_START_BIT (16u)
+#define CANTX_SIGNAL_MINIMUM_CELL_VOLTAGE_LENGTH    (16u)
+#define CANTX_SIGNAL_AVERAGE_CELL_VOLTAGE_START_BIT (32u)
+#define CANTX_SIGNAL_AVERAGE_CELL_VOLTAGE_LENGTH    (16u)
 
 /*========== Static Constant and Variable Definitions =======================*/
 
 /*========== Extern Constant and Variable Definitions =======================*/
 
 /*========== Static Function Prototypes =====================================*/
-
 /**
- * @brief  reads the insulation resistance from the database and calculates the return values
- * @param  kpkCanShim can shim with database information
- * @return insulation resistance value
+ * @brief   Adds the data to the message about the pack values
+ * @param   kpkCanShim const pointer to CAN shim
+ * @param   pMessageData message data of the CAN message
  */
-static uint64_t CANTX_GetInsulationResistance(const CAN_SHIM_s *const kpkCanShim);
-
-/**
- * @brief sets the message data with signal data of insulation resistance
- * @param pMessageData message data of the CAN message
- * @param kpkCanShim can shim with database information
- */
-static void CANTX_SetInsulationResistance(uint64_t *pMessageData, const CAN_SHIM_s *const kpkCanShim);
+static void CANTX_BuildVoltageMinMaxAvgMessage(const CAN_SHIM_s *const kpkCanShim, uint64_t *pMessageData);
 
 /*========== Static Function Implementations ================================*/
-static uint64_t CANTX_GetInsulationResistance(const CAN_SHIM_s *const kpkCanShim) {
+static void CANTX_BuildVoltageMinMaxAvgMessage(const CAN_SHIM_s *const kpkCanShim, uint64_t *pMessageData) {
     FAS_ASSERT(kpkCanShim != NULL_PTR);
-
-    /* insulation resistance */
-    float_t signalData = (float_t)kpkCanShim->pTableInsulation->insulationResistance_kOhm;
-    CAN_TxPrepareSignalData(&signalData, cantx_insulationResistance);
-    uint64_t data = (uint64_t)signalData;
-    return data;
-}
-
-static void CANTX_SetInsulationResistance(uint64_t *pMessageData, const CAN_SHIM_s *const kpkCanShim) {
     FAS_ASSERT(pMessageData != NULL_PTR);
-    FAS_ASSERT(kpkCanShim != NULL_PTR);
 
-    uint64_t signalData = CANTX_GetInsulationResistance(kpkCanShim);
+    /* maximum cell voltage */
+    uint64_t signalData = (uint64_t)kpkCanShim->pTableMinMax->maximumCellVoltage_mV[BS_STRING0];
     CAN_TxSetMessageDataWithSignalData(
         pMessageData,
-        cantx_insulationResistance.bitStart,
-        cantx_insulationResistance.bitLength,
+        CANTX_SIGNAL_MAXIMUM_CELL_VOLTAGE_START_BIT,
+        CANTX_SIGNAL_MAXIMUM_CELL_VOLTAGE_LENGTH,
         signalData,
-        CAN_BIG_ENDIAN);
+        CANTX_VOLTAGE_MIN_MAX_AVG_ENDIANNESS);
+    /* minimum cell voltage */
+    signalData = (uint64_t)kpkCanShim->pTableMinMax->minimumCellVoltage_mV[BS_STRING0];
+    CAN_TxSetMessageDataWithSignalData(
+        pMessageData,
+        CANTX_SIGNAL_MINIMUM_CELL_VOLTAGE_START_BIT,
+        CANTX_SIGNAL_MINIMUM_CELL_VOLTAGE_LENGTH,
+        signalData,
+        CANTX_VOLTAGE_MIN_MAX_AVG_ENDIANNESS);
+    /* average cell voltage */
+    signalData = (uint64_t)kpkCanShim->pTableMinMax->averageCellVoltage_mV[BS_STRING0];
+    CAN_TxSetMessageDataWithSignalData(
+        pMessageData,
+        CANTX_SIGNAL_AVERAGE_CELL_VOLTAGE_START_BIT,
+        CANTX_SIGNAL_AVERAGE_CELL_VOLTAGE_LENGTH,
+        signalData,
+        CANTX_VOLTAGE_MIN_MAX_AVG_ENDIANNESS);
 }
 
 /*========== Extern Function Implementations ================================*/
-extern uint32_t CANTX_PackValuesP1(
+extern uint32_t CANTX_VoltageMinMaxAvgValues(
     CAN_MESSAGE_PROPERTIES_s message,
     uint8_t *pCanData,
     uint8_t *pMuxId,
     const CAN_SHIM_s *const kpkCanShim) {
-    /* pMuxId is not used here, therefore has to be NULL_PTR */
-    FAS_ASSERT(pMuxId == NULL_PTR);
-    FAS_ASSERT(message.id == CANTX_PACK_VALUES_P1_ID);
-    FAS_ASSERT(message.idType == CANTX_PACK_VALUES_P1_ID_TYPE);
+    FAS_ASSERT(message.id == CANTX_VOLTAGE_MIN_MAX_AVG_ID);
+    FAS_ASSERT(message.idType == CANTX_VOLTAGE_MIN_MAX_AVG_ID_TYPE);
     FAS_ASSERT(message.dlc == CAN_FOXBMS_MESSAGES_DEFAULT_DLC);
-    FAS_ASSERT(message.endianness == CANTX_PACK_VALUES_P1_ENDIANNESS);
+
+    FAS_ASSERT(message.endianness == CANTX_VOLTAGE_MIN_MAX_AVG_ENDIANNESS);
     FAS_ASSERT(pCanData != NULL_PTR);
+    FAS_ASSERT(pMuxId == NULL_PTR); /* pMuxId is not used here, therefore has to be NULL_PTR */
     FAS_ASSERT(kpkCanShim != NULL_PTR);
     uint64_t messageData = 0u;
 
-    /* read database entry */
-    DATA_READ_DATA(kpkCanShim->pTableInsulation);
+    DATA_READ_DATA(kpkCanShim->pTableMinMax);
 
-    /* build message from data */
-    CANTX_SetInsulationResistance(&messageData, kpkCanShim);
+    CANTX_BuildVoltageMinMaxAvgMessage(kpkCanShim, &messageData);
 
     /* now copy data in the buffer that will be used to send data */
-    CAN_TxSetCanDataWithMessageData(messageData, pCanData, CAN_BIG_ENDIAN);
+    CAN_TxSetCanDataWithMessageData(messageData, pCanData, message.endianness);
 
     return 0u;
 }
 
 /*========== Externalized Static Function Implementations (Unit Test) =======*/
 #ifdef UNITY_UNIT_TEST
-extern void TEST_CANTX_SetInsulationResistance(uint64_t *pMessageData, const CAN_SHIM_s *const kpkCanShim) {
-    CANTX_SetInsulationResistance(pMessageData, kpkCanShim);
-}
-
-extern uint64_t TEST_CANTX_GetInsulationResistance(const CAN_SHIM_s *const kpkCanShim) {
-    return CANTX_GetInsulationResistance(kpkCanShim);
-}
-
 #endif

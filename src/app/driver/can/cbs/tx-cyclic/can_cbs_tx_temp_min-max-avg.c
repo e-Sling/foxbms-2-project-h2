@@ -40,32 +40,40 @@
  */
 
 /**
- * @file    can_cbs_tx_string-values-p1.c
+ * @file    can_cbs_tx_temp_min-max-avg.c
  * @author  foxBMS Team
- * @date    2023-05-31 (date of creation)
+ * @date    2021-04-20 (date of creation)
  * @updated 2025-03-31 (date of last update)
  * @version v1.9.0
  * @ingroup DRIVERS
  * @prefix  CANTX
  *
  * @brief   CAN driver Tx callback implementation
- * @details CAN Tx callback for pack value and string value messages
+ * @details CAN Tx callback for min/max/avg values
  */
 
 /*========== Includes =======================================================*/
+#include "bms.h"
+/* AXIVION Next Codeline Generic-LocalInclude: 'can_cbs_tx_cyclic.h' declares
+ * the prototype for the callback 'CANTX_PackMinimumMaximumValues' */
 #include "can_cbs_tx_cyclic.h"
 #include "can_cfg_tx-cyclic-message-definitions.h"
 #include "can_helper.h"
+#include "foxmath.h"
 
 #include <math.h>
 #include <stdint.h>
 
 /*========== Macros and Definitions =========================================*/
-/* configuration of the StringP1 message bits */
-#define CANTX_STRING_P1_STRING_MUX_START_BIT     (7u)
-#define CANTX_STRING_P1_STRING_MUX_LENGTH        (4u)
-#define CANTX_STRING_P1_ENERGY_COUNTER_START_BIT (15u)
-#define CANTX_STRING_P1_ENERGY_COUNTER_LENGTH    (32u)
+/**
+ * Configuration of the signals
+ */
+#define CANTX_SIGNAL_MAXIMUM_CELL_TEMPERATURE_START_BIT (0u)
+#define CANTX_SIGNAL_MAXIMUM_CELL_TEMPERATURE_LENGTH    (16u)
+#define CANTX_SIGNAL_MINIMUM_CELL_TEMPERATURE_START_BIT (16u)
+#define CANTX_SIGNAL_MINIMUM_CELL_TEMPERATURE_LENGTH    (16u)
+#define CANTX_SIGNAL_AVERAGE_CELL_TEMPERATURE_START_BIT (32u)
+#define CANTX_SIGNAL_AVERAGE_CELL_TEMPERATURE_LENGTH    (16u)
 
 /*========== Static Constant and Variable Definitions =======================*/
 
@@ -73,106 +81,68 @@
 
 /*========== Static Function Prototypes =====================================*/
 /**
- * @brief sets multiplexer of StringP1 message to string number
+ * @brief   Adds the data to the message about the pack values
+ * @param   kpkCanShim const pointer to CAN shim
+ * @param   pMessageData message data of the CAN message
  */
-static void CANTX_SetStringP1Mux(uint64_t *pMessageData, uint64_t signalData);
-
-/**
- * @brief sets energy counter value in StringP1 message
- */
-static void CANTX_SetStringEnergyCounter(
-    uint64_t *pMessageData,
-    uint8_t stringNumber,
-    const CAN_SHIM_s *const kpkCanShim);
+static void CANTX_BuildTempMinMaxAvgMessage(const CAN_SHIM_s *const kpkCanShim, uint64_t *pMessageData);
 
 /*========== Static Function Implementations ================================*/
-static void CANTX_SetStringP1Mux(uint64_t *pMessageData, uint64_t signalData) {
-    FAS_ASSERT(signalData < BS_NR_OF_STRINGS);
-    FAS_ASSERT(pMessageData != NULL_PTR);
-
-    /* set data in CAN frame */
-    CAN_TxSetMessageDataWithSignalData(
-        pMessageData,
-        CANTX_STRING_P1_STRING_MUX_START_BIT,
-        CANTX_STRING_P1_STRING_MUX_LENGTH,
-        signalData,
-        CAN_BIG_ENDIAN);
-}
-
-static void CANTX_SetStringEnergyCounter(
-    uint64_t *pMessageData,
-    uint8_t stringNumber,
-    const CAN_SHIM_s *const kpkCanShim) {
-    FAS_ASSERT(pMessageData != NULL_PTR);
-    FAS_ASSERT(stringNumber < BS_NR_OF_STRINGS);
+static void CANTX_BuildTempMinMaxAvgMessage(const CAN_SHIM_s *const kpkCanShim, uint64_t *pMessageData) {
     FAS_ASSERT(kpkCanShim != NULL_PTR);
+    FAS_ASSERT(pMessageData != NULL_PTR);
 
-    /* String voltage */
-    OS_EnterTaskCritical(); /* this access has to be protected as it conflicts with the 1ms task */
-    uint64_t signalData = (uint64_t)kpkCanShim->pTableCurrentSensor->energyCounter_Wh[stringNumber];
-    OS_ExitTaskCritical();
-
-    /* set data in CAN frame */
+    /* maximum temperature*/
+    uint64_t signalData = (uint64_t)kpkCanShim->pTableMinMax->maximumTemperature_ddegC[BS_STRING0];
     CAN_TxSetMessageDataWithSignalData(
         pMessageData,
-        CANTX_STRING_P1_ENERGY_COUNTER_START_BIT,
-        CANTX_STRING_P1_ENERGY_COUNTER_LENGTH,
+        CANTX_SIGNAL_MAXIMUM_CELL_TEMPERATURE_START_BIT,
+        CANTX_SIGNAL_MAXIMUM_CELL_TEMPERATURE_LENGTH,
         signalData,
-        CAN_BIG_ENDIAN);
+        CANTX_TEMP_MIN_MAX_AVG_ENDIANNESS);
+    /* minimum temperature*/
+    signalData = (uint64_t)kpkCanShim->pTableMinMax->minimumTemperature_ddegC[BS_STRING0];
+    CAN_TxSetMessageDataWithSignalData(
+        pMessageData,
+        CANTX_SIGNAL_MINIMUM_CELL_TEMPERATURE_START_BIT,
+        CANTX_SIGNAL_MINIMUM_CELL_TEMPERATURE_LENGTH,
+        signalData,
+        CANTX_TEMP_MIN_MAX_AVG_ENDIANNESS);
+    /* average temperature */
+    signalData = (uint64_t)kpkCanShim->pTableMinMax->averageTemperature_ddegC[BS_STRING0];
+    CAN_TxSetMessageDataWithSignalData(
+        pMessageData,
+        CANTX_SIGNAL_AVERAGE_CELL_TEMPERATURE_START_BIT,
+        CANTX_SIGNAL_AVERAGE_CELL_TEMPERATURE_LENGTH,
+        signalData,
+        CANTX_TEMP_MIN_MAX_AVG_ENDIANNESS);
 }
 
 /*========== Extern Function Implementations ================================*/
-extern uint32_t CANTX_StringValuesP1(
+extern uint32_t CANTX_TempMinMaxAvgValues(
     CAN_MESSAGE_PROPERTIES_s message,
     uint8_t *pCanData,
     uint8_t *pMuxId,
     const CAN_SHIM_s *const kpkCanShim) {
-    FAS_ASSERT(message.id == CANTX_STRING_VALUES_P1_ID);
-    FAS_ASSERT(message.idType == CANTX_STRING_VALUES_P1_ID_TYPE);
+    FAS_ASSERT(message.id == CANTX_TEMP_MIN_MAX_AVG_ID);
+    FAS_ASSERT(message.idType == CANTX_TEMP_MIN_MAX_AVG_ID_TYPE);
     FAS_ASSERT(message.dlc == CAN_FOXBMS_MESSAGES_DEFAULT_DLC);
+    FAS_ASSERT(message.endianness == CANTX_TEMP_MIN_MAX_AVG_ENDIANNESS);
     FAS_ASSERT(pCanData != NULL_PTR);
-    FAS_ASSERT(pMuxId != NULL_PTR);
-    FAS_ASSERT(*pMuxId < BS_NR_OF_STRINGS);
+    FAS_ASSERT(pMuxId == NULL_PTR); /* pMuxId is not used here, therefore has to be NULL_PTR */
     FAS_ASSERT(kpkCanShim != NULL_PTR);
     uint64_t messageData = 0u;
-    uint64_t signalData  = 0u;
 
-    const uint8_t stringNumber = *pMuxId;
+    DATA_READ_DATA(kpkCanShim->pTableMinMax);
 
-    /* First signal to transmit cell voltages: get database values */
-    if (stringNumber == 0u) {
-        /* Do not read pTableMsl and pTableErrorState as they already are read
-         * with a higher frequency from CANTX_BmsState callback */
-        DATA_READ_DATA(kpkCanShim->pTableCurrentSensor);
-    }
-
-    signalData = (uint64_t)stringNumber;
-    CANTX_SetStringP1Mux(&messageData, signalData);
-    CANTX_SetStringEnergyCounter(&messageData, stringNumber, kpkCanShim);
+    CANTX_BuildTempMinMaxAvgMessage(kpkCanShim, &messageData);
 
     /* now copy data in the buffer that will be used to send data */
     CAN_TxSetCanDataWithMessageData(messageData, pCanData, message.endianness);
-
-    /* Increment multiplexer for next cell */
-    (*pMuxId)++;
-
-    /* Check mux value */
-    if (*pMuxId >= BS_NR_OF_STRINGS) {
-        *pMuxId = 0u;
-    }
 
     return 0u;
 }
 
 /*========== Externalized Static Function Implementations (Unit Test) =======*/
 #ifdef UNITY_UNIT_TEST
-extern void TEST_CANTX_SetStringP1Mux(uint64_t *pMessageData, uint64_t signalData) {
-    CANTX_SetStringP1Mux(pMessageData, signalData);
-}
-extern void TEST_CANTX_SetStringEnergyCounter(
-    uint64_t *pMessageData,
-    uint8_t stringNumber,
-    const CAN_SHIM_s *const kpkCanShim) {
-    CANTX_SetStringEnergyCounter(pMessageData, stringNumber, kpkCanShim);
-}
 #endif

@@ -69,10 +69,10 @@
  *  - Period in ms
  *  - Endianness
  *  - Data length @{*/
-#define CANRX_BMS_STATE_REQUEST_ID         (0x210u)
+#define CANRX_BMS_STATE_REQUEST_ID         (0x320u)
 #define CANRX_BMS_STATE_REQUEST_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
 #define CANRX_BMS_STATE_REQUEST_PERIOD_ms  (CANRX_NOT_PERIODIC)
-#define CANRX_BMS_STATE_REQUEST_ENDIANNESS (CAN_BIG_ENDIAN)
+#define CANRX_BMS_STATE_REQUEST_ENDIANNESS (CAN_LITTLE_ENDIAN)
 #define CANRX_BMS_STATE_REQUEST_DLC        (CAN_DEFAULT_DLC)
 /**@} */
 
@@ -82,71 +82,12 @@
  *  - Period in ms
  *  - Endianness
  *  - Data length @{*/
-#define CANRX_DEBUG_ID         (0x300u)
+#define CANRX_DEBUG_ID         (0x321u)
 #define CANRX_DEBUG_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
 #define CANRX_DEBUG_PERIOD_ms  (CANRX_NOT_PERIODIC)
 #define CANRX_DEBUG_ENDIANNESS (CAN_BIG_ENDIAN)
 #define CANRX_DEBUG_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
-
-/** CAN message properties for CAN AFE_CellTemperatures message. Required properties are:
- *  - ID
- *  - Identifier type (standard or extended)
- *  - Period in ms
- *  - Endianness
- *  - Data length @{*/
-#define CANRX_AFE_CELL_TEMPERATURES_ID         (0x280u)
-#define CANRX_AFE_CELL_TEMPERATURES_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANRX_AFE_CELL_TEMPERATURES_PERIOD_ms  (CANRX_NOT_PERIODIC)
-#define CANRX_AFE_CELL_TEMPERATURES_ENDIANNESS (CAN_BIG_ENDIAN)
-#define CANRX_AFE_CELL_TEMPERATURES_DLC        (CAN_DEFAULT_DLC)
-/**@}*/
-
-/** CAN message properties for CAN AFE_CellVoltages message. Required properties are:
- *  - ID
- *  - Identifier type (standard or extended)
- *  - Period in ms
- *  - Endianness
- *  - Data length @{*/
-#define CANRX_AFE_CELL_VOLTAGES_ID         (0x270u)
-#define CANRX_AFE_CELL_VOLTAGES_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANRX_AFE_CELL_VOLTAGES_PERIOD_ms  (CANRX_NOT_PERIODIC)
-#define CANRX_AFE_CELL_VOLTAGES_ENDIANNESS (CAN_BIG_ENDIAN)
-#define CANRX_AFE_CELL_VOLTAGES_DLC        (CAN_DEFAULT_DLC)
-/**@}*/
-
-/** CAN message properties for aerosol sensor. Required properties are:
- *  - ID
- *  - Identifier type (standard or extended)
- *  - Period in ms
- *  - Endianness
- *  - Data length @{*/
-#define CANRX_BAS_AEROSOL_SENSOR_ID         (0x3C4u)
-#define CANRX_BAS_AEROSOL_SENSOR_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANRX_BAS_AEROSOL_SENSOR_PERIOD_ms  (1000u)
-#define CANRX_BAS_AEROSOL_SENSOR_ENDIANNESS (CAN_BIG_ENDIAN)
-#define CANRX_BAS_AEROSOL_SENSOR_DLC        (CAN_DEFAULT_DLC)
-/**@}*/
-
-/**
- * -------------------------CAUTION-------------------------
- * The following defines are used by the insulation monitoring device (IMD).
- * If they are changed, the IMD will not work anymore
- * -------------------------CAUTION-------------------------
- */
-/** CAN message ID for info message from iso165c */
-#define CANRX_IMD_INFO_ID         (0x37u)
-#define CANRX_IMD_INFO_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANRX_IMD_INFO_PERIOD_ms  (CANRX_NOT_PERIODIC)
-#define CANRX_IMD_INFO_ENDIANNESS (CAN_LITTLE_ENDIAN)
-#define CANRX_IMD_INFO_DLC        (6u)
-
-/** CAN message ID for response message from iso165c */
-#define CANRX_IMD_RESPONSE_ID         (0x23u)
-#define CANRX_IMD_RESPONSE_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
-#define CANRX_IMD_RESPONSE_PERIOD_ms  (CANRX_NOT_PERIODIC)
-#define CANRX_IMD_RESPONSE_ENDIANNESS (CAN_LITTLE_ENDIAN)
-#define CANRX_IMD_RESPONSE_DLC        (5u)
 
 /** CAN message properties for Isabellenhuette current sensor messages. @{*/
 #define CANRX_CURRENT_SENSOR_MESSAGES_DLC        (6u)
@@ -160,7 +101,7 @@
  *  - Period in ms
  *  - data length
  *  - Endianness @{*/
-#define CANRX_IVT_STRING0_CURRENT_ID         (0x521u)
+#define CANRX_IVT_STRING0_CURRENT_ID         (0x240u)
 #define CANRX_IVT_STRING0_CURRENT_ID_TYPE    (CANRX_CURRENT_SENSOR_MESSAGES_ID_TYPE)
 #define CANRX_IVT_STRING0_CURRENT_PERIOD_ms  (CANRX_NOT_PERIODIC)
 #define CANRX_IVT_STRING0_CURRENT_ENDIANNESS (CANRX_CURRENT_SENSOR_MESSAGES_ENDIANNESS)
@@ -173,7 +114,7 @@
  *  - Period in ms
  *  - data length
  *  - Endianness @{*/
-#define CANRX_IVT_STRING0_VOLTAGE1_ID         (0x522u)
+#define CANRX_IVT_STRING0_VOLTAGE1_ID         (0x241u)
 #define CANRX_IVT_STRING0_VOLTAGE1_ID_TYPE    (CANRX_CURRENT_SENSOR_MESSAGES_ID_TYPE)
 #define CANRX_IVT_STRING0_VOLTAGE1_PERIOD_ms  (CANRX_NOT_PERIODIC)
 #define CANRX_IVT_STRING0_VOLTAGE1_ENDIANNESS (CANRX_CURRENT_SENSOR_MESSAGES_ENDIANNESS)
@@ -186,7 +127,7 @@
  *  - Period in ms
  *  - data length
  *  - Endianness @{*/
-#define CANRX_IVT_STRING0_VOLTAGE2_ID         (0x523u)
+#define CANRX_IVT_STRING0_VOLTAGE2_ID         (0x242u)
 #define CANRX_IVT_STRING0_VOLTAGE2_ID_TYPE    (CANRX_CURRENT_SENSOR_MESSAGES_ID_TYPE)
 #define CANRX_IVT_STRING0_VOLTAGE2_PERIOD_ms  (CANRX_NOT_PERIODIC)
 #define CANRX_IVT_STRING0_VOLTAGE2_ENDIANNESS (CANRX_CURRENT_SENSOR_MESSAGES_ENDIANNESS)
@@ -199,7 +140,7 @@
  *  - Period in ms
  *  - data length
  *  - Endianness @{*/
-#define CANRX_IVT_STRING0_VOLTAGE3_ID         (0x524u)
+#define CANRX_IVT_STRING0_VOLTAGE3_ID         (0x243u)
 #define CANRX_IVT_STRING0_VOLTAGE3_ID_TYPE    (CANRX_CURRENT_SENSOR_MESSAGES_ID_TYPE)
 #define CANRX_IVT_STRING0_VOLTAGE3_PERIOD_ms  (CANRX_NOT_PERIODIC)
 #define CANRX_IVT_STRING0_VOLTAGE3_ENDIANNESS (CANRX_CURRENT_SENSOR_MESSAGES_ENDIANNESS)
@@ -212,7 +153,7 @@
  *  - Period in ms
  *  - data length
  *  - Endianness @{*/
-#define CANRX_IVT_STRING0_TEMPERATURE_ID         (0x525u)
+#define CANRX_IVT_STRING0_TEMPERATURE_ID         (0x244u)
 #define CANRX_IVT_STRING0_TEMPERATURE_ID_TYPE    (CANRX_CURRENT_SENSOR_MESSAGES_ID_TYPE)
 #define CANRX_IVT_STRING0_TEMPERATURE_PERIOD_ms  (CANRX_NOT_PERIODIC)
 #define CANRX_IVT_STRING0_TEMPERATURE_ENDIANNESS (CANRX_CURRENT_SENSOR_MESSAGES_ENDIANNESS)
@@ -225,7 +166,7 @@
  *  - Period in ms
  *  - data length
  *  - Endianness @{*/
-#define CANRX_IVT_STRING0_POWER_ID         (0x526u)
+#define CANRX_IVT_STRING0_POWER_ID         (0x245u)
 #define CANRX_IVT_STRING0_POWER_ID_TYPE    (CANRX_CURRENT_SENSOR_MESSAGES_ID_TYPE)
 #define CANRX_IVT_STRING0_POWER_PERIOD_ms  (CANRX_NOT_PERIODIC)
 #define CANRX_IVT_STRING0_POWER_ENDIANNESS (CANRX_CURRENT_SENSOR_MESSAGES_ENDIANNESS)
@@ -239,7 +180,7 @@
  *  - Period in ms
  *  - data length
  *  - Endianness @{*/
-#define CANRX_IVT_STRING0_CURRENT_COUNTER_ID         (0x527u)
+#define CANRX_IVT_STRING0_CURRENT_COUNTER_ID         (0x246u)
 #define CANRX_IVT_STRING0_CURRENT_COUNTER_ID_TYPE    (CANRX_CURRENT_SENSOR_MESSAGES_ID_TYPE)
 #define CANRX_IVT_STRING0_CURRENT_COUNTER_PERIOD_ms  (CANRX_NOT_PERIODIC)
 #define CANRX_IVT_STRING0_CURRENT_COUNTER_ENDIANNESS (CANRX_CURRENT_SENSOR_MESSAGES_ENDIANNESS)
@@ -253,11 +194,51 @@
  *  - Period in ms
  *  - data length
  *  - Endianness @{*/
-#define CANRX_IVT_STRING0_ENERGY_COUNTER_ID         (0x528u)
+#define CANRX_IVT_STRING0_ENERGY_COUNTER_ID         (0x247u)
 #define CANRX_IVT_STRING0_ENERGY_COUNTER_ID_TYPE    (CANRX_CURRENT_SENSOR_MESSAGES_ID_TYPE)
 #define CANRX_IVT_STRING0_ENERGY_COUNTER_PERIOD_ms  (CANRX_NOT_PERIODIC)
 #define CANRX_IVT_STRING0_ENERGY_COUNTER_ENDIANNESS (CANRX_CURRENT_SENSOR_MESSAGES_ENDIANNESS)
 #define CANRX_IVT_STRING0_ENERGY_COUNTER_DLC        (CANRX_CURRENT_SENSOR_MESSAGES_DLC)
+/**@} */
+
+/***** Cellsius: Own CAN TX message definitions *****/
+/** CAN message properties for ECU state message.
+ *  - ID
+ *  - Identifier type (standard or extended)
+ *  - Period in ms
+ *  - data length
+ *  - Endianness @{*/
+#define CANRX_ECU_STATE_ID         (0x100u)
+#define CANRX_ECU_STATE_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
+#define CANRX_ECU_STATE_PERIOD_ms  (CANRX_NOT_PERIODIC)
+#define CANRX_ECU_STATE_ENDIANNESS (CAN_LITTLE_ENDIAN)
+#define CANRX_ECU_STATE_DLC        (7u)
+/**@} */
+
+/** CAN message properties for Inverter state message.
+ *  - ID
+ *  - Identifier type (standard or extended)
+ *  - Period in ms
+ *  - data length
+ *  - Endianness @{*/
+#define CANRX_INV_STATE_ID         (0x210u)
+#define CANRX_INV_STATE_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
+#define CANRX_INV_STATE_PERIOD_ms  (CANRX_NOT_PERIODIC)
+#define CANRX_INV_STATE_ENDIANNESS (CAN_LITTLE_ENDIAN)
+#define CANRX_INV_STATE_DLC        (8u)
+/**@} */
+
+/** CAN message properties for DHVC state message.
+ *  - ID
+ *  - Identifier type (standard or extended)
+ *  - Period in ms
+ *  - data length
+ *  - Endianness @{*/
+#define CANRX_DHVC_STATE_ID         (0x170u)
+#define CANRX_DHVC_STATE_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
+#define CANRX_DHVC_STATE_PERIOD_ms  (CANRX_NOT_PERIODIC)
+#define CANRX_DHVC_STATE_ENDIANNESS (CAN_LITTLE_ENDIAN)
+#define CANRX_DHVC_STATE_DLC        (7u)
 /**@} */
 
 /* composed Rx  messages */
@@ -281,61 +262,6 @@
     },                                        \
     {                                         \
         .period = CANRX_DEBUG_PERIOD_ms       \
-    }
-
-#define CANRX_BAS_AEROSOL_SENSOR_MESSAGE                   \
-    {                                                      \
-        .id         = CANRX_BAS_AEROSOL_SENSOR_ID,         \
-        .idType     = CANRX_BAS_AEROSOL_SENSOR_ID_TYPE,    \
-        .dlc        = CANRX_BAS_AEROSOL_SENSOR_DLC,        \
-        .endianness = CANRX_BAS_AEROSOL_SENSOR_ENDIANNESS, \
-    },                                                     \
-    {                                                      \
-        .period = CANRX_BAS_AEROSOL_SENSOR_PERIOD_ms       \
-    }
-
-#define CANRX_AFE_CELL_VOLTAGES_MESSAGE                   \
-    {                                                     \
-        .id         = CANRX_AFE_CELL_VOLTAGES_ID,         \
-        .idType     = CANRX_AFE_CELL_VOLTAGES_ID_TYPE,    \
-        .dlc        = CANRX_AFE_CELL_VOLTAGES_DLC,        \
-        .endianness = CANRX_AFE_CELL_VOLTAGES_ENDIANNESS, \
-    },                                                    \
-    {                                                     \
-        .period = CANRX_AFE_CELL_VOLTAGES_PERIOD_ms       \
-    }
-
-#define CANRX_AFE_CELL_TEMPERATURES_MESSAGE                   \
-    {                                                         \
-        .id         = CANRX_AFE_CELL_TEMPERATURES_ID,         \
-        .idType     = CANRX_AFE_CELL_TEMPERATURES_ID_TYPE,    \
-        .dlc        = CANRX_AFE_CELL_TEMPERATURES_DLC,        \
-        .endianness = CANRX_AFE_CELL_TEMPERATURES_ENDIANNESS, \
-    },                                                        \
-    {                                                         \
-        .period = CANRX_AFE_CELL_TEMPERATURES_PERIOD_ms       \
-    }
-
-#define CANRX_IMD_INFO_MESSAGE                   \
-    {                                            \
-        .id         = CANRX_IMD_INFO_ID,         \
-        .idType     = CANRX_IMD_INFO_ID_TYPE,    \
-        .dlc        = CANRX_IMD_INFO_DLC,        \
-        .endianness = CANRX_IMD_INFO_ENDIANNESS, \
-    },                                           \
-    {                                            \
-        .period = CANRX_IMD_INFO_PERIOD_ms       \
-    }
-
-#define CANRX_IMD_RESPONSE_MESSAGE                   \
-    {                                                \
-        .id         = CANRX_IMD_RESPONSE_ID,         \
-        .idType     = CANRX_IMD_RESPONSE_ID_TYPE,    \
-        .dlc        = CANRX_IMD_RESPONSE_DLC,        \
-        .endianness = CANRX_IMD_RESPONSE_ENDIANNESS, \
-    },                                               \
-    {                                                \
-        .period = CANRX_IMD_RESPONSE_PERIOD_ms       \
     }
 
 #define CANRX_BMS_STATE_REQUEST_MESSAGE                   \
@@ -436,6 +362,41 @@
     {                                                              \
         .period = CANRX_IVT_STRING0_ENERGY_COUNTER_PERIOD_ms       \
     }
+
+/***** Cellsius: Own CAN TX message definitions *****/
+#define CANRX_ECU_STATE_MESSAGE                   \
+    {                                             \
+        .id         = CANRX_ECU_STATE_ID,         \
+        .idType     = CANRX_ECU_STATE_ID_TYPE,    \
+        .dlc        = CANRX_ECU_STATE_DLC,        \
+        .endianness = CANRX_ECU_STATE_ENDIANNESS, \
+    },                                            \
+    {                                             \
+        .period = CANRX_ECU_STATE_PERIOD_ms       \
+    }
+
+#define CANRX_INV_STATE_MESSAGE                   \
+    {                                             \
+        .id         = CANRX_INV_STATE_ID,         \
+        .idType     = CANRX_INV_STATE_ID_TYPE,    \
+        .dlc        = CANRX_INV_STATE_DLC,        \
+        .endianness = CANRX_INV_STATE_ENDIANNESS, \
+    },                                            \
+    {                                             \
+        .period = CANRX_INV_STATE_PERIOD_ms       \
+    }
+
+#define CANRX_DHVC_STATE_MESSAGE                   \
+    {                                              \
+        .id         = CANRX_DHVC_STATE_ID,         \
+        .idType     = CANRX_DHVC_STATE_ID_TYPE,    \
+        .dlc        = CANRX_DHVC_STATE_DLC,        \
+        .endianness = CANRX_DHVC_STATE_ENDIANNESS, \
+    },                                             \
+    {                                              \
+        .period = CANRX_DHVC_STATE_PERIOD_ms       \
+    }
+
 /* AXIVION Enable Style Generic-NoUnsafeMacro */
 
 /*========== Extern Constant and Variable Declarations ======================*/

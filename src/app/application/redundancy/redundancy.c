@@ -142,6 +142,7 @@ static void MRC_ValidateCurrentMeasurement(DATA_BLOCK_CURRENT_SENSOR_s *pTableCu
  * @brief Function to validate results of string voltage measurement
  * @param[in] pTableCurrentSensor   pointer current sensor high voltage measurements
  * @param[in] pTableCellVoltage     pointer to cell voltage measurements
+ * @details Cellsius: changed ISA measurement to U2, take string voltage from AFE when both are valid
  */
 static void MRC_ValidateStringVoltageMeasurement(
     DATA_BLOCK_CURRENT_SENSOR_s *pTableCurrentSensor,
@@ -156,6 +157,7 @@ static void MRC_ValidateBatteryVoltageMeasurement(void);
  * @brief Function to validate results of high voltage measurement and calculate
  *        battery voltage and high voltage bus voltage.
  * @param[in] pTableCurrentSensor   pointer current sensor high voltage measurements
+ * @details Cellsius: changed ISA measurement to U1
  */
 static void MRC_ValidateHighVoltageBusMeasurement(DATA_BLOCK_CURRENT_SENSOR_s *pTableCurrentSensor);
 
@@ -589,35 +591,41 @@ static void MRC_ValidateStringVoltageMeasurement(
     for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
         /* Check timeout of current sensor measurement */
         STD_RETURN_TYPE_e updatedMeasurement = MRC_MeasurementUpdatedRecently(
-            pTableCurrentSensor->timestampHighVoltage[s][0u],
-            pTableCurrentSensor->previousTimestampHighVoltage[s][0u],
+            pTableCurrentSensor->timestampHighVoltage[s][1u],
+            pTableCurrentSensor->previousTimestampHighVoltage[s][1u],
             MRC_CURRENT_SENSOR_MEASUREMENT_TIMEOUT_ms);
-        DIAG_CheckEvent(updatedMeasurement, DIAG_ID_CURRENT_SENSOR_V1_MEASUREMENT_TIMEOUT, DIAG_STRING, s);
+        DIAG_CheckEvent(updatedMeasurement, DIAG_ID_CURRENT_SENSOR_V2_MEASUREMENT_TIMEOUT, DIAG_STRING, s);
 
         /* Perform plausibility check if AFE and new current sensor measurement is valid */
-        if ((updatedMeasurement == STD_OK) && (pTableCurrentSensor->invalidHighVoltageMeasurement[s][0u] == 0u) &&
+        if ((updatedMeasurement == STD_OK) && (pTableCurrentSensor->invalidHighVoltageMeasurement[s][1u] == 0u) &&
             (pTableCellVoltage->nrValidCellVoltages[s] == BS_NR_OF_CELL_BLOCKS_PER_STRING)) {
             STD_RETURN_TYPE_e voltagePlausible = PL_CheckStringVoltage(
-                pTableCellVoltage->stringVoltage_mV[s], pTableCurrentSensor->highVoltage_mV[s][0u]);
-            (void)DIAG_CheckEvent(voltagePlausible, DIAG_ID_PLAUSIBILITY_PACK_VOLTAGE, DIAG_STRING, s);
+                pTableCellVoltage->stringVoltage_mV[s], pTableCurrentSensor->highVoltage_mV[s][1u]);
 
-            /* Use current sensor measurement */ /* TODO: use really current sensor? Average of both? AFE measurement?
-                                                  */
-            mrc_tablePackValues.stringVoltage_mV[s] = pTableCurrentSensor->highVoltage_mV[s][0u];
+            /* Use AFE measurement when both are valid */
+            mrc_tablePackValues.stringVoltage_mV[s] = pTableCellVoltage->stringVoltage_mV[s];
 
             if (voltagePlausible == STD_OK) {
                 mrc_tablePackValues.invalidStringVoltage[s] = 0u;
+                (void)DIAG_CheckEvent(voltagePlausible, DIAG_ID_PLAUSIBILITY_PACK_VOLTAGE, DIAG_STRING, s);
             } else {
-                mrc_tablePackValues.invalidStringVoltage[s] = 1u;
+                /* Cellsius: Only declare Pack Voltage invalid if the string is already closed */
+                if (BMS_IsStringClosed(s)) {
+                    mrc_tablePackValues.invalidStringVoltage[s] = 1u;
+                    (void)DIAG_CheckEvent(voltagePlausible, DIAG_ID_PLAUSIBILITY_PACK_VOLTAGE, DIAG_STRING, s);
+                } else {
+                    mrc_tablePackValues.invalidStringVoltage[s] = 0u;
+                    (void)DIAG_CheckEvent(STD_OK, DIAG_ID_PLAUSIBILITY_PACK_VOLTAGE, DIAG_STRING, s);
+                }
             }
         } else {
             /* Plausibility check cannot be performed if we do not have valid
              * values from AFE and current sensor measurement */
             (void)DIAG_CheckEvent(STD_NOT_OK, DIAG_ID_PLAUSIBILITY_PACK_VOLTAGE, DIAG_STRING, s);
 
-            if ((updatedMeasurement == STD_OK) && (pTableCurrentSensor->invalidHighVoltageMeasurement[s][0u] == 0u)) {
+            if ((updatedMeasurement == STD_OK) && (pTableCurrentSensor->invalidHighVoltageMeasurement[s][1u] == 0u)) {
                 /* Current sensor measurement valid -> use this measurement */
-                mrc_tablePackValues.stringVoltage_mV[s]     = pTableCurrentSensor->highVoltage_mV[s][0u];
+                mrc_tablePackValues.stringVoltage_mV[s]     = pTableCurrentSensor->highVoltage_mV[s][1u];
                 mrc_tablePackValues.invalidStringVoltage[s] = 0u;
             } else if (pTableCellVoltage->nrValidCellVoltages[s] == BS_NR_OF_CELL_BLOCKS_PER_STRING) {
                 /* AFE measurement valid -> use this measurement */
@@ -646,43 +654,13 @@ static void MRC_ValidateStringVoltageMeasurement(
 }
 
 static void MRC_ValidateBatteryVoltageMeasurement(void) {
-    int64_t sumOfStringValues_mV       = 0;
-    int8_t numberOfValidStringVoltages = 0;
-    uint8_t numberOfConnectedStrings   = BMS_GetNumberOfConnectedStrings();
+    /* Cellsius: Only one string used. Always show battery voltage, even if the string is invalid. */
 
-    if (0u != numberOfConnectedStrings) {
-        /* Iterate over all strings to see which strings are connected */
-        for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
-            bool isStringConnected = BMS_IsStringClosed(s);
-            if ((mrc_tablePackValues.invalidStringVoltage[s] == 0u) && (isStringConnected == true)) {
-                /* AXIVION Disable Style MisraC2012Directive-4.1: Values start with 0, iteration is less than UINT8_MAX;
-                 * overflow impossible */
-                sumOfStringValues_mV += mrc_tablePackValues.stringVoltage_mV[s];
-                numberOfValidStringVoltages++;
-                /* AXIVION Enable Style MisraC2012Directive-4.1: */
-            }
-        }
-    } else {
-        /* Take average of all strings if no strings are connected */
-        for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
-            if (mrc_tablePackValues.invalidStringVoltage[s] == 0u) {
-                /* AXIVION Disable Style MisraC2012Directive-4.1: Values start with 0, iteration is less than UINT8_MAX;
-                 * overflow impossible */
-                sumOfStringValues_mV += mrc_tablePackValues.stringVoltage_mV[s];
-                numberOfValidStringVoltages++;
-                /* AXIVION Enable Style MisraC2012Directive-4.1: */
-            }
-        }
-    }
+    mrc_tablePackValues.batteryVoltage_mV = mrc_tablePackValues.stringVoltage_mV[BS_STRING0];
 
-    /* Only calculate average if at least one string voltage is valid */
-    if (0 != numberOfValidStringVoltages) {
-        /* AXIVION Next Codeline Style MisraC2012Directive-4.1: truncation impossible;
-           we sum INT32 values x times and divide by x, resulting in INT32 */
-        mrc_tablePackValues.batteryVoltage_mV     = (int32_t)(sumOfStringValues_mV / numberOfValidStringVoltages);
+    if (mrc_tablePackValues.invalidStringVoltage[BS_STRING0] == 0u) {
         mrc_tablePackValues.invalidBatteryVoltage = 0u;
     } else {
-        mrc_tablePackValues.batteryVoltage_mV     = INT32_MAX;
         mrc_tablePackValues.invalidBatteryVoltage = 1u;
     }
 }
@@ -695,19 +673,19 @@ static void MRC_ValidateHighVoltageBusMeasurement(DATA_BLOCK_CURRENT_SENSOR_s *p
     for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
         /* Check timeout of current sensor measurement */
         STD_RETURN_TYPE_e updatedMeasurement = MRC_MeasurementUpdatedRecently(
-            pTableCurrentSensor->timestampHighVoltage[s][2u],
-            pTableCurrentSensor->previousTimestampHighVoltage[s][2u],
+            pTableCurrentSensor->timestampHighVoltage[s][0u],
+            pTableCurrentSensor->previousTimestampHighVoltage[s][0u],
             MRC_CURRENT_SENSOR_MEASUREMENT_TIMEOUT_ms);
-        DIAG_CheckEvent(updatedMeasurement, DIAG_ID_CURRENT_SENSOR_V3_MEASUREMENT_TIMEOUT, DIAG_STRING, s);
+        DIAG_CheckEvent(updatedMeasurement, DIAG_ID_CURRENT_SENSOR_V1_MEASUREMENT_TIMEOUT, DIAG_STRING, s);
 
         const bool stringClosed      = BMS_IsStringClosed(s);
         const bool stringPrecharging = BMS_IsStringPrecharging(s);
         if (((stringPrecharging == true) || (stringClosed == true)) && (updatedMeasurement == STD_OK)) {
             /* Only voltages of connected strings can be used */
-            if (pTableCurrentSensor->invalidHighVoltageMeasurement[s][2] == 0u) {
+            if (pTableCurrentSensor->invalidHighVoltageMeasurement[s][0u] == 0u) {
                 /* Measured high voltage is valid */
                 validVoltages++;
-                sum_mV += pTableCurrentSensor->highVoltage_mV[s][2];
+                sum_mV += pTableCurrentSensor->highVoltage_mV[s][0u];
             }
         }
     }
@@ -802,21 +780,20 @@ static STD_RETURN_TYPE_e MRC_CalculateCellVoltageMinMaxAverage(
         /* Iterate over all cells in each string */
         for (uint8_t m = 0u; m < BS_NR_OF_MODULES_PER_STRING; m++) {
             for (uint8_t cb = 0u; cb < BS_NR_OF_CELL_BLOCKS_PER_MODULE; cb++) {
-                if (pValidatedVoltages->invalidCellVoltage[s][m][cb] == false) {
-                    /* Cell voltage is valid -> use this voltage for subsequent calculations */
-                    nrValidCellVoltages++;
-                    sum += pValidatedVoltages->cellVoltage_mV[s][m][cb];
+                /* Cellsius: do NOT filter out invalid cell voltages,
+                we want min and max to include all cells */
+                nrValidCellVoltages++;
+                sum += pValidatedVoltages->cellVoltage_mV[s][m][cb];
 
-                    if (pValidatedVoltages->cellVoltage_mV[s][m][cb] < min) {
-                        min                 = pValidatedVoltages->cellVoltage_mV[s][m][cb];
-                        moduleNumberMinimum = m;
-                        cellNumberMinimum   = cb;
-                    }
-                    if (pValidatedVoltages->cellVoltage_mV[s][m][cb] > max) {
-                        max                 = pValidatedVoltages->cellVoltage_mV[s][m][cb];
-                        moduleNumberMaximum = m;
-                        cellNumberMaximum   = cb;
-                    }
+                if (pValidatedVoltages->cellVoltage_mV[s][m][cb] < min) {
+                    min                 = pValidatedVoltages->cellVoltage_mV[s][m][cb];
+                    moduleNumberMinimum = m;
+                    cellNumberMinimum   = cb;
+                }
+                if (pValidatedVoltages->cellVoltage_mV[s][m][cb] > max) {
+                    max                 = pValidatedVoltages->cellVoltage_mV[s][m][cb];
+                    moduleNumberMaximum = m;
+                    cellNumberMaximum   = cb;
                 }
             }
         }
@@ -860,21 +837,20 @@ static STD_RETURN_TYPE_e MRC_CalculateCellTemperatureMinMaxAverage(
 
         for (uint8_t m = 0u; m < BS_NR_OF_MODULES_PER_STRING; m++) {
             for (uint8_t ts = 0u; ts < BS_NR_OF_TEMP_SENSORS_PER_MODULE; ts++) {
-                if (pValidatedTemperatures->invalidCellTemperature[s][m][ts] == false) {
-                    /* Cell temperature is valid -> use this voltage for subsequent calculations */
-                    nrValidCellTemperatures++;
-                    sum_ddegC += (float_t)pValidatedTemperatures->cellTemperature_ddegC[s][m][ts];
+                /* Cellsius: do NOT filter out invalid cell voltages,
+                we want min and max to include all cells */
+                nrValidCellTemperatures++;
+                sum_ddegC += (float_t)pValidatedTemperatures->cellTemperature_ddegC[s][m][ts];
 
-                    if (pValidatedTemperatures->cellTemperature_ddegC[s][m][ts] < min) {
-                        min                 = pValidatedTemperatures->cellTemperature_ddegC[s][m][ts];
-                        moduleNumberMinimum = m;
-                        sensorNumberMinimum = ts;
-                    }
-                    if (pValidatedTemperatures->cellTemperature_ddegC[s][m][ts] > max) {
-                        max                 = pValidatedTemperatures->cellTemperature_ddegC[s][m][ts];
-                        moduleNumberMaximum = m;
-                        sensorNumberMaximum = ts;
-                    }
+                if (pValidatedTemperatures->cellTemperature_ddegC[s][m][ts] < min) {
+                    min                 = pValidatedTemperatures->cellTemperature_ddegC[s][m][ts];
+                    moduleNumberMinimum = m;
+                    sensorNumberMinimum = ts;
+                }
+                if (pValidatedTemperatures->cellTemperature_ddegC[s][m][ts] > max) {
+                    max                 = pValidatedTemperatures->cellTemperature_ddegC[s][m][ts];
+                    moduleNumberMaximum = m;
+                    sensorNumberMaximum = ts;
                 }
             }
         }

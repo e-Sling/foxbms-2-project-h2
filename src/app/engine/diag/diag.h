@@ -176,6 +176,13 @@ extern uint32_t DIAG_GetDelay(DIAG_ID_e diagnosisEntry);
  */
 extern bool DIAG_IsAnyFatalErrorSet(void);
 
+/**
+ * @brief   Check if any warning is set
+ * @return  true, if a diagnosis entry with severity #DIAG_WARNING is set,
+ *          otherwise false
+ */
+extern bool DIAG_IsAnyWarningSet(void);
+
 /*========== Externalized Static Functions Prototypes (Unit Test) ===========*/
 #ifdef UNITY_UNIT_TEST
 extern void TEST_DIAG_SetDiagerrcnttotal(uint16_t errors);
