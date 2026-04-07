@@ -331,7 +331,7 @@ void SE_CalculateStateOfCharge(DATA_BLOCK_SOC_s *pSocValues) {
 
                             float_t deltaSOC_perc = (((float_t)soc_tableCurrentSensor.current_mA[s] * timeStep_s) /
                                                      SOC_STRING_CAPACITY_mAs) *
-                                                    100.0f / 1000.0f; /* ((mA) * 1s) / 1As) * 100% */
+                                                    100.0f; /* ((mA) * 1s) / 1As) * 100% */
 
                             float_t charge_As =
                                 fabs((float_t)soc_tableCurrentSensor.current_mA[s] * timeStep_s / 1000.0f);
