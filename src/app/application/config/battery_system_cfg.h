@@ -86,7 +86,7 @@ typedef enum {
 } BS_STRING_ID_e;
 
 /** Define if discharge current is seen as positive or negative */
-#define BS_POSITIVE_DISCHARGE_CURRENT (true)
+#define BS_POSITIVE_DISCHARGE_CURRENT (false)
 
 /**
  * @brief   Number of parallel strings in the battery pack

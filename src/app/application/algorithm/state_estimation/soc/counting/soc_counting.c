@@ -195,6 +195,10 @@ static void SOC_SetValue(
         float_t ccOffset_perc =
             SOC_GetStringSocPercentageFromCharge((uint32_t)abs(soc_tableCurrentSensor.currentCounter_As[stringNumber]));
 
+        if (soc_tableCurrentSensor.currentCounter_As[stringNumber] < 0) {
+            ccOffset_perc *= (-1.0f);
+        }
+
 #if BS_POSITIVE_DISCHARGE_CURRENT == false
         ccOffset_perc *= (-1.0f);
 #endif /* BS_POSITIVE_DISCHARGE_CURRENT == false */
