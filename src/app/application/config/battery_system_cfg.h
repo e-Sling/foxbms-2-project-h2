@@ -120,7 +120,7 @@ typedef enum {
  *          <a href="../../../../introduction/naming-conventions.html" target="_blank">Naming Conventions</a>.
  * @ptype   uint
  */
-#define BS_NR_OF_CELL_BLOCKS_PER_MODULE (1u)
+#define BS_NR_OF_CELL_BLOCKS_PER_MODULE (7u)
 
 /**
  * @brief   number of parallel connected battery cells in a cell block
