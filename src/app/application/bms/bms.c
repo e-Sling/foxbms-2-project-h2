@@ -608,6 +608,12 @@ static CONT_TYPE_e BMS_GetSecondContactorToBeOpened(uint8_t stringNumber, CONT_T
     return contactorToBeOpened;
 }
 
+static void BMS_CheckDHVCTimeout(uint32_t timestamp) {
+    if ((timestamp - bms_state.last_dhvc_tick) > BMS_DHVC_TIMEOUT_ms) {
+        bms_state.allow_hv = false;
+    }
+}
+
 /*========== Extern Function Implementations ================================*/
 
 extern STD_RETURN_TYPE_e BMS_GetInitializationState(void) {
@@ -644,6 +650,10 @@ extern void BMS_SetPrechargeAllowedFlag(bool prechargeAllowedFlag) {
 
 extern void BMS_SetLastInverterTick(void) {
     bms_state.last_inverter_tick = OS_GetTickCount();
+}
+
+extern void BMS_SetLastDHVCTick(void) {
+    bms_state.last_dhvc_tick = OS_GetTickCount();
 }
 
 extern void BMS_LatchShutdownBits(void) {
@@ -719,6 +729,8 @@ void BMS_Trigger(void) {
         /* Cellsius: Check Bat_On Signal and save last value */
         bms_state.batOnSignalPrev = bms_state.batOnSignal;
         bms_state.batOnSignal     = FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor);
+        /* Cellsius: Check DHVC timeout */
+        BMS_CheckDHVCTimeout(timestamp);
     }
     /* Check re-entrance of function */
     if (BMS_CheckReEntrance() > 0u) {

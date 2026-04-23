@@ -77,6 +77,9 @@ extern uint32_t CANRX_DhvcState(
     if (crc == (uint8_t)crc_received) {
         /* Set Allow HV */
         CANRX_SetAllowHV(messageData);
+
+        /* Save tick from this message */
+        BMS_SetLastDHVCTick();
     }
 
     return 0u;

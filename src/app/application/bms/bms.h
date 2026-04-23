@@ -197,6 +197,7 @@ typedef struct {
     bool faultDisarmOnEntry;                             /*!< Cellsius: Fault_Disarm signal on entry to error state */
     bool prechargeAllowedFlag;                           /*!< Cellsius: Precharge_Allowed signal from Inverter */
     uint32_t last_inverter_tick;                         /*!< Cellsius: Last tick from Inverter */
+    uint32_t last_dhvc_tick;                             /*!< Cellsius: Last tick from DHVC */
     uint8_t shutdown_bits;                               /*!< Cellsius: Error bits that caused shutdown */
 } BMS_STATE_s;
 
