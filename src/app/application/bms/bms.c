@@ -632,6 +632,10 @@ extern bool BMS_GetBatOnSignal(void) {
     return bms_state.batOnSignal;
 }
 
+extern bool BMS_GetAllowHVSignal(void) {
+    return bms_state.allow_hv;
+}
+
 extern void BMS_SetFaultDisarmFlag(bool faultDisarmFlag) {
     bms_state.faultDisarmFlag = faultDisarmFlag;
 }

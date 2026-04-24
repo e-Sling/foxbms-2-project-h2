@@ -240,6 +240,13 @@ extern BMS_STATEMACH_SUB_e BMS_GetSubstate(void);
 extern bool BMS_GetBatOnSignal(void);
 
 /**
+ * @brief   Returns the current Allow HV signal.
+ * @details This function is used to get the current Allow HV signal state.
+ * @return  true if Allow HV is active, otherwise false
+ */
+extern bool BMS_GetAllowHVSignal(void);
+
+/**
  * @brief   Sets the Fault Disarm Flag
  * @param   faultDisarmFlag    Value transmitted by ECU
  */
@@ -267,6 +274,11 @@ extern void BMS_SetPrechargeAllowedFlag(bool prechargeAllowedFlag);
  * @brief   Saves the current tick when Inverter message is received
  */
 extern void BMS_SetLastInverterTick(void);
+
+/**
+ * @brief   Saves the current tick when DHVC message is received
+ */
+extern void BMS_SetLastDHVCTick(void);
 
 /**
  * @brief   Latches error bits that caused the shutdown

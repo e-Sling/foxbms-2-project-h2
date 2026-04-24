@@ -93,6 +93,8 @@
 #define CANTX_SIGNAL_BMS_BALANCING_THRESHOLD_LENGTH            (8u)
 #define CANTX_SIGNAL_BMS_CURRENT_FLOW_STATE_START_BIT          (32u)
 #define CANTX_SIGNAL_BMS_CURRENT_FLOW_STATE_LENGTH             (3u)
+#define CANTX_SIGNAL_BMS_ALLOW_HV_START_BIT                    (35u)
+#define CANTX_SIGNAL_BMS_ALLOW_HV_LENGTH                       (CAN_BIT)
 #define CANTX_SIGNAL_BMS_CRC_START_BIT                         (56u)
 #define CANTX_SIGNAL_BMS_CRC_LENGTH                            (8u)
 
@@ -205,6 +207,15 @@ static void CANTX_BuildBmsStateMessage(uint64_t *pMessageData, const CAN_SHIM_s 
         pMessageData,
         CANTX_SIGNAL_BMS_CURRENT_FLOW_STATE_START_BIT,
         CANTX_SIGNAL_BMS_CURRENT_FLOW_STATE_LENGTH,
+        data,
+        CANTX_BMS_STATE_ENDIANNESS);
+
+    /* Cellsius: Allow_HV */
+    data = CAN_ConvertBooleanToInteger(BMS_GetAllowHVSignal());
+    CAN_TxSetMessageDataWithSignalData(
+        pMessageData,
+        CANTX_SIGNAL_BMS_ALLOW_HV_START_BIT,
+        CANTX_SIGNAL_BMS_ALLOW_HV_LENGTH,
         data,
         CANTX_BMS_STATE_ENDIANNESS);
 
