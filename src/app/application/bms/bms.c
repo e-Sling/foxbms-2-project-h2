@@ -608,8 +608,8 @@ static CONT_TYPE_e BMS_GetSecondContactorToBeOpened(uint8_t stringNumber, CONT_T
     return contactorToBeOpened;
 }
 
-static void BMS_CheckDHVCTimeout(uint32_t timestamp) {
-    if ((timestamp - bms_state.last_dhvc_tick) > BMS_DHVC_TIMEOUT_ms) {
+static void BMS_CheckDHVCTimeout(void) {
+    if ((OS_GetTickCount() - bms_state.last_dhvc_tick) > BMS_DHVC_TIMEOUT_ms) {
         bms_state.allow_hv = false;
     }
 }
@@ -734,7 +734,7 @@ void BMS_Trigger(void) {
         bms_state.batOnSignalPrev = bms_state.batOnSignal;
         bms_state.batOnSignal     = FS85_CheckBatOnSignal(&fs85xx_mcuSupervisor);
         /* Cellsius: Check DHVC timeout */
-        BMS_CheckDHVCTimeout(timestamp);
+        BMS_CheckDHVCTimeout();
     }
     /* Check re-entrance of function */
     if (BMS_CheckReEntrance() > 0u) {
