@@ -169,6 +169,9 @@
 /** Timeout for DHVC message. If no message is received, allow_HV is set to false */
 #define BMS_DHVC_TIMEOUT_ms (1000u)
 
+/** Timeout for ECU message. If no message is received, allow_HV is set to false */
+#define BMS_ECU_TIMEOUT_ms (1000u)
+
 /*========== Extern Constant and Variable Declarations ======================*/
 
 /*========== Extern Function Prototypes =====================================*/

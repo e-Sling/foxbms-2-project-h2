@@ -192,12 +192,17 @@ typedef struct {
     bool batOnSignal;                                    /*!< Cellsius: Bat_On signal from switch in Cockpit */
     bool batOnSignalPrev;                                /*!< Cellsius: Previous Bat_On signal */
     bool faultDisarmFlag;                                /*!< Cellsius: Fault_Disarm signal from ECU */
-    bool flightmode;                                     /*!< Cellsius: Flightmode signal from ECU */
+    bool ecu_flightmode;                                 /*!< Cellsius: Flightmode signal from ECU */
+    bool dhvc_flightmode;                                /*!< Cellsius: Flightmode signal from DHVC */
+    bool cached_flightmode;                              /*!< Cellsius: Cached flightmode value */
     bool allow_hv;                                       /*!< Cellsius: Allow HV signal from DHVC */
     bool faultDisarmOnEntry;                             /*!< Cellsius: Fault_Disarm signal on entry to error state */
     bool prechargeAllowedFlag;                           /*!< Cellsius: Precharge_Allowed signal from Inverter */
     uint32_t last_inverter_tick;                         /*!< Cellsius: Last tick from Inverter */
     uint32_t last_dhvc_tick;                             /*!< Cellsius: Last tick from DHVC */
+    uint32_t last_ecu_tick;                              /*!< Cellsius: Last tick from ECU */
+    bool dhvc_timeout;                                   /*!< Cellsius: Flag if DHVC timeout has occurred */
+    bool ecu_timeout;                                    /*!< Cellsius: Flag if ECU timeout has occurred */
     uint8_t shutdown_bits;                               /*!< Cellsius: Error bits that caused shutdown */
 } BMS_STATE_s;
 
@@ -247,16 +252,37 @@ extern bool BMS_GetBatOnSignal(void);
 extern bool BMS_GetAllowHVSignal(void);
 
 /**
+ * @brief   Returns the cached Flightmode signal.
+ * @details This function is used to get the cached Flightmode signal state.
+ * @return  true if cached Flightmode is active, otherwise false
+ */
+extern bool BMS_GetCachedFlightmode(void);
+
+/**
+ * @brief   Returns the current Flightmode signal.
+ * @details This function checks both Flightmode signals from ECU and DHVC
+ *          aswell as their timeouts and sets the Flightmode signal state.
+ * @return  true if Flightmode is active, otherwise false
+ */
+extern bool BMS_CheckFlightmode(void);
+
+/**
  * @brief   Sets the Fault Disarm Flag
  * @param   faultDisarmFlag    Value transmitted by ECU
  */
 extern void BMS_SetFaultDisarmFlag(bool faultDisarmFlag);
 
 /**
- * @brief   Sets Flightmode
+ * @brief   Sets ECU Flightmode
  * @param   flightmode    Value transmitted by ECU
  */
-extern void BMS_SetFlightmode(bool flightmode);
+extern void BMS_SetECUFlightmode(bool flightmode);
+
+/**
+ * @brief   Sets DHVC Flightmode
+ * @param   flightmode    Value transmitted by DHVC
+ */
+extern void BMS_SetDHVCFlightmode(bool flightmode);
 
 /**
  * @brief   Sets Allow HV
@@ -279,6 +305,11 @@ extern void BMS_SetLastInverterTick(void);
  * @brief   Saves the current tick when DHVC message is received
  */
 extern void BMS_SetLastDHVCTick(void);
+
+/**
+ * @brief   Saves the current tick when ECU message is received
+ */
+extern void BMS_SetLastECUTick(void);
 
 /**
  * @brief   Latches error bits that caused the shutdown

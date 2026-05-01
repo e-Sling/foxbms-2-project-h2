@@ -52,7 +52,7 @@ static void CANRX_SetFlightmode(uint64_t messageData) {
         &signalData,
         CANRX_ECU_STATE_ENDIANNESS);
 
-    BMS_SetFlightmode((bool)signalData);
+    BMS_SetECUFlightmode((bool)signalData);
 }
 
 static void CANRX_SetFaultDisarmFlag(uint64_t messageData) {
@@ -100,6 +100,9 @@ extern uint32_t CANRX_EcuState(
 
         /* Set Fault Disarm Flag */
         CANRX_SetFaultDisarmFlag(messageData);
+
+        /* Save tick from this message */
+        BMS_SetLastECUTick();
     }
 
     return 0u;

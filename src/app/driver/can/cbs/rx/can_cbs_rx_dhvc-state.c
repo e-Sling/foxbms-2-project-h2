@@ -16,10 +16,12 @@
 /** @{
  * defines for the state request signal data
  */
-#define CANRX_DHVC_STATE_ALLOW_HV_START_BIT (19u)
-#define CANRX_DHVC_STATE_ALLOW_HV_LENGTH    (CAN_BIT)
-#define CANRX_DHVC_STATE_CRC_START_BIT      (48u)
-#define CANRX_DHVC_STATE_CRC_LENGTH         (8u)
+#define CANRX_DHVC_STATE_FLIGHTMODE_START_BIT (16u)
+#define CANRX_DHVC_STATE_FLIGHTMODE_LENGTH    (CAN_BIT)
+#define CANRX_DHVC_STATE_ALLOW_HV_START_BIT   (19u)
+#define CANRX_DHVC_STATE_ALLOW_HV_LENGTH      (CAN_BIT)
+#define CANRX_DHVC_STATE_CRC_START_BIT        (48u)
+#define CANRX_DHVC_STATE_CRC_LENGTH           (8u)
 /** @} */
 
 /*========== Static Constant and Variable Definitions =======================*/
@@ -45,6 +47,18 @@ static void CANRX_SetAllowHV(uint64_t messageData) {
         CANRX_DHVC_STATE_ENDIANNESS);
 
     BMS_SetAllowHV((bool)signalData);
+}
+
+static void CANRX_SetFlightmode(uint64_t messageData) {
+    uint64_t signalData = 0u;
+    CAN_RxGetSignalDataFromMessageData(
+        messageData,
+        CANRX_DHVC_STATE_FLIGHTMODE_START_BIT,
+        CANRX_DHVC_STATE_FLIGHTMODE_LENGTH,
+        &signalData,
+        CANRX_DHVC_STATE_ENDIANNESS);
+
+    BMS_SetDHVCFlightmode((bool)signalData);
 }
 
 /*========== Extern Function Implementations ================================*/
@@ -77,6 +91,9 @@ extern uint32_t CANRX_DhvcState(
     if (crc == (uint8_t)crc_received) {
         /* Set Allow HV */
         CANRX_SetAllowHV(messageData);
+
+        /* Set Flightmode */
+        CANRX_SetFlightmode(messageData);
 
         /* Save tick from this message */
         BMS_SetLastDHVCTick();
