@@ -166,10 +166,13 @@
 /* Timeout of inverter CAN message. If no message is received, precharge shall be started anyways */
 #define BMS_INVERTER_MESSAGE_TIMEOUT (5000u)
 
-/** Timeout for DHVC message. If no message is received, allow_HV is set to false */
+/** Timeout for DHVC message. If no message is received, timeout counter is increased */
 #define BMS_DHVC_TIMEOUT_ms (1000u)
 
-/** Timeout for ECU message. If no message is received, allow_HV is set to false */
+/** Timeout count for DHVC message. If a timeout event stays, allow_HV is set to false */
+#define BMS_DHVC_TIMEOUT_COUNT (3u)
+
+/** Timeout for ECU message */
 #define BMS_ECU_TIMEOUT_ms (1000u)
 
 /*========== Extern Constant and Variable Declarations ======================*/
