@@ -173,8 +173,8 @@
  */
 /**@{*/
 #define BC_VOLTAGE_MIN_MSL_mV (2500)
-#define BC_VOLTAGE_MIN_RSL_mV (2700)
-#define BC_VOLTAGE_MIN_MOL_mV (3000)
+#define BC_VOLTAGE_MIN_RSL_mV (3000)
+#define BC_VOLTAGE_MIN_MOL_mV (3200)
 /**@}*/
 
 /**
