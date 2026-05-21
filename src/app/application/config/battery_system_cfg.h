@@ -110,7 +110,7 @@ typedef enum {
  *          <a href="../../../../introduction/naming-conventions.html" target="_blank">Naming Conventions</a>.
  * @ptype   uint
  */
-#define BS_NR_OF_MODULES_PER_STRING (1u)
+#define BS_NR_OF_MODULES_PER_STRING (15u)
 
 /**
  * @brief   number of cells per module
@@ -120,7 +120,7 @@ typedef enum {
  *          <a href="../../../../introduction/naming-conventions.html" target="_blank">Naming Conventions</a>.
  * @ptype   uint
  */
-#define BS_NR_OF_CELL_BLOCKS_PER_MODULE (5u)
+#define BS_NR_OF_CELL_BLOCKS_PER_MODULE (12u)
 
 /**
  * @brief   number of parallel connected battery cells in a cell block
@@ -128,7 +128,7 @@ typedef enum {
  *          <a href="../../../../introduction/naming-conventions.html" target="_blank">Naming Conventions</a>.
  * @ptype   uint
  */
-#define BS_NR_OF_PARALLEL_CELLS_PER_CELL_BLOCK (1u)
+#define BS_NR_OF_PARALLEL_CELLS_PER_CELL_BLOCK (2u)
 
 /**
  * @brief   number of temperature sensors per battery module
