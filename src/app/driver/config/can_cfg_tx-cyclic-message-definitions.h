@@ -204,6 +204,20 @@
 #define CANTX_DIAGNOSTIC_DLC        (CAN_DEFAULT_DLC)
 /**@}*/
 
+/** CAN message properties for CAN diagnostic counters. Required properties are:
+ *  - ID
+ *  - Identifier type (standard or extended)
+ *  - Period and phase in ms
+ *  - Endianness
+ *  - data length @{*/
+#define CANTX_CAN_DIAGNOSTIC_COUNTERS_ID         (0x524u)
+#define CANTX_CAN_DIAGNOSTIC_COUNTERS_ID_TYPE    (CAN_STANDARD_IDENTIFIER_11_BIT)
+#define CANTX_CAN_DIAGNOSTIC_COUNTERS_PERIOD_ms  (100u)
+#define CANTX_CAN_DIAGNOSTIC_COUNTERS_PHASE_ms   (90u)
+#define CANTX_CAN_DIAGNOSTIC_COUNTERS_ENDIANNESS (CAN_LITTLE_ENDIAN)
+#define CANTX_CAN_DIAGNOSTIC_COUNTERS_DLC        (CAN_DEFAULT_DLC)
+/**@}*/
+
 /* composed Tx  messages */
 
 /* AXIVION Disable Style Generic-NoUnsafeMacro: These macros MUST only be used
@@ -320,6 +334,17 @@
     },                                                                           \
     {                                                                            \
         .period = CANTX_DIAGNOSTIC_PERIOD_ms, .phase = CANTX_DIAGNOSTIC_PHASE_ms \
+    }
+
+#define CANTX_CAN_DIAGNOSTIC_COUNTERS_MESSAGE                                                              \
+    {                                                                                                      \
+        .id         = CANTX_CAN_DIAGNOSTIC_COUNTERS_ID,                                                    \
+        .idType     = CANTX_CAN_DIAGNOSTIC_COUNTERS_ID_TYPE,                                               \
+        .dlc        = CANTX_CAN_DIAGNOSTIC_COUNTERS_DLC,                                                   \
+        .endianness = CANTX_CAN_DIAGNOSTIC_COUNTERS_ENDIANNESS,                                            \
+    },                                                                                                     \
+    {                                                                                                      \
+        .period = CANTX_CAN_DIAGNOSTIC_COUNTERS_PERIOD_ms, .phase = CANTX_CAN_DIAGNOSTIC_COUNTERS_PHASE_ms \
     }
 
 /* AXIVION Enable Style Generic-NoUnsafeMacro */

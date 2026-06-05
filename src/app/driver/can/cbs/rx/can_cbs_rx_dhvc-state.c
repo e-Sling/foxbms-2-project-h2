@@ -6,6 +6,7 @@
 
 /*========== Includes =======================================================*/
 #include "bms.h"
+#include "can.h"
 #include "can_cbs_rx.h"
 #include "can_cfg_rx-message-definitions.h"
 #include "can_helper.h"
@@ -97,6 +98,9 @@ extern uint32_t CANRX_DhvcState(
 
         /* Save tick from this message */
         BMS_SetLastDHVCTick();
+        CAN_IncrementDiagnosticCounter(CAN_DIAGNOSTIC_COUNTER_DHVC_STATE_VALID);
+    } else {
+        CAN_IncrementDiagnosticCounter(CAN_DIAGNOSTIC_COUNTER_DHVC_STATE_CRC_INVALID);
     }
 
     return 0u;

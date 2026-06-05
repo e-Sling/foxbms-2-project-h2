@@ -202,7 +202,6 @@ typedef struct {
     uint32_t last_dhvc_tick;                             /*!< Cellsius: Last tick from DHVC */
     uint32_t last_ecu_tick;                              /*!< Cellsius: Last tick from ECU */
     bool dhvc_timeout;                                   /*!< Cellsius: Flag if DHVC timeout has occurred */
-    uint8_t dhvc_timeoutCounter;                         /*!< Cellsius: Counter for DHVC timeout */
     bool ecu_timeout;                                    /*!< Cellsius: Flag if ECU timeout has occurred */
     uint8_t shutdown_bits;                               /*!< Cellsius: Error bits that caused shutdown */
 } BMS_STATE_s;

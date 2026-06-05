@@ -84,6 +84,27 @@ typedef struct {
     bool currentSensorECPresent[BS_NR_OF_STRINGS]; /*!< defines if a EC info is being sent */
 } CAN_STATE_s;
 
+/** Diagnostic counters for CAN receive health. */
+typedef struct {
+    uint32_t ecuStateValid;       /*!< valid ECU state frames */
+    uint32_t ecuStateCrcInvalid;  /*!< ECU state frames rejected by software CRC */
+    uint32_t dhvcStateValid;      /*!< valid DHVC state frames */
+    uint32_t dhvcStateCrcInvalid; /*!< DHVC state frames rejected by software CRC */
+    uint32_t rxDataLost;          /*!< hardware RX message lost indications */
+    uint32_t rxQueueFull;         /*!< software RX queue full indications */
+} CAN_DIAGNOSTIC_COUNTERS_s;
+
+/** CAN diagnostic counter IDs. */
+typedef enum {
+    CAN_DIAGNOSTIC_COUNTER_ECU_STATE_VALID,
+    CAN_DIAGNOSTIC_COUNTER_ECU_STATE_CRC_INVALID,
+    CAN_DIAGNOSTIC_COUNTER_DHVC_STATE_VALID,
+    CAN_DIAGNOSTIC_COUNTER_DHVC_STATE_CRC_INVALID,
+    CAN_DIAGNOSTIC_COUNTER_RX_DATA_LOST,
+    CAN_DIAGNOSTIC_COUNTER_RX_QUEUE_FULL,
+    CAN_DIAGNOSTIC_COUNTER_MAX_E,
+} CAN_DIAGNOSTIC_COUNTER_e;
+
 /*========== Extern Constant and Variable Declarations ======================*/
 
 /*========== Extern Function Prototypes =====================================*/
@@ -134,6 +155,18 @@ extern void CAN_Initialize(void);
  * (e.g., before the first LTC measurement cycle was completed).
  */
 extern void CAN_EnablePeriodic(bool command);
+
+/**
+ * @brief   Increments one CAN diagnostic counter.
+ * @param   counter  counter to increment
+ */
+extern void CAN_IncrementDiagnosticCounter(CAN_DIAGNOSTIC_COUNTER_e counter);
+
+/**
+ * @brief   Copies the current CAN diagnostic counters.
+ * @param   pCounters  destination for counter snapshot
+ */
+extern void CAN_GetDiagnosticCounters(CAN_DIAGNOSTIC_COUNTERS_s *pCounters);
 
 /**
  * @brief   set flag for presence of current sensor.

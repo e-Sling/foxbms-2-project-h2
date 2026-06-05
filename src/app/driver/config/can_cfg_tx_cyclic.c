@@ -70,6 +70,7 @@
 /** Multiplexer values @{*/
 static uint8_t cantx_cellVoltagesMux     = 0u;
 static uint8_t cantx_cellTemperaturesMux = 0u;
+static uint8_t cantx_canDiagnosticMux    = 0u;
 /* static uint8_t cantx_stringStateMux      = 0u;
 static uint8_t cantx_stringValuesP0Mux   = 0u;
 static uint8_t cantx_stringValuesP1Mux   = 0u;
@@ -89,6 +90,7 @@ const CAN_TX_MESSAGE_TYPE_s can_txMessages[] = {
     {CAN_NODE, CANTX_VOLTAGE_MIN_MAX_AVG_MESSAGE, &CANTX_VoltageMinMaxAvgValues, NULL_PTR},
     {CAN_NODE, CANTX_TEMP_MIN_MAX_AVG_MESSAGE, &CANTX_TempMinMaxAvgValues, NULL_PTR},
     {CAN_NODE, CANTX_DIAGNOSTIC_MESSAGE, &CANTX_DiagnosticFlags, NULL_PTR},
+    {CAN_NODE, CANTX_CAN_DIAGNOSTIC_COUNTERS_MESSAGE, &CANTX_CanDiagnosticCounters, &cantx_canDiagnosticMux},
     /* {CAN_NODE, CANTX_PACK_LIMITS_MESSAGE, &CANTX_PackLimits, NULL_PTR}, */
     /* {CAN_NODE, CANTX_BMS_STATE_DETAILS_MESSAGE, &CANTX_BmsStateDetails, NULL_PTR}, */
 };

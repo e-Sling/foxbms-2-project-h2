@@ -81,6 +81,21 @@
 /** return value of function canGetData if no data was lost during reception */
 #define CAN_HAL_RETVAL_NO_DATA_LOST (1u)
 
+/** return value of function canGetData if data was copied, but a previous message was lost */
+#define CAN_HAL_RETVAL_DATA_LOST (3u)
+
+/** IF2 command: read arbitration, control and data, and clear NewDat */
+#define CAN_IF2CMD_READ_MESSAGE_OBJECT (0x37u)
+
+/** IF register busy bit */
+#define CAN_IF_STAT_BUSY (0x80u)
+
+/** CAN message control mask for received message size */
+#define CAN_IF_MCTL_DLC_MASK (0x0Fu)
+
+/** CAN message control bit that indicates overwritten receive data */
+#define CAN_IF_MCTL_MESSAGE_LOST_MASK (0x4000u)
+
 /**
  * IF2ARB register configuration
  *
@@ -133,6 +148,16 @@ static CAN_STATE_s can_state = {
     .currentSensorPresent   = {GEN_REPEAT_U(false, GEN_STRIP(BS_NR_OF_STRINGS))},
     .currentSensorCCPresent = {GEN_REPEAT_U(false, GEN_STRIP(BS_NR_OF_STRINGS))},
     .currentSensorECPresent = {GEN_REPEAT_U(false, GEN_STRIP(BS_NR_OF_STRINGS))},
+};
+
+/** diagnostic counters for CAN receive health */
+static volatile CAN_DIAGNOSTIC_COUNTERS_s can_diagnosticCounters = {
+    .ecuStateValid       = 0u,
+    .ecuStateCrcInvalid  = 0u,
+    .dhvcStateValid      = 0u,
+    .dhvcStateCrcInvalid = 0u,
+    .rxDataLost          = 0u,
+    .rxQueueFull         = 0u,
 };
 
 /** stores the number of CAN_periodicTransmit calls at which the internal
@@ -264,6 +289,28 @@ static void CAN_CheckDatabaseNullPointer(CAN_SHIM_s canShim);
  * @return pointer to node configuration struct
  */
 static CAN_NODE_s *CAN_GetNodeConfigurationStructFromRegisterAddress(canBASE_t *pNodeRegister);
+
+/**
+ * @brief   increments a counter unless it is saturated
+ * @param   pCounter  counter to increment
+ */
+static void CAN_IncrementSaturatingCounter(volatile uint32_t *pCounter);
+
+/**
+ * @brief   Copies the received message object into a local buffer.
+ * @details Reads arbitration, control and data with one IF2 transfer so that
+ *          the CAN ID and payload belong to the same hardware snapshot.
+ * @param[in]   pNode        CAN interface on which message was received
+ * @param[in]   messageBox   message box on which message was received
+ * @param[out]  pMessageId   arbitration register contents from the received message
+ * @param[out]  pMessageData copied CAN payload
+ * @return      HAL-compatible receive status
+ */
+static uint32_t CAN_CopyRxMessageFromMailbox(
+    canBASE_t *pNode,
+    uint32 messageBox,
+    uint32_t *pMessageId,
+    uint8_t *pMessageData);
 
 /*========== Static Function Implementations ================================*/
 
@@ -512,21 +559,87 @@ static CAN_NODE_s *CAN_GetNodeConfigurationStructFromRegisterAddress(canBASE_t *
     return node;
 }
 
+static void CAN_IncrementSaturatingCounter(volatile uint32_t *pCounter) {
+    FAS_ASSERT(pCounter != NULL_PTR);
+
+    if (*pCounter < UINT32_MAX) {
+        (*pCounter)++;
+    }
+}
+
+static uint32_t CAN_CopyRxMessageFromMailbox(
+    canBASE_t *pNode,
+    uint32 messageBox,
+    uint32_t *pMessageId,
+    uint8_t *pMessageData) {
+    FAS_ASSERT(pNode != NULL_PTR);
+    FAS_ASSERT(messageBox > 0u);
+    FAS_ASSERT(pMessageId != NULL_PTR);
+    FAS_ASSERT(pMessageData != NULL_PTR);
+
+    uint32_t retval   = 0u;
+    uint32_t regIndex = (messageBox - 1u) >> 5u;
+    uint32_t bitIndex = 1u << ((messageBox - 1u) & 0x1Fu);
+
+    if ((pNode->NWDATx[regIndex] & bitIndex) != 0u) {
+        while ((pNode->IF2STAT & CAN_IF_STAT_BUSY) == CAN_IF_STAT_BUSY) {
+        }
+
+        pNode->IF2CMD = CAN_IF2CMD_READ_MESSAGE_OBJECT;
+        pNode->IF2NO  = (uint8)messageBox;
+
+        while ((pNode->IF2STAT & CAN_IF_STAT_BUSY) == CAN_IF_STAT_BUSY) {
+        }
+
+        *pMessageId = pNode->IF2ARB & 0x1FFFFFFFu;
+
+        uint32_t size = pNode->IF2MCTL & CAN_IF_MCTL_DLC_MASK;
+        if (size > CAN_DEFAULT_DLC) {
+            size = CAN_DEFAULT_DLC;
+        }
+
+        retval = CAN_HAL_RETVAL_NO_DATA_LOST;
+
+#if ((__little_endian__ == 1) || (__LITTLE_ENDIAN__ == 1))
+        for (uint32_t i = 0u; i < size; i++) {
+            pMessageData[i] = pNode->IF2DATx[i];
+        }
+#else
+        static const uint32_t byteOrder[CAN_DEFAULT_DLC] = {3u, 2u, 1u, 0u, 7u, 6u, 5u, 4u};
+        for (uint32_t i = 0u; i < size; i++) {
+            pMessageData[i] = pNode->IF2DATx[byteOrder[i]];
+        }
+#endif
+
+        if ((pNode->IF2MCTL & CAN_IF_MCTL_MESSAGE_LOST_MASK) == CAN_IF_MCTL_MESSAGE_LOST_MASK) {
+            retval = CAN_HAL_RETVAL_DATA_LOST;
+        }
+    }
+
+    return retval;
+}
+
 static void CAN_RxInterrupt(canBASE_t *pNode, uint32 messageBox) {
     FAS_ASSERT(pNode != NULL_PTR);
     FAS_ASSERT(messageBox <= CAN_TOTAL_NUMBER_OF_MESSAGE_BOXES); /* hardware starts counting at 1 -> use <= */
 
     uint8_t messageData[CAN_DEFAULT_DLC] = {0u};
+    uint32_t messageId                   = 0u;
     /**
      *  Read even if queues are not created, otherwise message boxes get full.
      *  Possible return values:
      *   - 0: no new data
      *   - 1: no data lost
      *   - 3: data lost */
-    uint32_t retval = canGetData(pNode, messageBox, (uint8 *)&messageData[0]); /* copy to RAM */
+    uint32_t retval = CAN_CopyRxMessageFromMailbox(pNode, messageBox, &messageId, &messageData[0]);
 
-    /* Check that CAN RX queue is started before using it and data is valid */
-    if ((ftsk_allQueuesCreated == true) && (retval == CAN_HAL_RETVAL_NO_DATA_LOST)) {
+    if (retval == CAN_HAL_RETVAL_DATA_LOST) {
+        CAN_IncrementDiagnosticCounter(CAN_DIAGNOSTIC_COUNTER_RX_DATA_LOST);
+    }
+
+    /* Check that CAN RX queue is started before using it and data has been copied */
+    if ((ftsk_allQueuesCreated == true) &&
+        ((retval == CAN_HAL_RETVAL_NO_DATA_LOST) || (retval == CAN_HAL_RETVAL_DATA_LOST))) {
         CAN_BUFFER_ELEMENT_s can_rxBuffer = {NULL_PTR, 0u, CAN_INVALID_TYPE, {0u, 0u, 0u, 0u, 0u, 0u, 0u, 0u}};
         /* Find configured CAN node from register address */
         can_rxBuffer.canNode = CAN_GetNodeConfigurationStructFromRegisterAddress(pNode);
@@ -534,12 +647,12 @@ static void CAN_RxInterrupt(canBASE_t *pNode, uint32 messageBox) {
         /* Check message box number if it is a mailbox reserved for extended identifiers or not */
         if (!((messageBox >= CAN_LOWEST_MAILBOX_FOR_EXTENDED_IDENTIFIERS) &&
               (messageBox <= CAN_HIGHEST_MAILBOX_FOR_EXTENDED_IDENTIFIERS))) {
-            /* Extract standard identifier from IF2ARB register*/
-            can_rxBuffer.id     = canGetID(pNode, messageBox) >> CAN_IF2ARB_STANDARD_IDENTIFIER_SHIFT;
+            /* Extract standard identifier from IF2ARB register snapshot */
+            can_rxBuffer.id     = messageId >> CAN_IF2ARB_STANDARD_IDENTIFIER_SHIFT;
             can_rxBuffer.idType = CAN_STANDARD_IDENTIFIER_11_BIT;
         } else {
-            /* Extract extended identifier from IF2ARB register*/
-            can_rxBuffer.id     = canGetID(pNode, messageBox) >> CAN_IF2ARB_EXTENDED_IDENTIFIER_SHIFT;
+            /* Extract extended identifier from IF2ARB register snapshot */
+            can_rxBuffer.id     = messageId >> CAN_IF2ARB_EXTENDED_IDENTIFIER_SHIFT;
             can_rxBuffer.idType = CAN_EXTENDED_IDENTIFIER_29_BIT;
         }
 
@@ -558,6 +671,7 @@ static void CAN_RxInterrupt(canBASE_t *pNode, uint32 messageBox) {
             (void)DIAG_Handler(DIAG_ID_CAN_RX_QUEUE_FULL, DIAG_EVENT_OK, DIAG_SYSTEM, 0u);
         } else {
             /* queue is full */
+            CAN_IncrementDiagnosticCounter(CAN_DIAGNOSTIC_COUNTER_RX_QUEUE_FULL);
             (void)DIAG_Handler(DIAG_ID_CAN_RX_QUEUE_FULL, DIAG_EVENT_NOT_OK, DIAG_SYSTEM, 0u);
         }
     }
@@ -897,6 +1011,46 @@ extern void CAN_EnablePeriodic(bool command) {
     } else {
         can_state.periodicEnable = false;
     }
+}
+
+extern void CAN_IncrementDiagnosticCounter(CAN_DIAGNOSTIC_COUNTER_e counter) {
+    FAS_ASSERT(counter < CAN_DIAGNOSTIC_COUNTER_MAX_E);
+
+    switch (counter) {
+        case CAN_DIAGNOSTIC_COUNTER_ECU_STATE_VALID:
+            CAN_IncrementSaturatingCounter(&can_diagnosticCounters.ecuStateValid);
+            break;
+        case CAN_DIAGNOSTIC_COUNTER_ECU_STATE_CRC_INVALID:
+            CAN_IncrementSaturatingCounter(&can_diagnosticCounters.ecuStateCrcInvalid);
+            break;
+        case CAN_DIAGNOSTIC_COUNTER_DHVC_STATE_VALID:
+            CAN_IncrementSaturatingCounter(&can_diagnosticCounters.dhvcStateValid);
+            break;
+        case CAN_DIAGNOSTIC_COUNTER_DHVC_STATE_CRC_INVALID:
+            CAN_IncrementSaturatingCounter(&can_diagnosticCounters.dhvcStateCrcInvalid);
+            break;
+        case CAN_DIAGNOSTIC_COUNTER_RX_DATA_LOST:
+            CAN_IncrementSaturatingCounter(&can_diagnosticCounters.rxDataLost);
+            break;
+        case CAN_DIAGNOSTIC_COUNTER_RX_QUEUE_FULL:
+            CAN_IncrementSaturatingCounter(&can_diagnosticCounters.rxQueueFull);
+            break;
+        case CAN_DIAGNOSTIC_COUNTER_MAX_E:
+        default:
+            FAS_ASSERT(FAS_TRAP);
+            break;
+    }
+}
+
+extern void CAN_GetDiagnosticCounters(CAN_DIAGNOSTIC_COUNTERS_s *pCounters) {
+    FAS_ASSERT(pCounters != NULL_PTR);
+
+    pCounters->ecuStateValid       = can_diagnosticCounters.ecuStateValid;
+    pCounters->ecuStateCrcInvalid  = can_diagnosticCounters.ecuStateCrcInvalid;
+    pCounters->dhvcStateValid      = can_diagnosticCounters.dhvcStateValid;
+    pCounters->dhvcStateCrcInvalid = can_diagnosticCounters.dhvcStateCrcInvalid;
+    pCounters->rxDataLost          = can_diagnosticCounters.rxDataLost;
+    pCounters->rxQueueFull         = can_diagnosticCounters.rxQueueFull;
 }
 
 extern bool CAN_IsCurrentSensorPresent(uint8_t stringNumber) {

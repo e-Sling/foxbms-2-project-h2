@@ -132,7 +132,6 @@ static BMS_STATE_s bms_state = {
     .last_dhvc_tick                    = 0u,
     .last_ecu_tick                     = 0u,
     .dhvc_timeout                      = false,
-    .dhvc_timeoutCounter               = 0u,
     .ecu_timeout                       = false,
     .shutdown_bits                     = 0u,
 };
@@ -619,18 +618,10 @@ static CONT_TYPE_e BMS_GetSecondContactorToBeOpened(uint8_t stringNumber, CONT_T
 
 static void BMS_CheckDHVCTimeout(void) {
     if ((OS_GetTickCount() - bms_state.last_dhvc_tick) > BMS_DHVC_TIMEOUT_ms) {
-        bms_state.dhvc_timeoutCounter++;
-
-        if (bms_state.dhvc_timeoutCounter >= BMS_DHVC_TIMEOUT_COUNT) {
-            bms_state.dhvc_timeout        = true;
-            bms_state.allow_hv            = false;
-            bms_state.dhvc_timeoutCounter = 0u;
-        }
-    }
-
-    else {
-        bms_state.dhvc_timeout        = false;
-        bms_state.dhvc_timeoutCounter = 0u;
+        bms_state.dhvc_timeout = true;
+        bms_state.allow_hv     = false;
+    } else {
+        bms_state.dhvc_timeout = false;
     }
 }
 
