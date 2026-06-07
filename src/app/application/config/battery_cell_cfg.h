@@ -166,15 +166,15 @@
  *          flag will be set.
  *
  *  @note   MSL from P50B datasheet,
- *          MOL at 2800mV to warn before inverter limit is reached (2778mV)
+ *          MOL at 3000mV to warn before inverter limit is reached (2778mV)
  *
  * @ptype   int
  * @unit    mV
  */
 /**@{*/
 #define BC_VOLTAGE_MIN_MSL_mV (2500)
-#define BC_VOLTAGE_MIN_RSL_mV (2700)
-#define BC_VOLTAGE_MIN_MOL_mV (2800)
+#define BC_VOLTAGE_MIN_RSL_mV (3000)
+#define BC_VOLTAGE_MIN_MOL_mV (3200)
 /**@}*/
 
 /**
