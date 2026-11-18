@@ -837,21 +837,20 @@ static STD_RETURN_TYPE_e MRC_CalculateCellTemperatureMinMaxAverage(
 
         for (uint8_t m = 0u; m < BS_NR_OF_MODULES_PER_STRING; m++) {
             for (uint8_t ts = 0u; ts < BS_NR_OF_TEMP_SENSORS_PER_MODULE; ts++) {
-                if (pValidatedTemperatures->invalidCellTemperature[s][m][ts] == false) {
-                    /* Cell temperature is valid -> use this voltage for subsequent calculations */
-                    nrValidCellTemperatures++;
-                    sum_ddegC += (float_t)pValidatedTemperatures->cellTemperature_ddegC[s][m][ts];
+                /* Cellsius: do NOT filter out invalid cell voltages,
+                we want min and max to include all cells */
+                nrValidCellTemperatures++;
+                sum_ddegC += (float_t)pValidatedTemperatures->cellTemperature_ddegC[s][m][ts];
 
-                    if (pValidatedTemperatures->cellTemperature_ddegC[s][m][ts] < min) {
-                        min                 = pValidatedTemperatures->cellTemperature_ddegC[s][m][ts];
-                        moduleNumberMinimum = m;
-                        sensorNumberMinimum = ts;
-                    }
-                    if (pValidatedTemperatures->cellTemperature_ddegC[s][m][ts] > max) {
-                        max                 = pValidatedTemperatures->cellTemperature_ddegC[s][m][ts];
-                        moduleNumberMaximum = m;
-                        sensorNumberMaximum = ts;
-                    }
+                if (pValidatedTemperatures->cellTemperature_ddegC[s][m][ts] < min) {
+                    min                 = pValidatedTemperatures->cellTemperature_ddegC[s][m][ts];
+                    moduleNumberMinimum = m;
+                    sensorNumberMinimum = ts;
+                }
+                if (pValidatedTemperatures->cellTemperature_ddegC[s][m][ts] > max) {
+                    max                 = pValidatedTemperatures->cellTemperature_ddegC[s][m][ts];
+                    moduleNumberMaximum = m;
+                    sensorNumberMaximum = ts;
                 }
             }
         }

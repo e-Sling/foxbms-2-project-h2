@@ -195,6 +195,10 @@ static void SOC_SetValue(
         float_t ccOffset_perc =
             SOC_GetStringSocPercentageFromCharge((uint32_t)abs(soc_tableCurrentSensor.currentCounter_As[stringNumber]));
 
+        if (soc_tableCurrentSensor.currentCounter_As[stringNumber] < 0) {
+            ccOffset_perc *= (-1.0f);
+        }
+
 #if BS_POSITIVE_DISCHARGE_CURRENT == false
         ccOffset_perc *= (-1.0f);
 #endif /* BS_POSITIVE_DISCHARGE_CURRENT == false */
@@ -327,7 +331,7 @@ void SE_CalculateStateOfCharge(DATA_BLOCK_SOC_s *pSocValues) {
 
                             float_t deltaSOC_perc = (((float_t)soc_tableCurrentSensor.current_mA[s] * timeStep_s) /
                                                      SOC_STRING_CAPACITY_mAs) *
-                                                    100.0f / 1000.0f; /* ((mA) * 1s) / 1As) * 100% */
+                                                    100.0f; /* ((mA) * 1s) / 1As) * 100% */
 
                             float_t charge_As =
                                 fabs((float_t)soc_tableCurrentSensor.current_mA[s] * timeStep_s / 1000.0f);

@@ -123,8 +123,17 @@ static BMS_STATE_s bms_state = {
     .batOnSignalPrev                   = false,
     .faultDisarmFlag                   = false,
     .faultDisarmOnEntry                = false,
+    .ecu_flightmode                    = false,
+    .dhvc_flightmode                   = false,
+    .cached_flightmode                 = false,
+    .allow_hv                          = false,
     .prechargeAllowedFlag              = false,
     .last_inverter_tick                = 0u,
+    .last_dhvc_tick                    = 0u,
+    .last_ecu_tick                     = 0u,
+    .dhvc_timeout                      = false,
+    .dhvc_timeoutCounter               = 0u,
+    .ecu_timeout                       = false,
     .shutdown_bits                     = 0u,
 };
 
@@ -299,8 +308,9 @@ static void BMS_GetMeasurementValues(void) {
 }
 
 static void BMS_CheckOpenSenseWire(void) {
+    uint8_t openWireDetected = 0;
+
     for (uint8_t s = 0u; s < BS_NR_OF_STRINGS; s++) {
-        uint8_t openWireDetected = 0;
         /* Iterate over all modules */
         for (uint8_t m = 0u; m < BS_NR_OF_MODULES_PER_STRING; m++) {
             /* Iterate over all voltage sense wires: cells per module + 1 */
@@ -363,8 +373,7 @@ static STD_RETURN_TYPE_e BMS_CheckPrecharge(uint8_t stringNumber, const DATA_BLO
 }
 
 static bool BMS_IsAnyFatalErrorFlagSet(void) {
-    bool fatalErrorActive           = false;
-    bms_state.minimumActiveDelay_ms = BMS_NO_ACTIVE_DELAY_TIME_ms;
+    bool fatalErrorActive = false;
 
     for (uint16_t entry = 0u; entry < diag_device.numberOfFatalErrors; entry++) {
         const STD_RETURN_TYPE_e diagnosisState =
@@ -481,6 +490,10 @@ static void BMS_UpdateBatterySystemState(DATA_BLOCK_PACK_VALUES_s *pPackValues) 
                 if (bms_state.restTimer_10ms == 0u) {
                     /* Rest timer elapsed -> battery system at rest */
                     bms_state.currentFlowState = BMS_AT_REST;
+                } else if (bms_state.restTimer_10ms <= BS_SHORT_REST_PERIOD_10ms) {
+                    /* Short rest elapsed -> short rest */
+                    bms_state.restTimer_10ms--;
+                    bms_state.currentFlowState = BMS_SHORT_REST;
                 } else {
                     bms_state.restTimer_10ms--;
                     bms_state.currentFlowState = BMS_RELAXATION;
@@ -500,6 +513,10 @@ static void BMS_UpdateBatterySystemState(DATA_BLOCK_PACK_VALUES_s *pPackValues) 
                 if (bms_state.restTimer_10ms == 0u) {
                     /* Rest timer elapsed -> battery system at rest */
                     bms_state.currentFlowState = BMS_AT_REST;
+                } else if (bms_state.restTimer_10ms <= BS_SHORT_REST_PERIOD_10ms) {
+                    /* Short rest elapsed -> short rest */
+                    bms_state.restTimer_10ms--;
+                    bms_state.currentFlowState = BMS_SHORT_REST;
                 } else {
                     bms_state.restTimer_10ms--;
                     bms_state.currentFlowState = BMS_RELAXATION;
@@ -600,6 +617,31 @@ static CONT_TYPE_e BMS_GetSecondContactorToBeOpened(uint8_t stringNumber, CONT_T
     return contactorToBeOpened;
 }
 
+static void BMS_CheckDHVCTimeout(void) {
+    if ((OS_GetTickCount() - bms_state.last_dhvc_tick) > BMS_DHVC_TIMEOUT_ms) {
+        bms_state.dhvc_timeoutCounter++;
+
+        if (bms_state.dhvc_timeoutCounter >= BMS_DHVC_TIMEOUT_COUNT) {
+            bms_state.dhvc_timeout        = true;
+            bms_state.allow_hv            = false;
+            bms_state.dhvc_timeoutCounter = 0u;
+        }
+    }
+
+    else {
+        bms_state.dhvc_timeout        = false;
+        bms_state.dhvc_timeoutCounter = 0u;
+    }
+}
+
+static void BMS_CheckECUTimeout(void) {
+    if ((OS_GetTickCount() - bms_state.last_ecu_tick) > BMS_ECU_TIMEOUT_ms) {
+        bms_state.ecu_timeout = true;
+    } else {
+        bms_state.ecu_timeout = false;
+    }
+}
+
 /*========== Extern Function Implementations ================================*/
 
 extern STD_RETURN_TYPE_e BMS_GetInitializationState(void) {
@@ -618,12 +660,32 @@ extern bool BMS_GetBatOnSignal(void) {
     return bms_state.batOnSignal;
 }
 
+extern bool BMS_GetAllowHVSignal(void) {
+    return bms_state.allow_hv;
+}
+
+extern bool BMS_GetCachedFlightmode(void) {
+    return bms_state.cached_flightmode;
+}
+
+extern bool BMS_CheckFlightmode(void) {
+    bms_state.cached_flightmode = bms_state.ecu_timeout && bms_state.dhvc_timeout
+                                      ? bms_state.cached_flightmode
+                                      : (bms_state.ecu_flightmode && !bms_state.ecu_timeout) ||
+                                            (bms_state.dhvc_flightmode && !bms_state.dhvc_timeout);
+    return bms_state.cached_flightmode;
+}
+
 extern void BMS_SetFaultDisarmFlag(bool faultDisarmFlag) {
     bms_state.faultDisarmFlag = faultDisarmFlag;
 }
 
-extern void BMS_SetFlightmode(bool flightmode) {
-    bms_state.flightmode = flightmode;
+extern void BMS_SetECUFlightmode(bool flightmode) {
+    bms_state.ecu_flightmode = flightmode;
+}
+
+extern void BMS_SetDHVCFlightmode(bool flightmode) {
+    bms_state.dhvc_flightmode = flightmode;
 }
 
 extern void BMS_SetAllowHV(bool allow_hv) {
@@ -636,6 +698,14 @@ extern void BMS_SetPrechargeAllowedFlag(bool prechargeAllowedFlag) {
 
 extern void BMS_SetLastInverterTick(void) {
     bms_state.last_inverter_tick = OS_GetTickCount();
+}
+
+extern void BMS_SetLastDHVCTick(void) {
+    bms_state.last_dhvc_tick = OS_GetTickCount();
+}
+
+extern void BMS_SetLastECUTick(void) {
+    bms_state.last_ecu_tick = OS_GetTickCount();
 }
 
 extern void BMS_LatchShutdownBits(void) {
@@ -660,23 +730,17 @@ extern void BMS_LatchShutdownBits(void) {
     if (es.currentOnOpenStringDetectedError[BS_STRING0])
         bits |= SHUTDOWNBIT_CURRENT_ON_OPEN_STRING;
 
-    OS_EnterTaskCritical();
     bms_state.shutdown_bits |= bits;
-    OS_ExitTaskCritical();
 }
 
 extern uint8_t BMS_GetLatchedShutdownBits(void) {
     uint8_t bits;
-    OS_EnterTaskCritical();
     bits = bms_state.shutdown_bits;
-    OS_ExitTaskCritical();
     return bits;
 }
 
 extern void BMS_ClearLatchedShutdownBits(void) {
-    OS_EnterTaskCritical();
     bms_state.shutdown_bits = 0u;
-    OS_ExitTaskCritical();
 }
 
 BMS_RETURN_TYPE_e BMS_SetStateRequest(BMS_STATE_REQUEST_e statereq) {
@@ -809,16 +873,10 @@ void BMS_Trigger(void) {
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
                 /* Cellsius: Go to standby without request */
-                if (true) {
-                    bms_state.timer     = BMS_STATEMACH_SHORTTIME;
-                    bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
-                    bms_state.nextState = BMS_STATEMACH_STANDBY;
-                    bms_state.substate  = BMS_ENTRY;
-                    break;
-                } else {
-                    bms_state.timer    = BMS_STATEMACH_SHORTTIME;
-                    bms_state.substate = BMS_CHECK_ERROR_FLAGS;
-                }
+                bms_state.timer     = BMS_STATEMACH_SHORTTIME;
+                bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
+                bms_state.nextState = BMS_STATEMACH_STANDBY;
+                bms_state.substate  = BMS_ENTRY;
                 break;
             }
             break;
@@ -1033,10 +1091,13 @@ void BMS_Trigger(void) {
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
                 /* Cellsius: Check for Startup requirements */
-                if (bms_state.batOnSignal && (bms_state.allow_hv || bms_state.flightmode)) {
+                BMS_CheckDHVCTimeout();
+                BMS_CheckECUTimeout();
+                BMS_CheckFlightmode();
+                if (bms_state.batOnSignal && (bms_state.allow_hv || bms_state.cached_flightmode)) {
                     /* Check for Precharge or inverter timed-out */
                     if (bms_state.prechargeAllowedFlag ||
-                        (timestamp - bms_state.last_inverter_tick > BMS_INVERTER_MESSAGE_TIMEOUT)) {
+                        (OS_GetTickCount() - bms_state.last_inverter_tick > BMS_INVERTER_MESSAGE_TIMEOUT)) {
                         bms_state.nextState = BMS_STATEMACH_NORMAL;
                         bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                         bms_state.state     = BMS_STATEMACH_PRECHARGE;
@@ -1138,7 +1199,11 @@ void BMS_Trigger(void) {
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
                 /* Cellsius: Check if requirements to precharge are lost */
-                if (bms_state.batOnSignal == false || (bms_state.allow_hv == false && bms_state.flightmode == false)) {
+                BMS_CheckDHVCTimeout();
+                BMS_CheckECUTimeout();
+                BMS_CheckFlightmode();
+                if (bms_state.batOnSignal == false ||
+                    (bms_state.allow_hv == false && bms_state.cached_flightmode == false)) {
                     bms_state.timer     = BMS_STATEMACH_SHORTTIME;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;
@@ -1299,7 +1364,11 @@ void BMS_Trigger(void) {
                 }
             } else if (bms_state.substate == BMS_CHECK_STATE_REQUESTS) {
                 /* Cellsius: Check if requirements to run are lost */
-                if (bms_state.batOnSignal == false || (bms_state.allow_hv == false && bms_state.flightmode == false)) {
+                BMS_CheckDHVCTimeout();
+                BMS_CheckECUTimeout();
+                BMS_CheckFlightmode();
+                if (bms_state.batOnSignal == false ||
+                    (bms_state.allow_hv == false && bms_state.cached_flightmode == false)) {
                     bms_state.timer     = BMS_WAIT_TIME_BAT_OFF;
                     bms_state.state     = BMS_STATEMACH_OPEN_CONTACTORS;
                     bms_state.nextState = BMS_STATEMACH_STANDBY;
@@ -1353,6 +1422,7 @@ void BMS_Trigger(void) {
                     }
                 } else {
                     /* No error detected anymore - reset fatal error related variables */
+                    bms_state.minimumActiveDelay_ms  = BMS_NO_ACTIVE_DELAY_TIME_ms;
                     bms_state.remainingDelay_ms      = BMS_NO_ACTIVE_DELAY_TIME_ms;
                     bms_state.transitionToErrorState = false;
                     /* Check for STANDBY request */

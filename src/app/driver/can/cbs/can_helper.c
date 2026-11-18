@@ -373,16 +373,13 @@ extern uint8_t CAN_ConvertBooleanToInteger(bool input) {
 }
 
 extern int8_t CAN_ConvertFlagstoErrorLevel(
-    bool spread,
     bool error_lower,
     bool warning_lower,
     bool info_lower,
     bool info_upper,
     bool warning_upper,
     bool error_upper) {
-    if (spread)
-        return -4;
-    else if (error_upper)
+    if (error_upper)
         return 3;
     else if (error_lower)
         return -3;

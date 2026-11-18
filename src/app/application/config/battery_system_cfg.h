@@ -186,7 +186,7 @@ typedef enum {
  *          above this value. The fuse should trigger to interrupt current
  *          flows above this value.
  */
-#define BS_MAIN_CONTACTORS_MAXIMUM_BREAK_CURRENT_mA (175000)
+#define BS_MAIN_CONTACTORS_MAXIMUM_BREAK_CURRENT_mA (500000)
 
 /**
  * @brief   Maximum fuse trigger duration
@@ -260,10 +260,16 @@ typedef enum {
 #define BS_REST_CURRENT_mA (200)
 
 /**
- * @brief   Wait time in 10ms before battery system is at rest. Balancing for
- *          example only starts if battery system is at rest.
+ * @brief   Wait time in 10ms before battery system is at rest. Recalibration
+ *          of SoE/SoC for example only starts if battery system is at rest.
  */
-#define BS_RELAXATION_PERIOD_10ms (60000u) /* 10 minutes */
+#define BS_RELAXATION_PERIOD_10ms (30000u) /* 5 minutes */
+
+/**
+ * @brief   Wait time in 10ms before battery system is at short rest. Balancing for
+ *          example only starts if battery system is at short rest.
+ */
+#define BS_SHORT_REST_PERIOD_10ms (BS_RELAXATION_PERIOD_10ms - 12000u) /* 2 minutes */
 
 /**
  * @brief   current sensor threshold for 0 current in mA as the sensor has a

@@ -106,15 +106,16 @@
  *          (RSL) or maximum operating limit (MOL) is violated, the respective
  *          flag will be set.
  *
- *  @note   MSL from P50B datasheet, RSL and MOL from BBM limits
+ *  @note   MSL from P50B datasheet, RSL and MOL set lower than discharge
+ *          limits to prevent charging at high temperatures.
  *
  * @ptype   int
  * @unit    deci &deg;C
  */
 /**@{*/
 #define BC_TEMPERATURE_MAX_CHARGE_MSL_ddegC (700)
-#define BC_TEMPERATURE_MAX_CHARGE_RSL_ddegC (600)
-#define BC_TEMPERATURE_MAX_CHARGE_MOL_ddegC (500)
+#define BC_TEMPERATURE_MAX_CHARGE_RSL_ddegC (500)
+#define BC_TEMPERATURE_MAX_CHARGE_MOL_ddegC (400)
 /**@}*/
 
 /**
@@ -165,15 +166,15 @@
  *          flag will be set.
  *
  *  @note   MSL from P50B datasheet,
- *          MOL at 2800mV to warn before inverter limit is reached (2778mV)
+ *          MOL at 3000mV to warn before inverter limit is reached (2778mV)
  *
  * @ptype   int
  * @unit    mV
  */
 /**@{*/
 #define BC_VOLTAGE_MIN_MSL_mV (2500)
-#define BC_VOLTAGE_MIN_RSL_mV (2700)
-#define BC_VOLTAGE_MIN_MOL_mV (2800)
+#define BC_VOLTAGE_MIN_RSL_mV (3000)
+#define BC_VOLTAGE_MIN_MOL_mV (3200)
 /**@}*/
 
 /**

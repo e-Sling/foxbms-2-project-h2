@@ -101,7 +101,7 @@ extern uint32_t CANRX_Debug(
     const uint8_t *const kpkCanData,
     const CAN_SHIM_s *const kpkCanShim);
 
-/***** Cellsius: Own CAN TX message definitions *****/
+/***** Cellsius: Own CAN RX message definitions *****/
 
 /**
  * @brief   CAN Rx callback function for ECU state

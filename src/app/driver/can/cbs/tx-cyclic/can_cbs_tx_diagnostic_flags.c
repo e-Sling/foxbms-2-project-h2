@@ -91,6 +91,8 @@
 #define CANTX_DIAG_AFE_OPEN_WIRE          (19u)
 #define CANTX_DIAG_SYSTEM_CAUTION         (20u)
 #define CANTX_DIAG_SYSTEM_WARNING         (21u)
+#define CANTX_DIAG_VOLTAGE_SPREAD         (22u)
+#define CANTX_DIAG_TEMPERATURE_SPREAD     (23u)
 
 /*========== Static Constant and Variable Definitions =======================*/
 
@@ -136,7 +138,6 @@ static void CANTX_BuildDiagnosticFlagsMessage(const CAN_SHIM_s *const kpkCanShim
 
     /* Voltage ErrorLevel */
     uint64_t data = (uint64_t)CAN_ConvertFlagstoErrorLevel(
-        kpkCanShim->pTableErrorState->plausibilityCheckCellVoltageSpreadError[BS_STRING0],
         kpkCanShim->pTableMsl->underVoltage[BS_STRING0],
         kpkCanShim->pTableRsl->underVoltage[BS_STRING0],
         kpkCanShim->pTableMol->underVoltage[BS_STRING0],
@@ -148,7 +149,6 @@ static void CANTX_BuildDiagnosticFlagsMessage(const CAN_SHIM_s *const kpkCanShim
 
     /* Temperature ErrorLevel */
     data = (uint64_t)CAN_ConvertFlagstoErrorLevel(
-        kpkCanShim->pTableErrorState->plausibilityCheckCellTemperatureSpreadError[BS_STRING0],
         kpkCanShim->pTableMsl->undertemperatureDischarge[BS_STRING0] ||
             kpkCanShim->pTableMsl->undertemperatureCharge[BS_STRING0],
         kpkCanShim->pTableRsl->undertemperatureDischarge[BS_STRING0] ||
@@ -280,6 +280,18 @@ static void CANTX_BuildDiagnosticFlagsMessage(const CAN_SHIM_s *const kpkCanShim
         data = 1u;
     CAN_TxSetMessageDataWithSignalData(
         pMessageData, CANTX_DIAG_PRECHARGE_CURRENT, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
+
+    /* Warning: Voltage spread */
+    data =
+        CAN_ConvertBooleanToInteger(kpkCanShim->pTableErrorState->plausibilityCheckCellVoltageSpreadError[BS_STRING0]);
+    CAN_TxSetMessageDataWithSignalData(
+        pMessageData, CANTX_DIAG_VOLTAGE_SPREAD, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
+
+    /* Warning: Temperature spread */
+    data = CAN_ConvertBooleanToInteger(
+        kpkCanShim->pTableErrorState->plausibilityCheckCellTemperatureSpreadError[BS_STRING0]);
+    CAN_TxSetMessageDataWithSignalData(
+        pMessageData, CANTX_DIAG_TEMPERATURE_SPREAD, CANTX_DIAG_FLAG_LENGTH, data, CANTX_BMS_STATE_ENDIANNESS);
 }
 
 /*========== Extern Function Implementations ================================*/
